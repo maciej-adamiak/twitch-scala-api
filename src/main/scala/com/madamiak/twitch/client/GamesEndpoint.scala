@@ -1,16 +1,11 @@
 package com.madamiak.twitch.client
 
 import akka.actor.ActorSystem
-import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.Uri.{ Path, Query }
-import akka.http.scaladsl.model._
-import akka.http.scaladsl.unmarshalling.Unmarshal
+import akka.http.scaladsl.model.Uri.Query
 import akka.stream.ActorMaterializer
-import com.madamiak.twitch.client.header.ClientIdHeader
-import com.madamiak.twitch.model.{ Game, TwitchData }
-import com.typesafe.config.ConfigFactory._
+import com.madamiak.twitch.model.{Game, TwitchData}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
   * Gets game information by game ID or name.
@@ -28,25 +23,53 @@ class GamesEndpoint(
   private val gamesPath    = "/helix/games"
   private val topGamesPath = "/helix/games/top"
 
-  val client = new TwitchClient()
+  private val client = new TwitchClient()
 
-  def getGamesByName(names: Seq[String]): Future[TwitchData[Game]] =
-    client.http(gamesPath)(names.toQuery("id"))
+  /**
+    * Gets game information by game name
+    *
+    * @param names Game name
+    * @return Twitch game data
+    */
+  def getGamesByName(names: Seq[String]): Future[TwitchData[Game]] = {
+    require(names.length <= 100, "Cannot query using more than 100 names")
+    client.http(gamesPath)(names.toQuery("name"))
+  }
 
-  def getGamesById(ids: Seq[Long]): Future[TwitchData[Game]] =
+  /**
+    * Gets game information by game id
+    *
+    * @param ids game ids
+    * @return Twitch game data
+    */
+  def getGamesById(ids: Seq[Long]): Future[TwitchData[Game]] = {
+    require(ids.length <= 100, "Cannot query using more than 100 ids")
     client.http(gamesPath)(ids.toQuery("id"))
+  }
 
+  /**
+    * Gets games sorted by number of current viewers on Twitch, most popular first
+    *
+    * @param before Cursor for backward pagination
+    * @param after Cursor for forward pagination
+    * @param first Maximum number of objects to return
+    * @return
+    */
   def getTopGames(before: Option[String] = None,
                   after: Option[String] = None,
-                  first: Int = 20): Future[TwitchData[Game]] =
+                  first: Option[Int] = None): Future[TwitchData[Game]] =
     client.http(topGamesPath) {
-      val parameters = Map[String, Option[String]](
-        "before" -> before,
-        "after"  -> after,
-        "first"  -> Some(first.toString)
-      ).filter(_._2.isDefined).mapValues(_.get)
 
-      Query(parameters)
+      require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
+      require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
+
+      Query {
+        Map(
+          "before" -> before,
+          "after"  -> after,
+          "first"  -> first
+        ).filter(_._2.isDefined).mapValues(_.get.toString)
+      }
     }
 
 }

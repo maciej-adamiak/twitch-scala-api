@@ -8,7 +8,7 @@ package object client {
 
     /**
       * Create a query string for a given sequence e.g. list of ids (1,2,3,4) to (id, 1), (id, 2) etc
-      * 
+      *
       * @param key common key used to form the query string
       * @return akka http query
       */

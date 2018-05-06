@@ -9,6 +9,8 @@ package object model extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit val gameFormat: RootJsonFormat[Game] = jsonFormat(Game, "id", "name", "box_art_url")
 
+  implicit val clipFormat: RootJsonFormat[Clip] = jsonFormat(Clip, "broadcaster_id", "created_at", "creator_id", "embed_url", "game_id", "id", "language", "thumbnail_url", "title", "url", "video_id", "view_count")
+
   implicit val paginationFormat: RootJsonFormat[Pagination] = jsonFormat1(Pagination)
 
 }
