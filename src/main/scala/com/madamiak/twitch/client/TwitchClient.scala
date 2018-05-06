@@ -2,16 +2,15 @@ package com.madamiak.twitch.client
 
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.model.Uri.{ Path, Query }
+import akka.http.scaladsl.model.Uri.{Path, Query}
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.unmarshalling.{ Unmarshal, Unmarshaller }
-import com.madamiak.twitch.client.header.ClientIdHeader
-import com.madamiak.twitch.model.TwitchData
-import com.madamiak.twitch.model._
-import com.typesafe.config.ConfigFactory.load
+import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.ActorMaterializer
+import com.madamiak.twitch.client.header.ClientIdHeader
+import com.madamiak.twitch.model.{TwitchData, _}
+import com.typesafe.config.ConfigFactory.load
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class TwitchClient(
     implicit val system: ActorSystem,
@@ -29,7 +28,7 @@ class TwitchClient(
 
   def http[T](
       path: String
-  )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchData[T]]): Future[TwitchData[T]] =
+  )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchData[T]]): Future[TwitchResponse[T]] =
     Http()
       .singleRequest(
         HttpRequest()
@@ -44,8 +43,11 @@ class TwitchClient(
 
   def extractData[T](
       response: HttpResponse
-  )(implicit m: Unmarshaller[ResponseEntity, TwitchData[T]]): Future[TwitchData[T]] = response.status match {
-    case StatusCodes.OK => Unmarshal(response.entity).to[TwitchData[T]]
-    case code           => Future.failed(new TwitchAPIException(s"Twitch server response was $code"))
+  )(implicit m: Unmarshaller[ResponseEntity, TwitchData[T]]): Future[TwitchResponse[T]] = response.status match {
+    case StatusCodes.OK =>
+      Unmarshal(response.entity)
+        .to[TwitchData[T]]
+        .map(data => TwitchResponse(RateLimit(response), data))
+    case code => Future.failed(new TwitchAPIException(s"Twitch server response was $code"))
   }
 }

@@ -3,7 +3,7 @@ package com.madamiak.twitch.client
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
 import akka.stream.ActorMaterializer
-import com.madamiak.twitch.model.{Clip, TwitchData}
+import com.madamiak.twitch.model.{Clip, TwitchResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +31,7 @@ class ClipsEndpoint(
   def getClipsByGameId(gameId: Long,
                        before: Option[String] = None,
                        after: Option[String] = None,
-                       first: Option[Int] = None): Future[TwitchData[Clip]] = client.http(clipsPath) {
+                       first: Option[Int] = None): Future[TwitchResponse[Clip]] = client.http(clipsPath) {
     Query {
       Map(
         "game_id" -> Some(gameId),
@@ -56,7 +56,7 @@ class ClipsEndpoint(
   def getClipsById(ids: Seq[String],
                    before: Option[String] = None,
                    after: Option[String] = None,
-                   first: Option[Int] = None): Future[TwitchData[Clip]] = client.http(clipsPath) {
+                   first: Option[Int] = None): Future[TwitchResponse[Clip]] = client.http(clipsPath) {
     Query {
       Map(
         "before" -> before,
@@ -80,7 +80,7 @@ class ClipsEndpoint(
   def getClipsByBroadcasterId(broadcasterId: Long,
                               before: Option[String] = None,
                               after: Option[String] = None,
-                              first: Option[Int] = None): Future[TwitchData[Clip]] = client.http(clipsPath) {
+                              first: Option[Int] = None): Future[TwitchResponse[Clip]] = client.http(clipsPath) {
     Query {
       Map(
         "broadcaster_id" -> Some(broadcasterId),

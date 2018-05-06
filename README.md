@@ -1,3 +1,3 @@
-# Twitch Scala Client (WIP)
+# Twitch Scala SDK (Work in progress)
 
-https://dev.twitch.tv/docs/api/reference/
+Unofficial Twitch SDK for building application upon the [newest API](https://dev.twitch.tv/docs/api/#introduction)

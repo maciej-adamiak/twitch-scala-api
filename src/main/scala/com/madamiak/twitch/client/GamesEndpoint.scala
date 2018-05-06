@@ -3,7 +3,7 @@ package com.madamiak.twitch.client
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
 import akka.stream.ActorMaterializer
-import com.madamiak.twitch.model.{Game, TwitchData}
+import com.madamiak.twitch.model.{Game, TwitchResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -31,7 +31,7 @@ class GamesEndpoint(
     * @param names Game name
     * @return Twitch game data
     */
-  def getGamesByName(names: Seq[String]): Future[TwitchData[Game]] = {
+  def getGamesByName(names: Seq[String]): Future[TwitchResponse[Game]] = {
     require(names.length <= 100, "Cannot query using more than 100 names")
     client.http(gamesPath)(names.toQuery("name"))
   }
@@ -42,7 +42,7 @@ class GamesEndpoint(
     * @param ids game ids
     * @return Twitch game data
     */
-  def getGamesById(ids: Seq[Long]): Future[TwitchData[Game]] = {
+  def getGamesById(ids: Seq[Long]): Future[TwitchResponse[Game]] = {
     require(ids.length <= 100, "Cannot query using more than 100 ids")
     client.http(gamesPath)(ids.toQuery("id"))
   }
@@ -57,7 +57,7 @@ class GamesEndpoint(
     */
   def getTopGames(before: Option[String] = None,
                   after: Option[String] = None,
-                  first: Option[Int] = None): Future[TwitchData[Game]] =
+                  first: Option[Int] = None): Future[TwitchResponse[Game]] =
     client.http(topGamesPath) {
 
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
