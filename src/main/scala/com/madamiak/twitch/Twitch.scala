@@ -6,16 +6,13 @@ import com.madamiak.twitch.client.{ClipsEndpoint, GamesEndpoint}
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
-//TODO check conf on creation
-class Twitch(
-    implicit val system: ActorSystem = ActorSystem("twitch-scala-client-system"),
-) {
-  
-  implicit val executionContext: ExecutionContext = system.dispatcher
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
+class Twitch(implicit val system: ActorSystem = ActorSystem("twitch-scala-client-system")) {
 
-  val games = new GamesEndpoint()
-  val clips = new ClipsEndpoint()
+  implicit val executionContext: ExecutionContext = system.dispatcher
+  implicit val materializer: ActorMaterializer    = ActorMaterializer()
+
+  val games: GamesEndpoint = new GamesEndpoint()
+  val clips: ClipsEndpoint = new ClipsEndpoint()
 
   def shutdown(): Future[Unit] = {
     implicit val ece: ExecutionContextExecutor = system.dispatcher
