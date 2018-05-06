@@ -6,4 +6,4 @@ package com.madamiak.twitch.model
   * @param data wrapped data
   * @tparam T data type
   */
-case class TwitchData[T](data: Seq[T])
+case class TwitchData[T](data: Seq[T], pagination: Pagination)

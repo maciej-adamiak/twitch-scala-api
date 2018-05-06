@@ -2,7 +2,7 @@ package com.madamiak.twitch
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.madamiak.twitch.client.GamesClient
+import com.madamiak.twitch.client.GamesEndpoint
 
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
 
@@ -15,7 +15,7 @@ class Twitch(
   
   //TODO check conf on creation
   
-  val games = new GamesClient()
+  val games = new GamesEndpoint()
 
   def shutdown(): Future[Unit] = {
     implicit val ece: ExecutionContextExecutor = system.dispatcher
