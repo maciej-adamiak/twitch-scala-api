@@ -19,7 +19,7 @@ class GamesEndpointSpec extends WordSpec with Matchers with MockFactory {
     "performing a request to acquire games by id" should {
 
       "return single result" in {
-
+        ???
       }
 
     }
