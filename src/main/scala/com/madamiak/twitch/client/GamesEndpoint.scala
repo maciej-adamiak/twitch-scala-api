@@ -8,23 +8,14 @@ import com.madamiak.twitch.model.api.Game
 
 import scala.concurrent.{ExecutionContext, Future}
 
-/**
-  * Gets game information by game ID or name.
-  *
-  * @param system akka actor system
-  * @param context execution context
-  * @param materializer actor materializer
-  */
 class GamesEndpoint(
     implicit val system: ActorSystem,
     implicit val context: ExecutionContext,
     implicit val materializer: ActorMaterializer
-) {
+) extends Endpoint{
 
   private val gamesPath    = "/helix/games"
   private val topGamesPath = "/helix/games/top"
-
-  private val client = new TwitchClient()
 
   /**
     * Gets game information by game name

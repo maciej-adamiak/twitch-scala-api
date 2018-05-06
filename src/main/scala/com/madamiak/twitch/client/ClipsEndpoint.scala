@@ -12,11 +12,9 @@ class ClipsEndpoint(
     implicit val system: ActorSystem,
     implicit val context: ExecutionContext,
     implicit val materializer: ActorMaterializer
-) {
+) extends Endpoint{
 
   private val clipsPath = "/helix/clips"
-
-  private val client = new TwitchClient()
 
   /**
     * Gets information about top clips for a specified game
