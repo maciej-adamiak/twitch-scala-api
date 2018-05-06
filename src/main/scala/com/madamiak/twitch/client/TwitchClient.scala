@@ -7,7 +7,8 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.ActorMaterializer
 import com.madamiak.twitch.client.header.ClientIdHeader
-import com.madamiak.twitch.model.{TwitchData, _}
+import com.madamiak.twitch.model._
+import com.madamiak.twitch.model.api.TwitchData
 import com.typesafe.config.ConfigFactory.load
 
 import scala.concurrent.{ExecutionContext, Future}

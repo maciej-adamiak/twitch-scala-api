@@ -1,4 +1,4 @@
-package com.madamiak.twitch.model
+package com.madamiak.twitch.model.api
 
 /**
   * Represents Twitch game data

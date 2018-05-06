@@ -1,9 +1,9 @@
-package com.madamiak.twitch
+package com.madamiak.twitch.model
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import spray.json._
 
-package object model extends SprayJsonSupport with DefaultJsonProtocol {
+package object api extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchData[T]] = jsonFormat2(TwitchData[T])
 

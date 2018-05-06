@@ -3,7 +3,8 @@ package com.madamiak.twitch.client
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
 import akka.stream.ActorMaterializer
-import com.madamiak.twitch.model.{Game, TwitchResponse}
+import com.madamiak.twitch.model.TwitchResponse
+import com.madamiak.twitch.model.api.Game
 
 import scala.concurrent.{ExecutionContext, Future}
 
