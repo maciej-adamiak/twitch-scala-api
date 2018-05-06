@@ -1,4 +1,4 @@
-name := "twitch-scala-client"
+name := "twitch-scala-sdk"
 
 version := "0.1"
 
