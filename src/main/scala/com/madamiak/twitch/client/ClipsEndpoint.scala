@@ -4,9 +4,9 @@ import akka.http.scaladsl.model.Uri.Query
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.Clip
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-class ClipsEndpoint(implicit val client: TwitchClient) extends Endpoint{
+class ClipsEndpoint(implicit val context: ExecutionContext, implicit val client: TwitchClient) extends Endpoint{
 
   private val clipsPath = "/helix/clips"
 
