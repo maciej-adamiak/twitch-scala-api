@@ -1,18 +1,12 @@
 package com.madamiak.twitch.client
 
-import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
-import akka.stream.ActorMaterializer
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.Game
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GamesEndpoint(
-    implicit val system: ActorSystem,
-    implicit val context: ExecutionContext,
-    implicit val materializer: ActorMaterializer
-) extends Endpoint{
+class GamesEndpoint(implicit val context: ExecutionContext, implicit val client: TwitchClient) extends Endpoint {
 
   private val gamesPath    = "/helix/games"
   private val topGamesPath = "/helix/games/top"
@@ -34,10 +28,11 @@ class GamesEndpoint(
     * @param ids game ids
     * @return Twitch game data
     */
-  def getGamesById(ids: Seq[Long]): Future[TwitchResponse[Game]] = {
-    require(ids.length <= 100, "Cannot query using more than 100 ids")
-    client.http(gamesPath)(ids.toQuery("id"))
-  }
+  def getGamesById(ids: Seq[Long]): Future[TwitchResponse[Game]] =
+    Future {
+      require(ids.nonEmpty, "Cannot query using empty ids")
+      require(ids.length <= 100, "Cannot query using more than 100 ids")
+    }.flatMap(_ => client.http(gamesPath)(ids.toQuery("id")))
 
   /**
     * Gets games sorted by number of current viewers on Twitch, most popular first
