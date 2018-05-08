@@ -21,7 +21,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
       "succeed" when {
 
-        "using valid query" in {
+        "using a valid query" in {
 
           val query      = Query("id=123&id=312")
           val twitchData = TwitchData(Seq(game))
@@ -59,7 +59,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
       "succeed" when {
 
-        "using valid query" in {
+        "using a valid query" in {
           val query      = Query("name=gameA&name=gameB")
           val twitchData = TwitchData(Seq(game))
 

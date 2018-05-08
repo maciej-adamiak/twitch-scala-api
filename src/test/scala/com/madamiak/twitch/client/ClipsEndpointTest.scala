@@ -34,7 +34,7 @@ class ClipsEndpointTest extends EndpointWordSpec {
 
       "succeed" when {
 
-        "using valid query" in {
+        "using a valid query" in {
           val query      = Query("id=AwkwardHelplessSalamanderSwiftRage")
           val twitchData = TwitchData(Seq(clip), Some(pagination))
 
@@ -88,7 +88,7 @@ class ClipsEndpointTest extends EndpointWordSpec {
 
       "succeed" when {
 
-        "using valid query" in {
+        "using a valid query" in {
           val query      = Query("game_id=123421")
           val twitchData = TwitchData(Seq(clip), Some(pagination))
 
@@ -136,7 +136,7 @@ class ClipsEndpointTest extends EndpointWordSpec {
 
       "succeed" when {
 
-        "using valid query" in {
+        "using a valid query" in {
           val query      = Query("broadcaster_id=123421")
           val twitchData = TwitchData(Seq(clip), Some(pagination))
 
