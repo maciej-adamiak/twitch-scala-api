@@ -23,67 +23,81 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
     "performs a request to acquire games by id" should {
 
-      "return result" in {
+      "succeed" when {
 
-        val query      = Query("id=1&id=2")
-        val rateLimit  = RateLimit(1, 2, 2)
-        val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
-        val twitchData = TwitchData(Seq(game))
+        "using valid query" in {
 
-        implicit val twitchClient: TwitchClient = mock[TwitchClient]
-        (twitchClient
-          .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games", query, *) returns Future
-          .successful(
-            new TwitchResponse[Game](
-              rateLimit,
-              twitchData
+          val query      = Query("id=1&id=2")
+          val rateLimit  = RateLimit(1, 2, 2)
+          val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
+          val twitchData = TwitchData(Seq(game))
+
+          implicit val twitchClient: TwitchClient = mock[TwitchClient]
+          (twitchClient
+            .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games", query, *) returns Future
+            .successful(
+              new TwitchResponse[Game](
+                rateLimit,
+                twitchData
+              )
             )
+          new GamesEndpoint().getGamesById(Seq(1, 2)).map(_.twitchData shouldEqual twitchData)
+        }
+
+      }
+
+      "fail" when {
+
+        "calling API without ids defined" in {
+          implicit val twitchClient: TwitchClient = mock[TwitchClient]
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesById(Seq()))
+        }
+
+        "calling API with more ids than the limit" in {
+          implicit val twitchClient: TwitchClient = mock[TwitchClient]
+          recoverToSucceededIf[IllegalArgumentException](
+            new GamesEndpoint().getGamesById(Seq.fill(101)(Random.nextInt))
           )
-        new GamesEndpoint().getGamesById(Seq(1, 2)).map(_.twitchData shouldEqual twitchData)
-      }
-
-      "fail when calling API without ids defined" in {
-        implicit val twitchClient: TwitchClient = mock[TwitchClient]
-        recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesById(Seq()))
-      }
-
-      "fail when calling API with more ids than the limit" in {
-        implicit val twitchClient: TwitchClient = mock[TwitchClient]
-        recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesById(Seq.fill(101)(Random.nextInt)))
+        }
       }
 
     }
 
     "performs a request to acquire games by name" should {
 
-      "return result" in {
-        val query      = Query("name=gameA&name=gameB")
-        val rateLimit  = RateLimit(1, 2, 2)
-        val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
-        val twitchData = TwitchData(Seq(game))
+      "succeed" when {
 
-        implicit val twitchClient: TwitchClient = mock[TwitchClient]
-        (twitchClient
-          .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games", query, *) returns Future
-          .successful(
-            new TwitchResponse[Game](
-              rateLimit,
-              twitchData
+        "using valid query" in {
+          val query      = Query("name=gameA&name=gameB")
+          val rateLimit  = RateLimit(1, 2, 2)
+          val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
+          val twitchData = TwitchData(Seq(game))
+
+          implicit val twitchClient: TwitchClient = mock[TwitchClient]
+          (twitchClient
+            .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games", query, *) returns Future
+            .successful(
+              new TwitchResponse[Game](
+                rateLimit,
+                twitchData
+              )
             )
+          new GamesEndpoint().getGamesByName(Seq("gameA", "gameB")).map(_.twitchData shouldEqual twitchData)
+        }
+      }
+
+      "fail" when {
+        "calling API without names defined" in {
+          implicit val twitchClient: TwitchClient = mock[TwitchClient]
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesByName(Seq()))
+        }
+
+        "calling API with more ids than the limit" in {
+          implicit val twitchClient: TwitchClient = mock[TwitchClient]
+          recoverToSucceededIf[IllegalArgumentException](
+            new GamesEndpoint().getGamesByName(Seq.fill(101)(Random.nextString(4)))
           )
-        new GamesEndpoint().getGamesByName(Seq("gameA", "gameB")).map(_.twitchData shouldEqual twitchData)
-      }
-
-      "fail when calling API without names defined" in {
-        implicit val twitchClient: TwitchClient = mock[TwitchClient]
-        recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesByName(Seq()))
-      }
-
-      "fail when calling API with more ids than the limit" in {
-        implicit val twitchClient: TwitchClient = mock[TwitchClient]
-        recoverToSucceededIf[IllegalArgumentException](
-          new GamesEndpoint().getGamesByName(Seq.fill(101)(Random.nextString(4)))
-        )
+        }
       }
 
     }
