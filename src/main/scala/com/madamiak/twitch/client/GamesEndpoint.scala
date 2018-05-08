@@ -1,18 +1,12 @@
 package com.madamiak.twitch.client
 
-import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
-import akka.stream.ActorMaterializer
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.Game
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class GamesEndpoint(
-    implicit val system: ActorSystem,
-    implicit val context: ExecutionContext,
-    implicit val materializer: ActorMaterializer
-) extends Endpoint{
+class GamesEndpoint(implicit val context: ExecutionContext, implicit val client: TwitchClient) extends Endpoint {
 
   private val gamesPath    = "/helix/games"
   private val topGamesPath = "/helix/games/top"
@@ -23,10 +17,11 @@ class GamesEndpoint(
     * @param names Game name
     * @return Twitch game data
     */
-  def getGamesByName(names: Seq[String]): Future[TwitchResponse[Game]] = {
-    require(names.length <= 100, "Cannot query using more than 100 names")
-    client.http(gamesPath)(names.toQuery("name"))
-  }
+  def getGamesByName(names: Seq[String]): Future[TwitchResponse[Game]] =
+    Future {
+      require(names.nonEmpty, "Cannot query using empty ids list")
+      require(names.length <= 100, "Cannot query using more than 100 names")
+    }.flatMap(_ => client.http(gamesPath)(names.toQuery("name")))
 
   /**
     * Gets game information by game id
@@ -34,10 +29,11 @@ class GamesEndpoint(
     * @param ids game ids
     * @return Twitch game data
     */
-  def getGamesById(ids: Seq[Long]): Future[TwitchResponse[Game]] = {
-    require(ids.length <= 100, "Cannot query using more than 100 ids")
-    client.http(gamesPath)(ids.toQuery("id"))
-  }
+  def getGamesById(ids: Seq[String]): Future[TwitchResponse[Game]] =
+    Future {
+      require(ids.nonEmpty, "Cannot query using empty ids list")
+      require(ids.length <= 100, "Cannot query using more than 100 ids")
+    }.flatMap(_ => client.http(gamesPath)(ids.toQuery("id")))
 
   /**
     * Gets games sorted by number of current viewers on Twitch, most popular first
@@ -50,18 +46,18 @@ class GamesEndpoint(
   def getTopGames(before: Option[String] = None,
                   after: Option[String] = None,
                   first: Option[Int] = None): Future[TwitchResponse[Game]] =
-    client.http(topGamesPath) {
-
+    Future {
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
-
-      Query {
-        Map(
-          "before" -> before,
-          "after"  -> after,
-          "first"  -> first
-        ).filter(_._2.isDefined).mapValues(_.get.toString)
+    }.flatMap { _ =>
+      client.http(topGamesPath) {
+        Query {
+          Map(
+            "before" -> before,
+            "after"  -> after,
+            "first"  -> first
+          ).filter(_._2.isDefined).mapValues(_.get.toString)
+        }
       }
     }
-
 }

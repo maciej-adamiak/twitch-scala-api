@@ -42,7 +42,7 @@ class TwitchClient(
       )
       .flatMap(extractData[T])
 
-  def extractData[T](
+  private def extractData[T](
       response: HttpResponse
   )(implicit m: Unmarshaller[ResponseEntity, TwitchData[T]]): Future[TwitchResponse[T]] = response.status match {
     case StatusCodes.OK =>
