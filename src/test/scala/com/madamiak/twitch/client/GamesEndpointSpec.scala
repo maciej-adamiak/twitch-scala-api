@@ -18,6 +18,7 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
   implicit val system: ActorSystem             = ActorSystem("test-actor-system")
   implicit val executor: ExecutionContext      = system.dispatcher
   implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val twitchClient: TwitchClient = mock[TwitchClient]
 
   "games endpoint" which {
 
@@ -49,12 +50,10 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
       "fail" when {
 
         "calling API without ids defined" in {
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
           recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesById(Seq()))
         }
 
         "calling API with more ids than the limit" in {
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
           recoverToSucceededIf[IllegalArgumentException](
             new GamesEndpoint().getGamesById(Seq.fill(101)(Random.nextInt))
           )
@@ -88,12 +87,10 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
       "fail" when {
         "calling API without names defined" in {
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
           recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesByName(Seq()))
         }
 
         "calling API with more ids than the limit" in {
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
           recoverToSucceededIf[IllegalArgumentException](
             new GamesEndpoint().getGamesByName(Seq.fill(101)(Random.nextString(4)))
           )
@@ -170,14 +167,12 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
       "fail" when {
 
         "fetching more than 100 records" in {
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
           recoverToSucceededIf[IllegalArgumentException](
             new GamesEndpoint().getTopGames(first = Some(101))
           )
         }
 
         "trying to fetch a negative number of records" in {
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
           recoverToSucceededIf[IllegalArgumentException](
             new GamesEndpoint().getTopGames(first = Some(-1))
           )
