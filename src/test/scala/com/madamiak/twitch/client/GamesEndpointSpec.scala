@@ -1,24 +1,19 @@
 package com.madamiak.twitch.client
 
-import akka.actor.ActorSystem
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import akka.stream.ActorMaterializer
-import com.madamiak.twitch.model.api.{Game, JsonSupport, Pagination, TwitchData}
+import com.madamiak.twitch.model.api.{Game, Pagination, TwitchData}
 import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
-import org.scalamock.scalatest.AsyncMockFactory
-import org.scalatest.{AsyncWordSpec, Matchers}
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.Future
 import scala.util.Random
 
-class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactory with JsonSupport {
+class GamesEndpointSpec extends EndpointWordSpec {
 
-  implicit val system: ActorSystem             = ActorSystem("test-actor-system")
-  implicit val executor: ExecutionContext      = system.dispatcher
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
-  implicit val twitchClient: TwitchClient = mock[TwitchClient]
+  val rateLimit  = RateLimit(1, 2, 2)
+  val pagination = Pagination("313")
+  val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
 
   "games endpoint" which {
 
@@ -28,9 +23,7 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
         "using valid query" in {
 
-          val query      = Query("id=1&id=2")
-          val rateLimit  = RateLimit(1, 2, 2)
-          val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
+          val query      = Query("id=123&id=312")
           val twitchData = TwitchData(Seq(game))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
@@ -42,7 +35,7 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
                 twitchData
               )
             )
-          new GamesEndpoint().getGamesById(Seq(1, 2)).map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().getGamesById(Seq("123", "312")).map(_.twitchData shouldEqual twitchData)
         }
 
       }
@@ -55,7 +48,7 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().getGamesById(Seq.fill(101)(Random.nextInt))
+            new GamesEndpoint().getGamesById(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -68,8 +61,6 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
         "using valid query" in {
           val query      = Query("name=gameA&name=gameB")
-          val rateLimit  = RateLimit(1, 2, 2)
-          val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
           val twitchData = TwitchData(Seq(game))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
@@ -105,9 +96,6 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
         "not using any parameters" in {
           val query      = Query()
-          val rateLimit  = RateLimit(1, 2, 2)
-          val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
-          val pagination = Pagination("313")
           val twitchData = TwitchData(Seq(game), Some(pagination))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
@@ -124,9 +112,6 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
         "using single parameter" in {
           val query      = Query("before=313")
-          val rateLimit  = RateLimit(1, 2, 2)
-          val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
-          val pagination = Pagination("313")
           val twitchData = TwitchData(Seq(game), Some(pagination))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
@@ -143,9 +128,6 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
         "using multiple parameters" in {
           val query      = Query("before=313&first=23")
-          val rateLimit  = RateLimit(1, 2, 2)
-          val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
-          val pagination = Pagination("313")
           val twitchData = TwitchData(Seq(game), Some(pagination))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
@@ -166,7 +148,7 @@ class GamesEndpointSpec extends AsyncWordSpec with Matchers with AsyncMockFactor
 
       "fail" when {
 
-        "fetching more than 100 records" in {
+        "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
             new GamesEndpoint().getTopGames(first = Some(101))
           )

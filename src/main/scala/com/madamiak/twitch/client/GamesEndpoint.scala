@@ -19,7 +19,7 @@ class GamesEndpoint(implicit val context: ExecutionContext, implicit val client:
     */
   def getGamesByName(names: Seq[String]): Future[TwitchResponse[Game]] =
     Future {
-      require(names.nonEmpty, "Cannot query using empty ids")
+      require(names.nonEmpty, "Cannot query using empty ids list")
       require(names.length <= 100, "Cannot query using more than 100 names")
     }.flatMap(_ => client.http(gamesPath)(names.toQuery("name")))
 
@@ -29,9 +29,9 @@ class GamesEndpoint(implicit val context: ExecutionContext, implicit val client:
     * @param ids game ids
     * @return Twitch game data
     */
-  def getGamesById(ids: Seq[Long]): Future[TwitchResponse[Game]] =
+  def getGamesById(ids: Seq[String]): Future[TwitchResponse[Game]] =
     Future {
-      require(ids.nonEmpty, "Cannot query using empty ids")
+      require(ids.nonEmpty, "Cannot query using empty ids list")
       require(ids.length <= 100, "Cannot query using more than 100 ids")
     }.flatMap(_ => client.http(gamesPath)(ids.toQuery("id")))
 
@@ -49,16 +49,15 @@ class GamesEndpoint(implicit val context: ExecutionContext, implicit val client:
     Future {
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
-    }.flatMap(
-      _ =>
-        client.http(topGamesPath) {
-          Query {
-            Map(
-              "before" -> before,
-              "after"  -> after,
-              "first"  -> first
-            ).filter(_._2.isDefined).mapValues(_.get.toString)
-          }
+    }.flatMap { _ =>
+      client.http(topGamesPath) {
+        Query {
+          Map(
+            "before" -> before,
+            "after"  -> after,
+            "first"  -> first
+          ).filter(_._2.isDefined).mapValues(_.get.toString)
+        }
       }
-    )
+    }
 }
