@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import com.madamiak.twitch.model.api.JsonSupport
 import org.scalamock.scalatest.AsyncMockFactory
-import org.scalatest.{AsyncWordSpec, Matchers}
+import org.scalatest.{ AsyncWordSpec, Matchers }
 
 import scala.concurrent.ExecutionContext
 

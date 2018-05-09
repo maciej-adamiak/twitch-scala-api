@@ -4,15 +4,27 @@ import akka.http.scaladsl.model.Uri.Query
 
 package object client {
 
-  implicit class RichSeq[T](val seq: Seq[T]) extends AnyVal {
+  implicit class RichOptionMap[V](val map: Map[String, Option[V]]) extends AnyVal {
 
-    /**
-      * Create a query string for a given sequence e.g. list of ids (1,2,3,4) to (id, 1), (id, 2) etc
-      *
-      * @param key common key used to form the query string
-      * @return akka http query
-      */
-    def toQuery(key: String): Query = Query(seq.map(x => (key, x.toString)): _*)
+    def queryParams: Seq[(String, String)] = map.filter(_._2.isDefined).mapValues(_.get.toString).toSeq
+
+    def query = Query(queryParams: _*)
+
+  }
+
+  implicit class RichSeqMap[V](val map: Map[String, Seq[V]]) extends AnyVal {
+
+    def queryParams: Seq[(String, String)] = map.mapValues(_.distinct).toSeq.flatMap {
+      case (k, v) => v.map(i => (k, i.toString))
+    }
+
+    def query = Query(queryParams: _*)
+
+  }
+
+  implicit class RichQuery(val q1: Query) extends AnyVal {
+
+    def +(q2: Query) = Query((q1.toList ++ q2.toList).distinct: _*)
 
   }
 

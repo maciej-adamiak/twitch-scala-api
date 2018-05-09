@@ -1,7 +1,7 @@
 package com.madamiak.twitch.model.api
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import spray.json.{DefaultJsonProtocol, JsonFormat, RootJsonFormat}
+import spray.json.{ DefaultJsonProtocol, JsonFormat, RootJsonFormat }
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
@@ -24,5 +24,17 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
                                                              "view_count")
 
   implicit val paginationFormat: RootJsonFormat[Pagination] = jsonFormat1(Pagination)
+
+  implicit val streamFormat: RootJsonFormat[Stream] = jsonFormat(Stream,
+                                                                 "community_ids",
+                                                                 "game_id",
+                                                                 "id",
+                                                                 "language",
+                                                                 "started_at",
+                                                                 "thumbnail_url",
+                                                                 "title",
+                                                                 "type",
+                                                                 "user_id",
+                                                                 "viewer_count")
 
 }

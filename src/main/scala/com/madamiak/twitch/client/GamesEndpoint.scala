@@ -1,10 +1,9 @@
 package com.madamiak.twitch.client
 
-import akka.http.scaladsl.model.Uri.Query
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.Game
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class GamesEndpoint(implicit val context: ExecutionContext, implicit val client: TwitchClient) extends Endpoint {
 
@@ -21,7 +20,12 @@ class GamesEndpoint(implicit val context: ExecutionContext, implicit val client:
     Future {
       require(names.nonEmpty, "Cannot query using empty ids list")
       require(names.length <= 100, "Cannot query using more than 100 names")
-    }.flatMap(_ => client.http(gamesPath)(names.toQuery("name")))
+    }.flatMap(
+      _ =>
+        client.http(gamesPath) {
+          Map("name" -> names).query
+      }
+    )
 
   /**
     * Gets game information by game id
@@ -33,7 +37,12 @@ class GamesEndpoint(implicit val context: ExecutionContext, implicit val client:
     Future {
       require(ids.nonEmpty, "Cannot query using empty ids list")
       require(ids.length <= 100, "Cannot query using more than 100 ids")
-    }.flatMap(_ => client.http(gamesPath)(ids.toQuery("id")))
+    }.flatMap(
+      _ =>
+        client.http(gamesPath) {
+          Map("id" -> ids).query
+      }
+    )
 
   /**
     * Gets games sorted by number of current viewers on Twitch, most popular first
@@ -41,7 +50,7 @@ class GamesEndpoint(implicit val context: ExecutionContext, implicit val client:
     * @param before Cursor for backward pagination
     * @param after Cursor for forward pagination
     * @param first Maximum number of objects to return
-    * @return
+    * @return Twitch game data
     */
   def getTopGames(before: Option[String] = None,
                   after: Option[String] = None,
@@ -51,13 +60,11 @@ class GamesEndpoint(implicit val context: ExecutionContext, implicit val client:
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
     }.flatMap { _ =>
       client.http(topGamesPath) {
-        Query {
-          Map(
-            "before" -> before,
-            "after"  -> after,
-            "first"  -> first
-          ).filter(_._2.isDefined).mapValues(_.get.toString)
-        }
+        Map(
+          "before" -> before,
+          "after"  -> after,
+          "first"  -> first
+        ).query
       }
     }
 }
