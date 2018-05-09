@@ -1,12 +1,12 @@
 package com.madamiak.twitch.client
 
-import akka.http.scaladsl.model.Uri.Query
 import com.madamiak.twitch.model.TwitchResponse
-import com.madamiak.twitch.model.api.Clip
+import com.madamiak.twitch.model.api.TwitchClip
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
-class ClipsEndpoint(implicit val context: ExecutionContext, implicit val client: TwitchClient) extends Endpoint {
+class ClipsEndpoint(implicit private val context: ExecutionContext, implicit private[client] val client: TwitchClient)
+    extends Endpoint {
 
   private val clipsPath = "/helix/clips"
 
@@ -24,21 +24,19 @@ class ClipsEndpoint(implicit val context: ExecutionContext, implicit val client:
   def getClipsByGameId(gameId: String,
                        before: Option[String] = None,
                        after: Option[String] = None,
-                       first: Option[Int] = None): Future[TwitchResponse[Clip]] =
+                       first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
     Future {
       require(gameId.nonEmpty, "Cannot query using empty game id")
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
     }.flatMap { _ =>
       client.http(clipsPath) {
-        Query {
-          Map(
-            "game_id" -> Some(gameId),
-            "before"  -> before,
-            "after"   -> after,
-            "first"   -> first
-          ).filter(_._2.isDefined).mapValues(_.get.toString)
-        }
+        Map(
+          "game_id" -> Some(gameId),
+          "before"  -> before,
+          "after"   -> after,
+          "first"   -> first
+        ).query
       }
     }
 
@@ -56,7 +54,7 @@ class ClipsEndpoint(implicit val context: ExecutionContext, implicit val client:
   def getClipsById(ids: Seq[String],
                    before: Option[String] = None,
                    after: Option[String] = None,
-                   first: Option[Int] = None): Future[TwitchResponse[Clip]] =
+                   first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
     Future {
       require(ids.nonEmpty, "Cannot query using empty ids list")
       require(ids.length <= 100, "Cannot query using more than 100 ids")
@@ -64,13 +62,13 @@ class ClipsEndpoint(implicit val context: ExecutionContext, implicit val client:
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
     }.flatMap { _ =>
       client.http(clipsPath) {
-        Query {
-          Map(
-            "before" -> before,
-            "after"  -> after,
-            "first"  -> first
-          ).filter(_._2.isDefined).mapValues(_.get.toString) ++ ids.map("id" -> _)
-        }
+        val queryParameters = Map("id" -> ids).query
+        val paginationParameters = Map(
+          "before" -> before,
+          "after"  -> after,
+          "first"  -> first
+        ).query
+        queryParameters + paginationParameters
       }
     }
 
@@ -88,21 +86,19 @@ class ClipsEndpoint(implicit val context: ExecutionContext, implicit val client:
   def getClipsByBroadcasterId(broadcasterId: String,
                               before: Option[String] = None,
                               after: Option[String] = None,
-                              first: Option[Int] = None): Future[TwitchResponse[Clip]] =
+                              first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
     Future {
       require(broadcasterId.nonEmpty, "Cannot query using empty broadcaster id")
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
     }.flatMap { _ =>
       client.http(clipsPath) {
-        Query {
-          Map(
-            "broadcaster_id" -> Some(broadcasterId),
-            "before"         -> before,
-            "after"          -> after,
-            "first"          -> first
-          ).filter(_._2.isDefined).mapValues(_.get.toString)
-        }
+        Map(
+          "broadcaster_id" -> Some(broadcasterId),
+          "before"         -> before,
+          "after"          -> after,
+          "first"          -> first
+        ).query
       }
     }
 
