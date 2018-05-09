@@ -3,8 +3,8 @@ package com.madamiak.twitch.client
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import com.madamiak.twitch.model.api.{Clip, Pagination, TwitchData}
-import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
+import com.madamiak.twitch.model.api.{ Pagination, TwitchClip, TwitchData }
+import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -13,7 +13,7 @@ class ClipsEndpointTest extends EndpointWordSpec {
 
   val rateLimit  = RateLimit(1, 2, 2)
   val pagination = Pagination("313")
-  val clip = Clip(
+  val clip = TwitchClip(
     "67955580",
     "2017-11-30T22:34:18Z",
     "53834192",
@@ -40,9 +40,9 @@ class ClipsEndpointTest extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Clip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Clip]])) expects ("/helix/clips", query, *) returns Future
+            .http[TwitchClip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchClip]])) expects ("/helix/clips", query, *) returns Future
             .successful(
-              new TwitchResponse[Clip](
+              new TwitchResponse[TwitchClip](
                 rateLimit,
                 twitchData
               )
@@ -94,9 +94,9 @@ class ClipsEndpointTest extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Clip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Clip]])) expects ("/helix/clips", query, *) returns Future
+            .http[TwitchClip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchClip]])) expects ("/helix/clips", query, *) returns Future
             .successful(
-              new TwitchResponse[Clip](
+              new TwitchResponse[TwitchClip](
                 rateLimit,
                 twitchData
               )
@@ -142,9 +142,9 @@ class ClipsEndpointTest extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Clip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Clip]])) expects ("/helix/clips", query, *) returns Future
+            .http[TwitchClip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchClip]])) expects ("/helix/clips", query, *) returns Future
             .successful(
-              new TwitchResponse[Clip](
+              new TwitchResponse[TwitchClip](
                 rateLimit,
                 twitchData
               )

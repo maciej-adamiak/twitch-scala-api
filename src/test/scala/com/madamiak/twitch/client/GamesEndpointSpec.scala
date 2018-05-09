@@ -3,8 +3,8 @@ package com.madamiak.twitch.client
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import com.madamiak.twitch.model.api.{Game, Pagination, TwitchData}
-import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
+import com.madamiak.twitch.model.api.{ Pagination, TwitchData, TwitchGame }
+import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -13,7 +13,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
   val rateLimit  = RateLimit(1, 2, 2)
   val pagination = Pagination("313")
-  val game       = Game("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
+  val game       = TwitchGame("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
 
   "games endpoint" which {
 
@@ -28,9 +28,9 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games", query, *) returns Future
             .successful(
-              new TwitchResponse[Game](
+              new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
@@ -65,9 +65,9 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games", query, *) returns Future
             .successful(
-              new TwitchResponse[Game](
+              new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
@@ -100,9 +100,9 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games/top", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
             .successful(
-              new TwitchResponse[Game](
+              new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
@@ -116,9 +116,9 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games/top", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
             .successful(
-              new TwitchResponse[Game](
+              new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
@@ -132,9 +132,9 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[Game](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[Game]])) expects ("/helix/games/top", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
             .successful(
-              new TwitchResponse[Game](
+              new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )

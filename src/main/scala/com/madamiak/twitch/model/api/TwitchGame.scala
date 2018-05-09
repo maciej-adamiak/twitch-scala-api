@@ -7,4 +7,4 @@ package com.madamiak.twitch.model.api
   * @param name game name
   * @param boxArtUrl template URL for the game’s box art.
   */
-case class Game(id: String, name: String, boxArtUrl: String)
+case class TwitchGame(id: String, name: String, boxArtUrl: String)

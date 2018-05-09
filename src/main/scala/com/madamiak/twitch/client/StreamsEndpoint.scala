@@ -1,36 +1,37 @@
 package com.madamiak.twitch.client
 
 import com.madamiak.twitch.model.TwitchResponse
-import com.madamiak.twitch.model.api.Stream
+import com.madamiak.twitch.model.api.TwitchStream
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-class StreamsEndpoint(implicit val context: ExecutionContext, implicit val client: TwitchClient) extends Endpoint {
+class StreamsEndpoint(implicit private val context: ExecutionContext, implicit private[client] val client: TwitchClient)
+    extends Endpoint {
 
-  val streamsPath = "/streams"
+  val streamsPath = "/helix/streams"
 
   /**
     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order.
     * Across multiple pages of results, there may be duplicate or missing streams, as viewers join and leave streams
     *
-    * @param communityId streams in a specified community ID
+    * @param communityIds streams in a specified community ID
     * @param gameId streams broadcasting a specified game ID
     * @param languages stream language
-    * @param userId streams broadcast by one or more specified user ID
-    * @param userLogin streams broadcast by one or more specified user login names
+    * @param userIds streams broadcast by one or more specified user ID
+    * @param userLogins streams broadcast by one or more specified user login names
     * @param before cursor for backward pagination
     * @param after cursor for forward pagination
     * @param first maximum number of objects to return
     * @return Twitch stream data
     */
-  def get(communityIds: Seq[String] = Seq(),
-          gameId: Seq[String] = Seq(),
-          languages: Seq[String] = Seq(),
-          userIds: Seq[String] = Seq(),
-          userLogins: Seq[String] = Seq(),
-          before: Option[String] = None,
-          after: Option[String] = None,
-          first: Option[Int] = None): Future[TwitchResponse[Stream]] =
+  def getStreams(communityIds: Seq[String] = Seq(),
+                 gameId: Seq[String] = Seq(),
+                 languages: Seq[String] = Seq(),
+                 userIds: Seq[String] = Seq(),
+                 userLogins: Seq[String] = Seq(),
+                 before: Option[String] = None,
+                 after: Option[String] = None,
+                 first: Option[Int] = None): Future[TwitchResponse[TwitchStream]] =
     Future {
       require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
       require(languages.length <= 100, "Cannot query using more than 100 languages")

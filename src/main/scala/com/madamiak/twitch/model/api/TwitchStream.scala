@@ -14,13 +14,13 @@ package com.madamiak.twitch.model.api
   * @param userId ID of the user who is streaming
   * @param viewerCount number of viewers watching the stream at the time of the quer
   */
-case class Stream(communityIds: Seq[String],
-                  gameId: String,
-                  id: String,
-                  language: String,
-                  startedAt: String,
-                  thumbnailUrl: String,
-                  title: String,
-                  streamType: String,
-                  userId: String,
-                  viewerCount: Long)
+case class TwitchStream(communityIds: Seq[String],
+                        gameId: String,
+                        id: String,
+                        language: String,
+                        startedAt: String,
+                        thumbnailUrl: String,
+                        title: String,
+                        streamType: String,
+                        userId: String,
+                        viewerCount: Long)
