@@ -62,11 +62,13 @@ class ClipsEndpoint(implicit private val context: ExecutionContext, implicit pri
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
     }.flatMap { _ =>
       client.http(clipsPath) {
-        Map(
+        val queryParameters = Map("id" -> ids).query
+        val paginationParameters = Map(
           "before" -> before,
           "after"  -> after,
           "first"  -> first
         ).query
+        queryParameters + paginationParameters
       }
     }
 
