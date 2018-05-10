@@ -14,7 +14,7 @@ class GamesEndpoint(implicit private val context: ExecutionContext, implicit pri
   /**
     * Gets game information by game name
     *
-    * @param names Game name
+    * @param names game name
     * @return Twitch game data
     */
   def getByName(names: Seq[String]): Future[TwitchResponse[TwitchGame]] =
@@ -29,7 +29,7 @@ class GamesEndpoint(implicit private val context: ExecutionContext, implicit pri
     )
 
   /**
-    * Gets game information by game id
+    * Gets game information by game ids
     *
     * @param ids game ids
     * @return Twitch game data
