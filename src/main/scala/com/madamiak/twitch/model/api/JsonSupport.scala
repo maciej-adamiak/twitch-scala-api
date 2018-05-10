@@ -1,6 +1,9 @@
 package com.madamiak.twitch.model.api
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import com.madamiak.twitch.model.api.clip.TwitchClip
+import com.madamiak.twitch.model.api.game.TwitchGame
+import com.madamiak.twitch.model.api.stream._
 import spray.json.{ DefaultJsonProtocol, JsonFormat, RootJsonFormat }
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
@@ -36,5 +39,17 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
                                                                        "type",
                                                                        "user_id",
                                                                        "viewer_count")
+
+  implicit val overwatchHeroFormat: RootJsonFormat[OverwatchHero]         = jsonFormat3(OverwatchHero)
+  implicit val overwatchPlayerFormat: RootJsonFormat[OverwatchPlayer]     = jsonFormat1(OverwatchPlayer)
+  implicit val overwatchMetadataFormat: RootJsonFormat[OverwatchMetadata] = jsonFormat1(OverwatchMetadata)
+
+  implicit val hearthstoneHeroFormat: RootJsonFormat[HearthstoneHero] =
+    jsonFormat(HearthstoneHero, "type", "class", "type")
+  implicit val hearthstonePlayerFormat: RootJsonFormat[HearthstonePlayer]     = jsonFormat1(HearthstonePlayer)
+  implicit val hearthstoneMetadataFormat: RootJsonFormat[HearthstoneMetadata] = jsonFormat2(HearthstoneMetadata)
+
+  implicit val twitchStreamMetadataFormat: RootJsonFormat[TwitchStreamMetadata] =
+    jsonFormat(TwitchStreamMetadata, "game_id", "user_id", "hearthstone", "overwatch")
 
 }

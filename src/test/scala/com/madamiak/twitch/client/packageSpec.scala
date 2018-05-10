@@ -3,7 +3,7 @@ package com.madamiak.twitch.client
 import akka.http.scaladsl.model.Uri.Query
 import org.scalatest.{ Matchers, WordSpec }
 
-class packageTest extends WordSpec with Matchers {
+class packageSpec extends WordSpec with Matchers {
 
   "converters" which {
 

@@ -11,12 +11,13 @@ val games: Future[TwitchResponse[TwitchGame]] = twitch.games.getGamesByName(Seq(
 
 ## Supported API endoints 
 
-| Resource | Endpoint         | Method |
-| ---      | ---              | ---    |
-| clips    | /helix/clips     | GET    |
-| games    | /helix/games     | GET    |
-| games    | /helix/games/top | GET    |
-| streams  | /helix/streams   | GET    |
+| Resource | Endpoint                | Method |
+| ---      | ---                     | ---    |
+| clips    | /helix/clips            | GET    |
+| games    | /helix/games            | GET    |
+| games    | /helix/games/top        | GET    |
+| streams  | /helix/streams          | GET    |
+| streams  | /helix/streams/metadata | GET    |
 
 ## Plans
 - Integrate with all available enpoints

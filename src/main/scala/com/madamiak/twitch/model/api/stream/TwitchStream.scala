@@ -1,4 +1,4 @@
-package com.madamiak.twitch.model.api
+package com.madamiak.twitch.model.api.stream
 
 /**
   * Represents an active Twitch stream

@@ -3,13 +3,14 @@ package com.madamiak.twitch.client
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import com.madamiak.twitch.model.api.{ Pagination, TwitchData, TwitchStream }
+import com.madamiak.twitch.model.api.stream.TwitchStream
+import com.madamiak.twitch.model.api.{ Pagination, TwitchData }
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future
 import scala.util.Random
 
-class StreamsEndpointTest extends EndpointWordSpec {
+class StreamsEndpointSpec extends EndpointWordSpec {
 
   val rateLimit  = RateLimit(1, 2, 2)
   val pagination = Pagination("313")
@@ -49,7 +50,7 @@ class StreamsEndpointTest extends EndpointWordSpec {
           new StreamsEndpoint()
             .getStreams(
               communityIds = Seq("848d95be-90b3-44a5-b143-6e373754c382", "fd0eab99-832a-4d7e-8cc0-04d73deb2e54"),
-              gameId = Seq("29307"),
+              gameIds = Seq("29307"),
               languages = Seq("en", "pl"),
               first = Some(98)
             )

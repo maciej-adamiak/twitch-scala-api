@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.HttpResponse
 import akka.http.scaladsl.model.headers.RawHeader
 import org.scalatest.{ Matchers, WordSpec }
 
-class RateLimitTest extends WordSpec with Matchers {
+class RateLimitSpec extends WordSpec with Matchers {
 
   "rate limit" when {
 
