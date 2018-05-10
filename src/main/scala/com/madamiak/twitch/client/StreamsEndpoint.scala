@@ -1,21 +1,22 @@
 package com.madamiak.twitch.client
 
 import com.madamiak.twitch.model.TwitchResponse
-import com.madamiak.twitch.model.api.TwitchStream
+import com.madamiak.twitch.model.api.stream.{ TwitchStream, TwitchStreamMetadata }
 
 import scala.concurrent.{ ExecutionContext, Future }
 
 class StreamsEndpoint(implicit private val context: ExecutionContext, implicit private[client] val client: TwitchClient)
     extends Endpoint {
 
-  val streamsPath = "/helix/streams"
+  val streamsPath         = "/helix/streams"
+  val streamsMetadataPath = "/helix/streams/metadata"
 
   /**
     * Gets information about active streams. Streams are returned sorted by number of current viewers, in descending order.
     * Across multiple pages of results, there may be duplicate or missing streams, as viewers join and leave streams
     *
     * @param communityIds streams in a specified community ID
-    * @param gameId streams broadcasting a specified game ID
+    * @param gameIds streams broadcasting a specified game ID
     * @param languages stream language
     * @param userIds streams broadcast by one or more specified user ID
     * @param userLogins streams broadcast by one or more specified user login names
@@ -25,7 +26,7 @@ class StreamsEndpoint(implicit private val context: ExecutionContext, implicit p
     * @return Twitch stream data
     */
   def getStreams(communityIds: Seq[String] = Seq(),
-                 gameId: Seq[String] = Seq(),
+                 gameIds: Seq[String] = Seq(),
                  languages: Seq[String] = Seq(),
                  userIds: Seq[String] = Seq(),
                  userLogins: Seq[String] = Seq(),
@@ -37,6 +38,7 @@ class StreamsEndpoint(implicit private val context: ExecutionContext, implicit p
       require(languages.length <= 100, "Cannot query using more than 100 languages")
       require(userIds.length <= 100, "Cannot query using more than 100 user ids")
       require(userLogins.length <= 100, "Cannot query using more than 100 user logins")
+      require(gameIds.length <= 100, "Cannot query using more than 100 game ids")
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
       require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
     }.flatMap(
@@ -44,7 +46,7 @@ class StreamsEndpoint(implicit private val context: ExecutionContext, implicit p
         client.http(streamsPath) {
           val queryParameters = Map(
             "community_id" -> communityIds,
-            "game_id"      -> gameId,
+            "game_id"      -> gameIds,
             "language"     -> languages,
             "user_id"      -> userIds,
             "user_login"   -> userLogins
@@ -57,6 +59,45 @@ class StreamsEndpoint(implicit private val context: ExecutionContext, implicit p
           ).query
 
           queryParameters + paginationParameters
+      }
+    )
+
+  def metadata(communityIds: Seq[String] = Seq(),
+               gameIds: Seq[String] = Seq(),
+               languages: Seq[String] = Seq(),
+               userIds: Seq[String] = Seq(),
+               userLogins: Seq[String] = Seq(),
+               streamType: Option[String] = None,
+               before: Option[String] = None,
+               after: Option[String] = None,
+               first: Option[Int] = None): Future[TwitchResponse[TwitchStreamMetadata]] =
+    Future {
+      require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
+      require(languages.length <= 100, "Cannot query using more than 100 languages")
+      require(userIds.length <= 100, "Cannot query using more than 100 user ids")
+      require(userLogins.length <= 100, "Cannot query using more than 100 user logins")
+      require(gameIds.length <= 100, "Cannot query using more than 100 game ids")
+      require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
+      require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
+    }.flatMap(
+      _ =>
+        client.http(streamsMetadataPath) {
+          val sequentialParameters = Map(
+            "community_id" -> communityIds,
+            "game_id"      -> gameIds,
+            "language"     -> languages,
+            "user_id"      -> userIds,
+            "user_login"   -> userLogins
+          ).query
+
+          val optionalParameters = Map(
+            "type"   -> streamType,
+            "before" -> before,
+            "after"  -> after,
+            "first"  -> first
+          ).query
+
+          sequentialParameters + optionalParameters
       }
     )
 

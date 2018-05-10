@@ -3,7 +3,8 @@ package com.madamiak.twitch.client
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import com.madamiak.twitch.model.api.{ Pagination, TwitchData, TwitchGame }
+import com.madamiak.twitch.model.api.game.TwitchGame
+import com.madamiak.twitch.model.api.{ Pagination, TwitchData }
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future

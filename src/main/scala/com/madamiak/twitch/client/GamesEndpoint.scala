@@ -1,7 +1,7 @@
 package com.madamiak.twitch.client
 
 import com.madamiak.twitch.model.TwitchResponse
-import com.madamiak.twitch.model.api.TwitchGame
+import com.madamiak.twitch.model.api.game.TwitchGame
 
 import scala.concurrent.{ ExecutionContext, Future }
 
