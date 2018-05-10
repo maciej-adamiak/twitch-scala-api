@@ -22,3 +22,9 @@ class Twitch(implicit val system: ActorSystem = ActorSystem("twitch-scala-client
   }
 
 }
+
+object Twitch {
+
+  def apply() = new Twitch()
+
+}

@@ -3,7 +3,7 @@ package com.madamiak.twitch.client
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import com.madamiak.twitch.model.api.stream.TwitchStream
+import com.madamiak.twitch.model.api.stream.{ TwitchStream, TwitchStreamMetadata }
 import com.madamiak.twitch.model.api.{ Pagination, TwitchData }
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
@@ -26,6 +26,7 @@ class StreamsEndpointSpec extends EndpointWordSpec {
     "7236692",
     5723
   )
+  val streamMetadata = TwitchStreamMetadata("488552", "23161357")
 
   "games endpoint" which {
 
@@ -64,6 +65,47 @@ class StreamsEndpointSpec extends EndpointWordSpec {
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
             new StreamsEndpoint().getStreams(Seq.fill(101)(Random.nextString(4)))
+          )
+        }
+      }
+    }
+
+    "performs a request to acquire streams metadata" should {
+
+      "succeed" when {
+
+        "using a valid query" in {
+          val query = Query(
+            "game_id=488552&user_id=23161357&first=98"
+          )
+          val twitchData                          = TwitchData(Seq(streamMetadata))
+          implicit val twitchClient: TwitchClient = mock[TwitchClient]
+          (twitchClient
+            .http[TwitchStreamMetadata](_: String)(_: Query)(
+              _: Unmarshaller[ResponseEntity, TwitchData[TwitchStreamMetadata]]
+            )) expects ("/helix/streams/metadata", query, *) returns Future
+            .successful(
+              new TwitchResponse[TwitchStreamMetadata](
+                rateLimit,
+                twitchData
+              )
+            )
+          new StreamsEndpoint()
+            .metadata(
+              gameIds = Seq("488552"),
+              userIds = Seq("23161357"),
+              first = Some(98)
+            )
+            .map(_.twitchData shouldEqual twitchData)
+        }
+
+      }
+
+      "fail" when {
+
+        "calling API with more ids than the limit" in {
+          recoverToSucceededIf[IllegalArgumentException](
+            new StreamsEndpoint().metadata(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
