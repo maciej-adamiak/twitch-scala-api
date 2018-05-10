@@ -36,7 +36,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
                 twitchData
               )
             )
-          new GamesEndpoint().getGamesById(Seq("123", "312")).map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().getById(Seq("123", "312")).map(_.twitchData shouldEqual twitchData)
         }
 
       }
@@ -44,12 +44,12 @@ class GamesEndpointSpec extends EndpointWordSpec {
       "fail" when {
 
         "calling API without ids defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesById(Seq()))
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getById(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().getGamesById(Seq.fill(101)(Random.nextString(4)))
+            new GamesEndpoint().getById(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -73,18 +73,18 @@ class GamesEndpointSpec extends EndpointWordSpec {
                 twitchData
               )
             )
-          new GamesEndpoint().getGamesByName(Seq("gameA", "gameB")).map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().getByName(Seq("gameA", "gameB")).map(_.twitchData shouldEqual twitchData)
         }
       }
 
       "fail" when {
         "calling API without names defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getGamesByName(Seq()))
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getByName(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().getGamesByName(Seq.fill(101)(Random.nextString(4)))
+            new GamesEndpoint().getByName(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -108,7 +108,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
                 twitchData
               )
             )
-          new GamesEndpoint().getTopGames().map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().popular().map(_.twitchData shouldEqual twitchData)
         }
 
         "using single parameter" in {
@@ -124,7 +124,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
                 twitchData
               )
             )
-          new GamesEndpoint().getTopGames(before = Some("313")).map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().popular(before = Some("313")).map(_.twitchData shouldEqual twitchData)
         }
 
         "using multiple parameters" in {
@@ -141,7 +141,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
               )
             )
           new GamesEndpoint()
-            .getTopGames(before = Some("313"), first = Some(23))
+            .popular(before = Some("313"), first = Some(23))
             .map(_.twitchData shouldEqual twitchData)
         }
 
@@ -151,13 +151,13 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().getTopGames(first = Some(101))
+            new GamesEndpoint().popular(first = Some(101))
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().getTopGames(first = Some(-1))
+            new GamesEndpoint().popular(first = Some(-1))
           )
         }
 
