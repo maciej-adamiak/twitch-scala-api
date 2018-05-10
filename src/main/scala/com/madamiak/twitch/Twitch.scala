@@ -23,8 +23,7 @@ class Twitch(implicit val system: ActorSystem = ActorSystem("twitch-scala-client
 
   object implicits {
 
-    implicit def toSeq[T](value: T): Seq[T]         = Seq(value)
-    implicit def stoSeq(value: String): Seq[String] = Seq(value)
+    implicit def toSeq[T](value: T): Seq[T] = Seq(value)
 
   }
 
