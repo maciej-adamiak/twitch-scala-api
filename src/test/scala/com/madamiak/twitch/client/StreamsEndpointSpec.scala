@@ -49,7 +49,7 @@ class StreamsEndpointSpec extends EndpointWordSpec {
               )
             )
           new StreamsEndpoint()
-            .getStreams(
+            .get(
               communityIds = Seq("848d95be-90b3-44a5-b143-6e373754c382", "fd0eab99-832a-4d7e-8cc0-04d73deb2e54"),
               gameIds = Seq("29307"),
               languages = Seq("en", "pl"),
@@ -64,7 +64,7 @@ class StreamsEndpointSpec extends EndpointWordSpec {
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new StreamsEndpoint().getStreams(Seq.fill(101)(Random.nextString(4)))
+            new StreamsEndpoint().get(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }

@@ -49,7 +49,7 @@ class ClipsEndpointSpec extends EndpointWordSpec {
               )
             )
           new ClipsEndpoint()
-            .getClipsById(Seq("AwkwardHelplessSalamanderSwiftRage"))
+            .getById(Seq("AwkwardHelplessSalamanderSwiftRage"))
             .map(_.twitchData shouldEqual twitchData)
         }
 
@@ -59,25 +59,25 @@ class ClipsEndpointSpec extends EndpointWordSpec {
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsById(Seq.fill(101)(Random.nextString(4)))
+            new ClipsEndpoint().getById(Seq.fill(101)(Random.nextString(4)))
           )
         }
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsById(Seq("AwkwardHelplessSalamanderSwiftRage"), first = Some(101))
+            new ClipsEndpoint().getById(Seq("AwkwardHelplessSalamanderSwiftRage"), first = Some(101))
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsById(Seq("AwkwardHelplessSalamanderSwiftRage"), first = Some(-1))
+            new ClipsEndpoint().getById(Seq("AwkwardHelplessSalamanderSwiftRage"), first = Some(-1))
           )
         }
 
         "calling API without ids defined" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsById(Seq())
+            new ClipsEndpoint().getById(Seq())
           )
         }
 
@@ -103,7 +103,7 @@ class ClipsEndpointSpec extends EndpointWordSpec {
               )
             )
           new ClipsEndpoint()
-            .getClipsByGameId("123421")
+            .getByGameId("123421")
             .map(_.twitchData shouldEqual twitchData)
         }
 
@@ -113,19 +113,19 @@ class ClipsEndpointSpec extends EndpointWordSpec {
 
         "calling API using empty game id" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsByGameId("")
+            new ClipsEndpoint().getByGameId("")
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsByGameId("1234", first = Some(-1))
+            new ClipsEndpoint().getByGameId("1234", first = Some(-1))
           )
         }
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsByGameId("1234", first = Some(101))
+            new ClipsEndpoint().getByGameId("1234", first = Some(101))
           )
         }
 
@@ -151,7 +151,7 @@ class ClipsEndpointSpec extends EndpointWordSpec {
               )
             )
           new ClipsEndpoint()
-            .getClipsByBroadcasterId("123421")
+            .getByBroadcasterId("123421")
             .map(_.twitchData shouldEqual twitchData)
         }
 
@@ -161,19 +161,19 @@ class ClipsEndpointSpec extends EndpointWordSpec {
 
         "calling API using empty broadcaster id" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsByBroadcasterId("")
+            new ClipsEndpoint().getByBroadcasterId("")
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsByBroadcasterId("1234", first = Some(-1))
+            new ClipsEndpoint().getByBroadcasterId("1234", first = Some(-1))
           )
         }
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getClipsByBroadcasterId("1234", first = Some(101))
+            new ClipsEndpoint().getByBroadcasterId("1234", first = Some(101))
           )
         }
 

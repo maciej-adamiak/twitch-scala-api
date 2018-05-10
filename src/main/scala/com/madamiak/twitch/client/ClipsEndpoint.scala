@@ -21,10 +21,10 @@ class ClipsEndpoint(implicit private val context: ExecutionContext, implicit pri
     * @param first Maximum number of objects to return
     * @return Twitch clip data
     */
-  def getClipsByGameId(gameId: String,
-                       before: Option[String] = None,
-                       after: Option[String] = None,
-                       first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
+  def getByGameId(gameId: String,
+                  before: Option[String] = None,
+                  after: Option[String] = None,
+                  first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
     Future {
       require(gameId.nonEmpty, "Cannot query using empty game id")
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
@@ -51,10 +51,10 @@ class ClipsEndpoint(implicit private val context: ExecutionContext, implicit pri
     * @param first Maximum number of objects to return
     * @return Twitch clip data
     */
-  def getClipsById(ids: Seq[String],
-                   before: Option[String] = None,
-                   after: Option[String] = None,
-                   first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
+  def getById(ids: Seq[String],
+              before: Option[String] = None,
+              after: Option[String] = None,
+              first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
     Future {
       require(ids.nonEmpty, "Cannot query using empty ids list")
       require(ids.length <= 100, "Cannot query using more than 100 ids")
@@ -83,10 +83,10 @@ class ClipsEndpoint(implicit private val context: ExecutionContext, implicit pri
     * @param first Maximum number of objects to return
     * @return Twitch clip data
     */
-  def getClipsByBroadcasterId(broadcasterId: String,
-                              before: Option[String] = None,
-                              after: Option[String] = None,
-                              first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
+  def getByBroadcasterId(broadcasterId: String,
+                         before: Option[String] = None,
+                         after: Option[String] = None,
+                         first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
     Future {
       require(broadcasterId.nonEmpty, "Cannot query using empty broadcaster id")
       require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
