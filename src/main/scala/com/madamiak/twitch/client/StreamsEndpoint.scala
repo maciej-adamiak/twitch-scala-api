@@ -5,7 +5,8 @@ import com.madamiak.twitch.model.api.stream.{ TwitchStream, TwitchStreamMetadata
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-class StreamsEndpoint(implicit private val context: ExecutionContext, implicit private[client] val client: TwitchClient)
+class StreamsEndpoint(implicit private[client] val context: ExecutionContext,
+                      implicit private[client] val client: TwitchClient)
     extends Endpoint {
 
   val streamsPath         = "/helix/streams"
@@ -32,35 +33,34 @@ class StreamsEndpoint(implicit private val context: ExecutionContext, implicit p
           userLogins: Seq[String] = Seq(),
           before: Option[String] = None,
           after: Option[String] = None,
-          first: Option[Int] = None): Future[TwitchResponse[TwitchStream]] =
-    Future {
-      require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
-      require(languages.length <= 100, "Cannot query using more than 100 languages")
-      require(userIds.length <= 100, "Cannot query using more than 100 user ids")
-      require(userLogins.length <= 100, "Cannot query using more than 100 user logins")
-      require(gameIds.length <= 100, "Cannot query using more than 100 game ids")
-      require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
-      require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
-    }.flatMap(
-      _ =>
-        client.http(streamsPath) {
-          val queryParameters = Map(
-            "community_id" -> communityIds,
-            "game_id"      -> gameIds,
-            "language"     -> languages,
-            "user_id"      -> userIds,
-            "user_login"   -> userLogins
-          ).query
+          first: Option[Int] = None): Future[TwitchResponse[TwitchStream]] = ~> {
+    
+    require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
+    require(languages.length <= 100, "Cannot query using more than 100 languages")
+    require(userIds.length <= 100, "Cannot query using more than 100 user ids")
+    require(userLogins.length <= 100, "Cannot query using more than 100 user logins")
+    require(gameIds.length <= 100, "Cannot query using more than 100 game ids")
+    require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
+    require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
-          val paginationParameters = Map(
-            "before" -> before,
-            "after"  -> after,
-            "first"  -> first
-          ).query
+    client.http(streamsPath) {
+      val queryParameters = Map(
+        "community_id" -> communityIds,
+        "game_id"      -> gameIds,
+        "language"     -> languages,
+        "user_id"      -> userIds,
+        "user_login"   -> userLogins
+      ).query
 
-          queryParameters + paginationParameters
-      }
-    )
+      val paginationParameters = Map(
+        "before" -> before,
+        "after"  -> after,
+        "first"  -> first
+      ).query
+
+      queryParameters + paginationParameters
+    }
+  }
 
   def metadata(communityIds: Seq[String] = Seq(),
                gameIds: Seq[String] = Seq(),
@@ -70,35 +70,34 @@ class StreamsEndpoint(implicit private val context: ExecutionContext, implicit p
                streamType: Option[String] = None,
                before: Option[String] = None,
                after: Option[String] = None,
-               first: Option[Int] = None): Future[TwitchResponse[TwitchStreamMetadata]] =
-    Future {
-      require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
-      require(languages.length <= 100, "Cannot query using more than 100 languages")
-      require(userIds.length <= 100, "Cannot query using more than 100 user ids")
-      require(userLogins.length <= 100, "Cannot query using more than 100 user logins")
-      require(gameIds.length <= 100, "Cannot query using more than 100 game ids")
-      require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
-      require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
-    }.flatMap(
-      _ =>
-        client.http(streamsMetadataPath) {
-          val sequentialParameters = Map(
-            "community_id" -> communityIds,
-            "game_id"      -> gameIds,
-            "language"     -> languages,
-            "user_id"      -> userIds,
-            "user_login"   -> userLogins
-          ).query
+               first: Option[Int] = None): Future[TwitchResponse[TwitchStreamMetadata]] = ~> {
+    
+    require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
+    require(languages.length <= 100, "Cannot query using more than 100 languages")
+    require(userIds.length <= 100, "Cannot query using more than 100 user ids")
+    require(userLogins.length <= 100, "Cannot query using more than 100 user logins")
+    require(gameIds.length <= 100, "Cannot query using more than 100 game ids")
+    require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
+    require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
-          val optionalParameters = Map(
-            "type"   -> streamType,
-            "before" -> before,
-            "after"  -> after,
-            "first"  -> first
-          ).query
+    client.http(streamsMetadataPath) {
+      val sequentialParameters = Map(
+        "community_id" -> communityIds,
+        "game_id"      -> gameIds,
+        "language"     -> languages,
+        "user_id"      -> userIds,
+        "user_login"   -> userLogins
+      ).query
 
-          sequentialParameters + optionalParameters
-      }
-    )
+      val optionalParameters = Map(
+        "type"   -> streamType,
+        "before" -> before,
+        "after"  -> after,
+        "first"  -> first
+      ).query
+
+      sequentialParameters + optionalParameters
+    }
+  }
 
 }

@@ -5,7 +5,8 @@ import com.madamiak.twitch.model.api.clip.TwitchClip
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ClipsEndpoint(implicit private val context: ExecutionContext, implicit private[client] val client: TwitchClient)
+class ClipsEndpoint(implicit private[client] val context: ExecutionContext,
+                    implicit private[client] val client: TwitchClient)
     extends Endpoint {
 
   private val clipsPath = "/helix/clips"
@@ -24,21 +25,21 @@ class ClipsEndpoint(implicit private val context: ExecutionContext, implicit pri
   def getByGameId(gameId: String,
                   before: Option[String] = None,
                   after: Option[String] = None,
-                  first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
-    Future {
-      require(gameId.nonEmpty, "Cannot query using empty game id")
-      require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
-      require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
-    }.flatMap { _ =>
-      client.http(clipsPath) {
-        Map(
-          "game_id" -> Some(gameId),
-          "before"  -> before,
-          "after"   -> after,
-          "first"   -> first
-        ).query
-      }
+                  first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] = ~> {
+
+    require(gameId.nonEmpty, "Cannot query using empty game id")
+    require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
+    require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
+
+    client.http(clipsPath) {
+      Map(
+        "game_id" -> Some(gameId),
+        "before"  -> before,
+        "after"   -> after,
+        "first"   -> first
+      ).query
     }
+  }
 
   /**
     * Gets information about specified clips
@@ -54,23 +55,23 @@ class ClipsEndpoint(implicit private val context: ExecutionContext, implicit pri
   def getById(ids: Seq[String],
               before: Option[String] = None,
               after: Option[String] = None,
-              first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
-    Future {
-      require(ids.nonEmpty, "Cannot query using empty ids list")
-      require(ids.length <= 100, "Cannot query using more than 100 ids")
-      require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
-      require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
-    }.flatMap { _ =>
-      client.http(clipsPath) {
-        val queryParameters = Map("id" -> ids).query
-        val paginationParameters = Map(
-          "before" -> before,
-          "after"  -> after,
-          "first"  -> first
-        ).query
-        queryParameters + paginationParameters
-      }
+              first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] = ~> {
+
+    require(ids.nonEmpty, "Cannot query using empty ids list")
+    require(ids.length <= 100, "Cannot query using more than 100 ids")
+    require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
+    require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
+
+    client.http(clipsPath) {
+      val queryParameters = Map("id" -> ids).query
+      val paginationParameters = Map(
+        "before" -> before,
+        "after"  -> after,
+        "first"  -> first
+      ).query
+      queryParameters + paginationParameters
     }
+  }
 
   /**
     * Gets information about top clips for a specified broadcaster
@@ -86,20 +87,20 @@ class ClipsEndpoint(implicit private val context: ExecutionContext, implicit pri
   def getByBroadcasterId(broadcasterId: String,
                          before: Option[String] = None,
                          after: Option[String] = None,
-                         first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] =
-    Future {
-      require(broadcasterId.nonEmpty, "Cannot query using empty broadcaster id")
-      require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
-      require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
-    }.flatMap { _ =>
-      client.http(clipsPath) {
-        Map(
-          "broadcaster_id" -> Some(broadcasterId),
-          "before"         -> before,
-          "after"          -> after,
-          "first"          -> first
-        ).query
-      }
+                         first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] = ~> {
+    
+    require(broadcasterId.nonEmpty, "Cannot query using empty broadcaster id")
+    require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
+    require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
+
+    client.http(clipsPath) {
+      Map(
+        "broadcaster_id" -> Some(broadcasterId),
+        "before"         -> before,
+        "after"          -> after,
+        "first"          -> first
+      ).query
     }
+  }
 
 }
