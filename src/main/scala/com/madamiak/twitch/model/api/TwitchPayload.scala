@@ -7,4 +7,4 @@ package com.madamiak.twitch.model.api
   * @param pagination a cursor value
   * @tparam T data type
   */
-case class TwitchData[T](data: Seq[T], pagination: Option[Pagination] = None)
+case class TwitchPayload[T](data: Seq[T], pagination: Option[Pagination] = None)

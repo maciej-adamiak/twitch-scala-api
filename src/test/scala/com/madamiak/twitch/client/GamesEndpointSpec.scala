@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.model.api.game.TwitchGame
-import com.madamiak.twitch.model.api.{ Pagination, TwitchData }
+import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future
@@ -25,18 +25,18 @@ class GamesEndpointSpec extends EndpointWordSpec {
         "using a valid query" in {
 
           val query      = Query("id=123&id=312")
-          val twitchData = TwitchData(Seq(game))
+          val twitchData = TwitchPayload(Seq(game))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games", query, *) returns Future
             .successful(
               new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
             )
-          new GamesEndpoint().getById(Seq("123", "312")).map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().getById(Seq("123", "312")).map(_.twitchPayload shouldEqual twitchData)
         }
 
       }
@@ -62,18 +62,18 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
         "using a valid query" in {
           val query      = Query("name=gameA&name=gameB")
-          val twitchData = TwitchData(Seq(game))
+          val twitchData = TwitchPayload(Seq(game))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games", query, *) returns Future
             .successful(
               new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
             )
-          new GamesEndpoint().getByName(Seq("gameA", "gameB")).map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().getByName(Seq("gameA", "gameB")).map(_.twitchPayload shouldEqual twitchData)
         }
       }
 
@@ -97,43 +97,43 @@ class GamesEndpointSpec extends EndpointWordSpec {
 
         "not using any parameters" in {
           val query      = Query()
-          val twitchData = TwitchData(Seq(game), Some(pagination))
+          val twitchData = TwitchPayload(Seq(game), Some(pagination))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
             .successful(
               new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
             )
-          new GamesEndpoint().popular().map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().popular().map(_.twitchPayload shouldEqual twitchData)
         }
 
         "using single parameter" in {
           val query      = Query("before=313")
-          val twitchData = TwitchData(Seq(game), Some(pagination))
+          val twitchData = TwitchPayload(Seq(game), Some(pagination))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
             .successful(
               new TwitchResponse[TwitchGame](
                 rateLimit,
                 twitchData
               )
             )
-          new GamesEndpoint().popular(before = Some("313")).map(_.twitchData shouldEqual twitchData)
+          new GamesEndpoint().popular(before = Some("313")).map(_.twitchPayload shouldEqual twitchData)
         }
 
         "using multiple parameters" in {
           val query      = Query("before=313&first=23")
-          val twitchData = TwitchData(Seq(game), Some(pagination))
+          val twitchData = TwitchPayload(Seq(game), Some(pagination))
 
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
+            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
             .successful(
               new TwitchResponse[TwitchGame](
                 rateLimit,
@@ -142,7 +142,7 @@ class GamesEndpointSpec extends EndpointWordSpec {
             )
           new GamesEndpoint()
             .popular(before = Some("313"), first = Some(23))
-            .map(_.twitchData shouldEqual twitchData)
+            .map(_.twitchPayload shouldEqual twitchData)
         }
 
       }

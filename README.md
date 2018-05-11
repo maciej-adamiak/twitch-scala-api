@@ -15,12 +15,12 @@ import com.madamiak.twitch.Twitch
   import twitch.implicits._
 
   twitch.games.getByName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
-    case Success(response) => for (game <- response.twitchData.data) println(game)
+    case Success(response) => for (game <- response.twitchPayload.data) println(game)
     case Failure(t)        => println("An error has occurred: " + t.getMessage)
   }
 
   twitch.streams.get(first = Some(10)).onComplete {
-    case Success(response) => for (stream <- response.twitchData.data) println(stream)
+    case Success(response) => for (stream <- response.twitchPayload.data) println(stream)
     case Failure(t)        => println("An error has occurred: " + t.getMessage)
   }
 ```

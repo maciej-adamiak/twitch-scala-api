@@ -4,7 +4,7 @@ import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.model.api.stream.{ TwitchStream, TwitchStreamMetadata }
-import com.madamiak.twitch.model.api.{ Pagination, TwitchData }
+import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future
@@ -38,10 +38,10 @@ class StreamsEndpointSpec extends EndpointWordSpec {
           val query = Query(
             "game_id=29307&language=en&language=pl&community_id=848d95be-90b3-44a5-b143-6e373754c382&community_id=fd0eab99-832a-4d7e-8cc0-04d73deb2e54&first=98"
           )
-          val twitchData                          = TwitchData(Seq(stream))
+          val twitchData                          = TwitchPayload(Seq(stream))
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
-            .http[TwitchStream](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchData[TwitchStream]])) expects ("/helix/streams", query, *) returns Future
+            .http[TwitchStream](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchStream]])) expects ("/helix/streams", query, *) returns Future
             .successful(
               new TwitchResponse[TwitchStream](
                 rateLimit,
@@ -55,7 +55,7 @@ class StreamsEndpointSpec extends EndpointWordSpec {
               languages = Seq("en", "pl"),
               first = Some(98)
             )
-            .map(_.twitchData shouldEqual twitchData)
+            .map(_.twitchPayload shouldEqual twitchData)
         }
 
       }
@@ -78,11 +78,11 @@ class StreamsEndpointSpec extends EndpointWordSpec {
           val query = Query(
             "game_id=488552&user_id=23161357&first=98"
           )
-          val twitchData                          = TwitchData(Seq(streamMetadata))
+          val twitchData                          = TwitchPayload(Seq(streamMetadata))
           implicit val twitchClient: TwitchClient = mock[TwitchClient]
           (twitchClient
             .http[TwitchStreamMetadata](_: String)(_: Query)(
-              _: Unmarshaller[ResponseEntity, TwitchData[TwitchStreamMetadata]]
+              _: Unmarshaller[ResponseEntity, TwitchPayload[TwitchStreamMetadata]]
             )) expects ("/helix/streams/metadata", query, *) returns Future
             .successful(
               new TwitchResponse[TwitchStreamMetadata](
@@ -96,7 +96,7 @@ class StreamsEndpointSpec extends EndpointWordSpec {
               userIds = Seq("23161357"),
               first = Some(98)
             )
-            .map(_.twitchData shouldEqual twitchData)
+            .map(_.twitchPayload shouldEqual twitchData)
         }
 
       }
