@@ -5,9 +5,10 @@ import com.madamiak.twitch.model.api.game.TwitchGame
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-class GamesEndpoint(implicit private[client] val context: ExecutionContext,
-                    implicit private[client] val client: TwitchClient)
-    extends Endpoint {
+class GamesEndpoint(
+    implicit private[client] val context: ExecutionContext,
+    implicit private[client] val client: TwitchClient
+) extends Endpoint {
 
   private val gamesPath    = "/helix/games"
   private val topGamesPath = "/helix/games/top"
@@ -19,7 +20,7 @@ class GamesEndpoint(implicit private[client] val context: ExecutionContext,
     * @return Twitch game data
     */
   def getByName(names: Seq[String]): Future[TwitchResponse[TwitchGame]] = ~> {
-    
+
     require(names.nonEmpty, "Cannot query using empty ids list")
     require(names.length <= 100, "Cannot query using more than 100 names")
 

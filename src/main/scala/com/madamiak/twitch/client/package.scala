@@ -24,7 +24,7 @@ package object client {
 
   implicit class RichQuery(val q1: Query) extends AnyVal {
 
-    def +(q2: Query) = Query((q1.toList ++ q2.toList).distinct: _*)
+    def merge(q2: Query) = Query((q1.toList ++ q2.toList).distinct: _*)
 
   }
 

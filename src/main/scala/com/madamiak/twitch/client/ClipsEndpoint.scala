@@ -5,9 +5,10 @@ import com.madamiak.twitch.model.api.clip.TwitchClip
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-class ClipsEndpoint(implicit private[client] val context: ExecutionContext,
-                    implicit private[client] val client: TwitchClient)
-    extends Endpoint {
+class ClipsEndpoint(
+    implicit private[client] val context: ExecutionContext,
+    implicit private[client] val client: TwitchClient
+) extends Endpoint {
 
   private val clipsPath = "/helix/clips"
 
@@ -69,7 +70,7 @@ class ClipsEndpoint(implicit private[client] val context: ExecutionContext,
         "after"  -> after,
         "first"  -> first
       ).query
-      queryParameters + paginationParameters
+      queryParameters merge paginationParameters
     }
   }
 
@@ -88,7 +89,7 @@ class ClipsEndpoint(implicit private[client] val context: ExecutionContext,
                          before: Option[String] = None,
                          after: Option[String] = None,
                          first: Option[Int] = None): Future[TwitchResponse[TwitchClip]] = ~> {
-    
+
     require(broadcasterId.nonEmpty, "Cannot query using empty broadcaster id")
     require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")

@@ -5,9 +5,10 @@ import com.madamiak.twitch.model.api.stream.{ TwitchStream, TwitchStreamMetadata
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-class StreamsEndpoint(implicit private[client] val context: ExecutionContext,
-                      implicit private[client] val client: TwitchClient)
-    extends Endpoint {
+class StreamsEndpoint(
+    implicit private[client] val context: ExecutionContext,
+    implicit private[client] val client: TwitchClient
+) extends Endpoint {
 
   val streamsPath         = "/helix/streams"
   val streamsMetadataPath = "/helix/streams/metadata"
@@ -34,7 +35,7 @@ class StreamsEndpoint(implicit private[client] val context: ExecutionContext,
           before: Option[String] = None,
           after: Option[String] = None,
           first: Option[Int] = None): Future[TwitchResponse[TwitchStream]] = ~> {
-    
+
     require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
     require(languages.length <= 100, "Cannot query using more than 100 languages")
     require(userIds.length <= 100, "Cannot query using more than 100 user ids")
@@ -58,7 +59,7 @@ class StreamsEndpoint(implicit private[client] val context: ExecutionContext,
         "first"  -> first
       ).query
 
-      queryParameters + paginationParameters
+      queryParameters merge paginationParameters
     }
   }
 
@@ -71,7 +72,7 @@ class StreamsEndpoint(implicit private[client] val context: ExecutionContext,
                before: Option[String] = None,
                after: Option[String] = None,
                first: Option[Int] = None): Future[TwitchResponse[TwitchStreamMetadata]] = ~> {
-    
+
     require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
     require(languages.length <= 100, "Cannot query using more than 100 languages")
     require(userIds.length <= 100, "Cannot query using more than 100 user ids")
@@ -96,7 +97,7 @@ class StreamsEndpoint(implicit private[client] val context: ExecutionContext,
         "first"  -> first
       ).query
 
-      sequentialParameters + optionalParameters
+      sequentialParameters merge optionalParameters
     }
   }
 

@@ -48,14 +48,14 @@ class packageSpec extends WordSpec with Matchers {
       "prepare a valid query" when {
 
         "working with two maps" in {
-          Query("a=1&b=2") + Query("c=3&d=4") shouldEqual Query("a=1&b=2&c=3&d=4")
+          Query("a=1&b=2") merge Query("c=3&d=4") shouldEqual Query("a=1&b=2&c=3&d=4")
         }
       }
 
       "remove duplicates" when {
 
         "working with two maps" in {
-          Query("a=1&b=2") + Query("a=1&b=2") shouldEqual Query("a=1&b=2")
+          Query("a=1&b=2") merge Query("a=1&b=2") shouldEqual Query("a=1&b=2")
         }
 
       }
