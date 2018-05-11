@@ -4,6 +4,14 @@ import akka.http.scaladsl.model.Uri.Query
 
 package object endpoint {
 
+  implicit class RichMap[V](val map: Map[String, V]) extends AnyVal {
+
+    def queryParams: Seq[(String, String)] = map.filter(_ != null).mapValues(_.toString).toSeq
+
+    def query = Query(queryParams: _*)
+
+  }
+  
   implicit class RichOptionMap[V](val map: Map[String, Option[V]]) extends AnyVal {
 
     def queryParams: Seq[(String, String)] = map.filter(_._2.isDefined).mapValues(_.get.toString).toSeq
