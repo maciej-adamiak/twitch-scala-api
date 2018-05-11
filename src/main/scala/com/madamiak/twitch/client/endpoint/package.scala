@@ -2,8 +2,9 @@ package com.madamiak.twitch.client
 
 import akka.http.scaladsl.model.Uri.Query
 
+//TODO should be changed to the operator to remove the need of explicitly merging queries
 package object endpoint {
-
+  
   implicit class RichMap[V](val map: Map[String, V]) extends AnyVal {
 
     def queryParams: Seq[(String, String)] = map.filter(_ != null).mapValues(_.toString).toSeq
