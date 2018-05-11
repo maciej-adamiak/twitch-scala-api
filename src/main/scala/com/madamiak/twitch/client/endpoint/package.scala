@@ -1,8 +1,8 @@
-package com.madamiak.twitch
+package com.madamiak.twitch.client
 
 import akka.http.scaladsl.model.Uri.Query
 
-package object client {
+package object endpoint {
 
   implicit class RichOptionMap[V](val map: Map[String, Option[V]]) extends AnyVal {
 
@@ -24,7 +24,7 @@ package object client {
 
   implicit class RichQuery(val q1: Query) extends AnyVal {
 
-    def +(q2: Query) = Query((q1.toList ++ q2.toList).distinct: _*)
+    def merge(q2: Query) = Query((q1.toList ++ q2.toList).distinct: _*)
 
   }
 

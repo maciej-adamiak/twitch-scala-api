@@ -8,7 +8,7 @@ import akka.http.scaladsl.unmarshalling.{Unmarshal, Unmarshaller}
 import akka.stream.ActorMaterializer
 import com.madamiak.twitch.client.header.ClientIdHeader
 import com.madamiak.twitch.model._
-import com.madamiak.twitch.model.api.TwitchData
+import com.madamiak.twitch.model.api.TwitchPayload
 import com.typesafe.config.ConfigFactory.load
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -29,7 +29,7 @@ class TwitchClient(
 
   def http[T](
       path: String
-  )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchData[T]]): Future[TwitchResponse[T]] =
+  )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] =
     Http()
       .singleRequest(
         HttpRequest()
@@ -44,10 +44,10 @@ class TwitchClient(
 
   private def extractData[T](
       response: HttpResponse
-  )(implicit m: Unmarshaller[ResponseEntity, TwitchData[T]]): Future[TwitchResponse[T]] = response.status match {
+  )(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] = response.status match {
     case StatusCodes.OK =>
       Unmarshal(response.entity)
-        .to[TwitchData[T]]
+        .to[TwitchPayload[T]]
         .map(data => TwitchResponse(RateLimit(response), data))
     case code => Future.failed(new TwitchAPIException(s"Twitch server response was $code"))
   }

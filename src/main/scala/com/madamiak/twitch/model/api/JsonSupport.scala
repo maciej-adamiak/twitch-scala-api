@@ -8,7 +8,7 @@ import spray.json.{ DefaultJsonProtocol, JsonFormat, RootJsonFormat }
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
-  implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchData[T]] = jsonFormat2(TwitchData[T])
+  implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat2(TwitchPayload[T])
 
   implicit val gameFormat: RootJsonFormat[TwitchGame] = jsonFormat(TwitchGame, "id", "name", "box_art_url")
 
