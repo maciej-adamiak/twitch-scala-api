@@ -1,9 +1,10 @@
-package com.madamiak.twitch.client
+package com.madamiak.twitch.client.endpoint
 
+import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.game.TwitchGame
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class GamesEndpoint(
     implicit private[client] val context: ExecutionContext,

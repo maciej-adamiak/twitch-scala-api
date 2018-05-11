@@ -1,5 +1,6 @@
-package com.madamiak.twitch.client
+package com.madamiak.twitch.client.endpoint
 
+import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.api.JsonSupport
 
 import scala.concurrent.{ExecutionContext, Future}

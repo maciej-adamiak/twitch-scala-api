@@ -1,8 +1,8 @@
-package com.madamiak.twitch
+package com.madamiak.twitch.client
 
 import akka.http.scaladsl.model.Uri.Query
 
-package object client {
+package object endpoint {
 
   implicit class RichOptionMap[V](val map: Map[String, Option[V]]) extends AnyVal {
 

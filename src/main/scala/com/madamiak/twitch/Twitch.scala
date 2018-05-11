@@ -2,9 +2,11 @@ package com.madamiak.twitch
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.madamiak.twitch.client.{ ClipsEndpoint, GamesEndpoint, StreamsEndpoint, TwitchClient }
+import com.madamiak.twitch.client.endpoint.{ClipsEndpoint, GamesEndpoint, StreamsEndpoint}
+import com.madamiak.twitch.client.TwitchClient
 
-import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future }
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutor, Future}
+import scala.language.implicitConversions
 
 class Twitch(implicit val system: ActorSystem = ActorSystem("twitch-scala-client-system")) {
 

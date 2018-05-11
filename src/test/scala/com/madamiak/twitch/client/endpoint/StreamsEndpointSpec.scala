@@ -1,11 +1,12 @@
-package com.madamiak.twitch.client
+package com.madamiak.twitch.client.endpoint
 
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
-import com.madamiak.twitch.model.api.stream.{ TwitchStream, TwitchStreamMetadata }
-import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
-import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
+import com.madamiak.twitch.client.TwitchClient
+import com.madamiak.twitch.model.api.stream.{TwitchStream, TwitchStreamMetadata}
+import com.madamiak.twitch.model.api.{Pagination, TwitchPayload}
+import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
 
 import scala.concurrent.Future
 import scala.util.Random

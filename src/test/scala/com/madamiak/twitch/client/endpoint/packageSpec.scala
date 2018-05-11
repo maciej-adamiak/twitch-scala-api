@@ -1,7 +1,7 @@
-package com.madamiak.twitch.client
+package com.madamiak.twitch.client.endpoint
 
 import akka.http.scaladsl.model.Uri.Query
-import org.scalatest.{ Matchers, WordSpec }
+import org.scalatest.{Matchers, WordSpec}
 
 class packageSpec extends WordSpec with Matchers {
 
