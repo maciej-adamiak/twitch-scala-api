@@ -2,12 +2,13 @@ package com.madamiak.twitch.client.endpoint
 
 import com.madamiak.twitch.client.QueryUtils.query
 import com.madamiak.twitch.client.TwitchClient
+import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.video.Period.Period
 import com.madamiak.twitch.model.api.video.Sort.Sort
 import com.madamiak.twitch.model.api.video.VideoType.VideoType
-import com.madamiak.twitch.model.api.video.{Period, Sort, VideoType}
+import com.madamiak.twitch.model.api.video.{Period, Sort, TwitchVideo, VideoType}
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 //TODO
 class VideosEndpoint(
@@ -47,7 +48,7 @@ class VideosEndpoint(
                   videoType: VideoType = VideoType.All,
                   before: Option[String] = None,
                   after: Option[String] = None,
-                  first: Option[Int] = None) = ~> {
+                  first: Option[Int] = None): Future[TwitchResponse[TwitchVideo]] = ~> {
 
     client.http(videosPath) {
       query(
@@ -70,7 +71,7 @@ class VideosEndpoint(
                   videoType: VideoType = VideoType.All,
                   before: Option[String] = None,
                   after: Option[String] = None,
-                  first: Option[Int] = None) = ~> {
+                  first: Option[Int] = None): Future[TwitchResponse[TwitchVideo]] = ~> {
 
     client.http(videosPath) {
       query(
