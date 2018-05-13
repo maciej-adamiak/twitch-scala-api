@@ -1,5 +1,6 @@
 package com.madamiak.twitch.client.endpoint
 
+import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.game.TwitchGame
@@ -26,7 +27,7 @@ class GamesEndpoint(
     require(names.length <= 100, "Cannot query using more than 100 names")
 
     client.http(gamesPath) {
-      Map("name" -> names).query
+      query("name" -> names)
     }
   }
 
@@ -41,7 +42,7 @@ class GamesEndpoint(
     require(ids.length <= 100, "Cannot query using more than 100 ids")
 
     client.http(gamesPath) {
-      Map("id" -> ids).query
+      query("id" -> ids)
     }
   }
 
@@ -60,11 +61,11 @@ class GamesEndpoint(
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(topGamesPath) {
-      Map(
+      query(
         "before" -> before,
         "after"  -> after,
         "first"  -> first
-      ).query
+      )
     }
   }
 }

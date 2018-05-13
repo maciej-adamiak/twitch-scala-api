@@ -1,5 +1,6 @@
 package com.madamiak.twitch.client.endpoint
 
+import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.clip.TwitchClip
@@ -34,12 +35,12 @@ class ClipsEndpoint(
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(clipsPath) {
-      Map(
-        "game_id" -> Some(gameId),
+      query(
+        "game_id" -> gameId,
         "before"  -> before,
         "after"   -> after,
         "first"   -> first
-      ).query
+      )
     }
   }
 
@@ -65,13 +66,12 @@ class ClipsEndpoint(
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(clipsPath) {
-      val queryParameters = Map("id" -> ids).query
-      val paginationParameters = Map(
+      query(
+        "id"     -> ids,
         "before" -> before,
         "after"  -> after,
         "first"  -> first
-      ).query
-      queryParameters merge paginationParameters
+      )
     }
   }
 
@@ -96,12 +96,12 @@ class ClipsEndpoint(
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(clipsPath) {
-      Map(
+      query(
         "broadcaster_id" -> Some(broadcasterId),
         "before"         -> before,
         "after"          -> after,
         "first"          -> first
-      ).query
+      )
     }
   }
 

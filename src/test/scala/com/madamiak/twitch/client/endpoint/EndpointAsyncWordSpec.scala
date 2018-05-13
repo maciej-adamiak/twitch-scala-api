@@ -9,11 +9,11 @@ import org.scalatest.{AsyncWordSpec, Matchers}
 
 import scala.concurrent.ExecutionContext
 
-trait EndpointWordSpec extends AsyncWordSpec with Matchers with AsyncMockFactory with JsonSupport {
+trait EndpointAsyncWordSpec extends AsyncWordSpec with Matchers with AsyncMockFactory with JsonSupport {
 
   implicit val system: ActorSystem             = ActorSystem("test-actor-system")
   implicit val executor: ExecutionContext      = system.dispatcher
   implicit val materializer: ActorMaterializer = ActorMaterializer()
   implicit val twitchClient: TwitchClient      = mock[TwitchClient]
-
+  
 }

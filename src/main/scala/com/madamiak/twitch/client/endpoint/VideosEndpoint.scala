@@ -1,11 +1,11 @@
 package com.madamiak.twitch.client.endpoint
 
-import akka.http.scaladsl.model.Uri
+import com.madamiak.twitch.client.QueryUtils.query
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.api.video.Period.Period
-import com.madamiak.twitch.model.api.video.{ Period, Sort, VideoType }
 import com.madamiak.twitch.model.api.video.Sort.Sort
 import com.madamiak.twitch.model.api.video.VideoType.VideoType
+import com.madamiak.twitch.model.api.video.{Period, Sort, VideoType}
 
 import scala.concurrent.ExecutionContext
 
@@ -27,9 +27,16 @@ class VideosEndpoint(
                first: Option[Int] = None) = ~> {
 
     client.http(videosPath) {
-      Map(
-        "id" -> ids
-      ).query merge optionalParameters(period, sort, language, videoType, before, after, first)
+      query(
+        "id"       -> ids,
+        "period"   -> period,
+        "sort"     -> sort,
+        "type"     -> videoType,
+        "language" -> language,
+        "before"   -> before,
+        "after"    -> after,
+        "first"    -> first
+      )
     }
   }
 
@@ -41,11 +48,18 @@ class VideosEndpoint(
                   before: Option[String] = None,
                   after: Option[String] = None,
                   first: Option[Int] = None) = ~> {
-    
+
     client.http(videosPath) {
-      Map(
-        "user_id" -> userId
-      ).query merge optionalParameters(period, sort, language, videoType, before, after, first)
+      query(
+        "user_id"  -> userId,
+        "period"   -> period,
+        "sort"     -> sort,
+        "type"     -> videoType,
+        "language" -> language,
+        "before"   -> before,
+        "after"    -> after,
+        "first"    -> first
+      )
     }
   }
 
@@ -57,36 +71,19 @@ class VideosEndpoint(
                   before: Option[String] = None,
                   after: Option[String] = None,
                   first: Option[Int] = None) = ~> {
-    
+
     client.http(videosPath) {
-      Map(
-        "game_id" -> gameId
-      ).query merge optionalParameters(period, sort, language, videoType, before, after, first)
+      query(
+        "game_id"  -> gameId,
+        "period"   -> period,
+        "sort"     -> sort,
+        "type"     -> videoType,
+        "language" -> language,
+        "before"   -> before,
+        "after"    -> after,
+        "first"    -> first
+      )
     }
-  }
-
-  private def optionalParameters(period: Period,
-                                 sort: Sort,
-                                 language: Option[String],
-                                 videoType: VideoType,
-                                 before: Option[String],
-                                 after: Option[String],
-                                 first: Option[Int]) = {
-    
-    val requiredParameters = Map(
-      "period" -> period,
-      "sort"   -> sort,
-      "type"   -> videoType
-    ).query
-
-    val optionalQuery = Map(
-      "language" -> language,
-      "before"   -> before,
-      "after"    -> after,
-      "first"    -> first
-    ).query
-
-    requiredParameters merge optionalQuery
   }
 
 }

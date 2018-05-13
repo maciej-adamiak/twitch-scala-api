@@ -1,5 +1,6 @@
 package com.madamiak.twitch.client.endpoint
 
+import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.stream.{TwitchStream, TwitchStreamMetadata}
@@ -46,21 +47,16 @@ class StreamsEndpoint(
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(streamsPath) {
-      val queryParameters = Map(
+      query(
         "community_id" -> communityIds,
         "game_id"      -> gameIds,
         "language"     -> languages,
         "user_id"      -> userIds,
-        "user_login"   -> userLogins
-      ).query
-
-      val paginationParameters = Map(
-        "before" -> before,
-        "after"  -> after,
-        "first"  -> first
-      ).query
-
-      queryParameters merge paginationParameters
+        "user_login"   -> userLogins,
+        "before"       -> before,
+        "after"        -> after,
+        "first"        -> first
+      )
     }
   }
 
@@ -83,22 +79,17 @@ class StreamsEndpoint(
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(streamsMetadataPath) {
-      val sequentialParameters = Map(
+      query(
         "community_id" -> communityIds,
         "game_id"      -> gameIds,
         "language"     -> languages,
         "user_id"      -> userIds,
-        "user_login"   -> userLogins
-      ).query
-
-      val optionalParameters = Map(
-        "type"   -> streamType,
-        "before" -> before,
-        "after"  -> after,
-        "first"  -> first
-      ).query
-
-      sequentialParameters merge optionalParameters
+        "user_login"   -> userLogins,
+        "type"         -> streamType,
+        "before"       -> before,
+        "after"        -> after,
+        "first"        -> first
+      )
     }
   }
 

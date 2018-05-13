@@ -14,5 +14,5 @@ trait Endpoint extends JsonSupport {
   def ~>[T](x: => Future[T]): Future[T] = Future {
     x
   }(context).flatten
-
+  
 }
