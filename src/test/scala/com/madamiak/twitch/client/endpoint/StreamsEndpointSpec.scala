@@ -29,7 +29,7 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
   )
   val streamMetadata = TwitchStreamMetadata("488552", "23161357")
 
-  "games endpoint" which {
+  "streams endpoint" which {
 
     "performs a request to acquire streams" should {
 
