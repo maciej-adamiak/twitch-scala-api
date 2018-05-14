@@ -4,8 +4,8 @@ import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
 import com.madamiak.twitch.model.api.stream._
-import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoType, ViewType}
-import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
+import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, ViewableType }
+import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat }
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
@@ -73,8 +73,8 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
       "overwatch"
     )
 
-  implicit val videoTypeFormat: RootJsonFormat[VideoType.Value] = enumFormat(VideoType)
-  implicit val viewTypeFormat: RootJsonFormat[ViewType.Value]   = enumFormat(ViewType)
+  implicit val videoTypeFormat: RootJsonFormat[VideoType.Value]   = enumFormat(VideoType)
+  implicit val viewTypeFormat: RootJsonFormat[ViewableType.Value] = enumFormat(ViewableType)
 
   implicit val videoFormat: RootJsonFormat[TwitchVideo] = jsonFormat(
     TwitchVideo,
