@@ -25,7 +25,7 @@ class VideosEndpoint(
                videoType: VideoType = VideoType.All,
                before: Option[String] = None,
                after: Option[String] = None,
-               first: Option[Int] = None) = ~> {
+               first: Option[Int] = None): Future[TwitchResponse[TwitchVideo]] = ~> {
 
     client.http(videosPath) {
       query(

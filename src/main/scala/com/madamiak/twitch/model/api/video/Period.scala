@@ -1,8 +1,12 @@
 package com.madamiak.twitch.model.api.video
 
 object Period extends Enumeration {
+
+  type Period = Period.Value
   
-  type Period = Value
-  val All, Day, Week, Month = Value
+  val All: Period   = Value("all")
+  val Day: Period   = Value("day")
+  val Week: Period  = Value("week")
+  val Month: Period = Value("month")
 
 }

@@ -8,6 +8,7 @@ class QueryUtilsSpec extends WordSpec with Matchers {
 
     "compute query" when {
 
+      //TODO more descriptive tests i.e divide into separate
       "using miscellaneous parameters" in {
 
         val query = QueryUtils.query(
