@@ -11,7 +11,7 @@ import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
 import scala.concurrent.Future
 import scala.util.Random
 
-class GamesEndpointSpec extends EndpointWordSpec {
+class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
   val rateLimit  = RateLimit(1, 2, 2)
   val pagination = Pagination("313")

@@ -16,15 +16,17 @@ package com.madamiak.twitch.model.api.clip
   * @param videoId ID of the video from which the clip was created
   * @param viewCount Number of times the clip has been viewed
   */
-case class TwitchClip(broadcasterId: String,
-                      createdAt: String,
-                      creatorId: String,
-                      embedUrl: String,
-                      gameId: String,
-                      id: String,
-                      language: String,
-                      thumbnailUrl: String,
-                      title: String,
-                      url: String,
-                      videoId: String,
-                      viewCount: Long)
+case class TwitchClip(
+    broadcasterId: String,
+    createdAt: String,
+    creatorId: String,
+    embedUrl: String,
+    gameId: String,
+    id: String,
+    language: String,
+    thumbnailUrl: String,
+    title: String,
+    url: String,
+    videoId: String,
+    viewCount: Long
+)

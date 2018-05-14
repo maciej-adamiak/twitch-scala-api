@@ -11,7 +11,7 @@ import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
 import scala.concurrent.Future
 import scala.util.Random
 
-class StreamsEndpointSpec extends EndpointWordSpec {
+class StreamsEndpointSpec extends EndpointAsyncWordSpec {
 
   val rateLimit  = RateLimit(1, 2, 2)
   val pagination = Pagination("313")
@@ -29,7 +29,7 @@ class StreamsEndpointSpec extends EndpointWordSpec {
   )
   val streamMetadata = TwitchStreamMetadata("488552", "23161357")
 
-  "games endpoint" which {
+  "streams endpoint" which {
 
     "performs a request to acquire streams" should {
 
@@ -37,7 +37,7 @@ class StreamsEndpointSpec extends EndpointWordSpec {
 
         "using a valid query" in {
           val query = Query(
-            "game_id=29307&language=en&language=pl&community_id=848d95be-90b3-44a5-b143-6e373754c382&community_id=fd0eab99-832a-4d7e-8cc0-04d73deb2e54&first=98"
+            "community_id=848d95be-90b3-44a5-b143-6e373754c382&community_id=fd0eab99-832a-4d7e-8cc0-04d73deb2e54&game_id=29307&language=en&language=pl&first=98"
           )
           val twitchData                          = TwitchPayload(Seq(stream))
           implicit val twitchClient: TwitchClient = mock[TwitchClient]

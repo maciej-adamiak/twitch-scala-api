@@ -1,10 +1,11 @@
 package com.madamiak.twitch.client.endpoint
 
+import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.game.TwitchGame
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class GamesEndpoint(
     implicit private[client] val context: ExecutionContext,
@@ -17,23 +18,23 @@ class GamesEndpoint(
   /**
     * Gets game information by game name
     *
-    * @param names game name
+    * @param names Game names sequence
     * @return Twitch game data
     */
   def getByName(names: Seq[String]): Future[TwitchResponse[TwitchGame]] = ~> {
 
-    require(names.nonEmpty, "Cannot query using empty ids list")
+    require(names.nonEmpty, "Cannot query using empty names list")
     require(names.length <= 100, "Cannot query using more than 100 names")
 
     client.http(gamesPath) {
-      Map("name" -> names).query
+      query("name" -> names)
     }
   }
 
   /**
     * Gets game information by game ids
     *
-    * @param ids game ids
+    * @param ids Game ids
     * @return Twitch game data
     */
   def getById(ids: Seq[String]): Future[TwitchResponse[TwitchGame]] = ~> {
@@ -41,7 +42,7 @@ class GamesEndpoint(
     require(ids.length <= 100, "Cannot query using more than 100 ids")
 
     client.http(gamesPath) {
-      Map("id" -> ids).query
+      query("id" -> ids)
     }
   }
 
@@ -60,11 +61,11 @@ class GamesEndpoint(
     require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(topGamesPath) {
-      Map(
+      query(
         "before" -> before,
         "after"  -> after,
         "first"  -> first
-      ).query
+      )
     }
   }
 }
