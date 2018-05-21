@@ -1,5 +1,9 @@
 package com.madamiak.twitch.model.api
 
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.Date
+
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
@@ -10,6 +14,28 @@ import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsV
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat2(TwitchPayload[T])
+
+  implicit val urlFormat: RootJsonFormat[URL] = new RootJsonFormat[URL] {
+
+    override def read(json: JsValue): URL = json match {
+      case JsString(s) => new URL(s)
+      case _           => throw DeserializationException("Invalid URL format: " + json)
+    }
+
+    override def write(obj: URL): JsValue = JsString(obj.toString)
+  }
+
+  implicit val dateFormat: RootJsonFormat[Date] = new RootJsonFormat[Date] {
+
+    val formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+    override def read(json: JsValue): Date = json match {
+      case JsString(s) => formatter.parse(s)
+      case _           => throw DeserializationException("Invalid date format: " + json)
+    }
+
+    override def write(obj: Date): JsValue = JsString(formatter.format(obj))
+  }
 
   implicit val gameFormat: RootJsonFormat[TwitchGame] = jsonFormat(
     TwitchGame,

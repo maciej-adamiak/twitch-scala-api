@@ -1,12 +1,14 @@
 package com.madamiak.twitch.client.endpoint
 
+import java.net.URL
+
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.api.clip.TwitchClip
-import com.madamiak.twitch.model.api.{Pagination, TwitchPayload}
-import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
+import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
+import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -17,15 +19,15 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
   val pagination = Pagination("313")
   val clip = TwitchClip(
     "67955580",
-    "2017-11-30T22:34:18Z",
+    dateFormatter.parse("2017-11-30T22:34:18Z"),
     "53834192",
-    "https://clips-media.tv",
+    new URL("https://clips-media.tv"),
     "488191",
     "AwkwardHelplessSalamanderSwiftRage",
     "en",
-    "https://clips-media.tv",
+    new URL("https://clips-media.tv"),
     "babymetal",
-    "https://clips.twitch.tv",
+    new URL("https://clips.twitch.tv"),
     "205586603",
     10
   )
