@@ -11,18 +11,18 @@ import scala.util.{ Failure, Success }
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.madamiak.twitch.Twitch
 
- val twitch = Twitch()
-  import twitch.implicits._
+val twitch = Twitch()
+import twitch.implicits._
 
-  twitch.games.getByName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
-    case Success(response) => for (game <- response.twitchPayload.data) println(game)
-    case Failure(t)        => println("An error has occurred: " + t.getMessage)
-  }
+twitch.games.getByName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
+  case Success(response) => for (game <- response.twitchPayload.data) println(game)
+  case Failure(t)        => println("An error has occurred: " + t.getMessage)
+}
 
-  twitch.streams.get(first = Some(10)).onComplete {
-    case Success(response) => for (stream <- response.twitchPayload.data) println(stream)
-    case Failure(t)        => println("An error has occurred: " + t.getMessage)
-  }
+twitch.streams.get(first = Some(10)).onComplete {
+  case Success(response) => for (stream <- response.twitchPayload.data) println(stream)
+  case Failure(t)        => println("An error has occurred: " + t.getMessage)
+}
 ```
 
 ```
