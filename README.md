@@ -45,12 +45,8 @@ TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn
 | videos   | /helix/streams/videos   | GET    |
 
 ## Plans
-- Integrate with all available endpoints
 - Prepare mixins of endpoints to create commonly used queries e.g. find the streams of most popular games
-- Simplify Twitch class usage
 - Use pagination like an iterable
-- Update twitch model case classes to use relevant data types despite of [constantly using strings in the API reponses](https://dev.twitch.tv/docs/api/reference/#get-streams)
-- Identify Twitch API endpoints that can server duplicates
 
 Any ideas and improvements are welcomed:
 )
