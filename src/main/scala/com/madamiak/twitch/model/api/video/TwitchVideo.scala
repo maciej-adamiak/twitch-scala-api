@@ -1,7 +1,11 @@
 package com.madamiak.twitch.model.api.video
 
+import java.net.URL
+import java.time.Duration
+import java.util.Date
+
 import com.madamiak.twitch.model.api.video.VideoType.VideoType
-import com.madamiak.twitch.model.api.video.ViewableType.ViewableType
+import com.madamiak.twitch.model.api.video.VideoViewableType.ViewableType
 
 /**
   * Represents a Twitch video
@@ -23,15 +27,15 @@ import com.madamiak.twitch.model.api.video.ViewableType.ViewableType
 case class TwitchVideo(
     id: String,
     language: String,
-    publishedAt: String,
-    thumbnailUrl: String,
+    publishedAt: Date,
+    thumbnailUrl: URL,
     title: String,
-    url: String,
+    url: URL,
     userId: String,
     viewCount: Int,
     viewableType: ViewableType,
     videoType: VideoType,
-    createdAt: String,
+    createdAt: Date,
     description: String,
-    duration: String
+    duration: Duration
 )

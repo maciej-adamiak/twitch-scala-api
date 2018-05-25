@@ -1,5 +1,8 @@
 package com.madamiak.twitch.model.api.clip
 
+import java.net.URL
+import java.util.Date
+
 /**
   * Represents a Twitch clip
   *
@@ -18,15 +21,15 @@ package com.madamiak.twitch.model.api.clip
   */
 case class TwitchClip(
     broadcasterId: String,
-    createdAt: String,
+    createdAt: Date,
     creatorId: String,
-    embedUrl: String,
+    embedUrl: URL,
     gameId: String,
     id: String,
     language: String,
-    thumbnailUrl: String,
+    thumbnailUrl: URL,
     title: String,
-    url: String,
+    url: URL,
     videoId: String,
     viewCount: Long
 )

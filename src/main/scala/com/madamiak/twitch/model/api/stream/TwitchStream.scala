@@ -1,5 +1,10 @@
 package com.madamiak.twitch.model.api.stream
 
+import java.net.URL
+import java.util.{Date, UUID}
+
+import com.madamiak.twitch.model.api.stream.StreamType.StreamType
+
 /**
   * Represents an active Twitch stream
   *
@@ -15,15 +20,14 @@ package com.madamiak.twitch.model.api.stream
   * @param viewerCount Number of viewers watching the stream at the time of the quer
   */
 case class TwitchStream(
-    communityIds: Seq[String],
+    communityIds: Seq[UUID],
     gameId: String,
     id: String,
     language: String,
-    startedAt: String,
-    thumbnailUrl: String,
+    startedAt: Date,
+    thumbnailUrl: URL,
     title: String,
-    //TODO to enum
-    streamType: String,
+    streamType: StreamType,
     userId: String,
     viewerCount: Long
 )

@@ -1,15 +1,62 @@
 package com.madamiak.twitch.model.api
 
+import java.net.URL
+import java.text.SimpleDateFormat
+import java.time.Duration
+import java.util.{Date, UUID}
+
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
+import com.madamiak.twitch.model.api.stream.StreamType.StreamType
 import com.madamiak.twitch.model.api.stream._
-import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, ViewableType }
-import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat }
+import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoType, VideoViewableType}
+import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat2(TwitchPayload[T])
+
+  implicit val urlFormat: RootJsonFormat[URL] = new RootJsonFormat[URL] {
+
+    override def read(json: JsValue): URL = json match {
+      case JsString(s) => new URL(s)
+      case _           => throw DeserializationException("Invalid URL format: " + json)
+    }
+
+    override def write(obj: URL): JsValue = JsString(obj.toString)
+  }
+
+  implicit val dateFormat: RootJsonFormat[Date] = new RootJsonFormat[Date] {
+
+    val formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+
+    override def read(json: JsValue): Date = json match {
+      case JsString(s) => formatter.parse(s)
+      case _           => throw DeserializationException("Invalid date format: " + json)
+    }
+
+    override def write(obj: Date): JsValue = JsString(formatter.format(obj))
+  }
+
+  implicit val durationFormat: RootJsonFormat[Duration] = new RootJsonFormat[Duration] {
+    override def write(obj: Duration): JsValue = JsString(obj.toString.tail)
+
+    override def read(json: JsValue): Duration = json match {
+      //TODO assumed that Twitch does not support days in the duration attribute
+      case JsString(s) => Duration.parse(s"PT$s")
+      case _           => throw DeserializationException("Invalid duration format: " + json)
+    }
+  }
+
+  implicit val uuidFormat: RootJsonFormat[UUID] = new RootJsonFormat[UUID] {
+    override def write(obj: UUID): JsValue = JsString(obj.toString)
+
+    override def read(json: JsValue): UUID = json match {
+      case JsString(s) => UUID.fromString(s)
+      case _           => throw DeserializationException("Invalid uuid format: " + json)
+    }
+  }
 
   implicit val gameFormat: RootJsonFormat[TwitchGame] = jsonFormat(
     TwitchGame,
@@ -36,6 +83,8 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit val paginationFormat: RootJsonFormat[Pagination] = jsonFormat1(Pagination)
 
+  implicit val streamTypeFormat: RootJsonFormat[StreamType] = enumFormat(StreamType)
+
   implicit val streamFormat: RootJsonFormat[TwitchStream] = jsonFormat(
     TwitchStream,
     "community_ids",
@@ -50,19 +99,21 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     "viewer_count"
   )
 
-  implicit val overwatchHeroFormat: RootJsonFormat[OverwatchHero]         = jsonFormat3(OverwatchHero)
-  implicit val overwatchPlayerFormat: RootJsonFormat[OverwatchPlayer]     = jsonFormat1(OverwatchPlayer)
-  implicit val overwatchMetadataFormat: RootJsonFormat[OverwatchMetadata] = jsonFormat1(OverwatchMetadata)
+  implicit val overwatchHeroFormat: RootJsonFormat[OverwatchStreamHero]         = jsonFormat3(OverwatchStreamHero)
+  implicit val overwatchPlayerFormat: RootJsonFormat[OverwatchStreamPlayer]     = jsonFormat1(OverwatchStreamPlayer)
+  implicit val overwatchMetadataFormat: RootJsonFormat[OverwatchStreamMetadata] = jsonFormat1(OverwatchStreamMetadata)
 
-  implicit val hearthstoneHeroFormat: RootJsonFormat[HearthstoneHero] =
+  implicit val hearthstoneHeroFormat: RootJsonFormat[HearthstoneStreamHero] =
     jsonFormat(
-      HearthstoneHero,
+      HearthstoneStreamHero,
       "type",
       "class",
       "type"
     )
-  implicit val hearthstonePlayerFormat: RootJsonFormat[HearthstonePlayer]     = jsonFormat1(HearthstonePlayer)
-  implicit val hearthstoneMetadataFormat: RootJsonFormat[HearthstoneMetadata] = jsonFormat2(HearthstoneMetadata)
+  implicit val hearthstonePlayerFormat: RootJsonFormat[HearthstoneStreamPlayer] = jsonFormat1(HearthstoneStreamPlayer)
+  implicit val hearthstoneMetadataFormat: RootJsonFormat[HearthstoneStreamMetadata] = jsonFormat2(
+    HearthstoneStreamMetadata
+  )
 
   implicit val twitchStreamMetadataFormat: RootJsonFormat[TwitchStreamMetadata] =
     jsonFormat(
@@ -73,8 +124,8 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
       "overwatch"
     )
 
-  implicit val videoTypeFormat: RootJsonFormat[VideoType.Value]   = enumFormat(VideoType)
-  implicit val viewTypeFormat: RootJsonFormat[ViewableType.Value] = enumFormat(ViewableType)
+  implicit val videoTypeFormat: RootJsonFormat[VideoType.Value]        = enumFormat(VideoType)
+  implicit val viewTypeFormat: RootJsonFormat[VideoViewableType.Value] = enumFormat(VideoViewableType)
 
   implicit val videoFormat: RootJsonFormat[TwitchVideo] = jsonFormat(
     TwitchVideo,

@@ -7,4 +7,4 @@ package com.madamiak.twitch.model.api.stream
   * @param heroClass Class of the Hearthstone hero
   * @param name Name of the Hearthstone hero
   */
-case class HearthstoneHero(heroType: String, heroClass: String, name: String)
+case class HearthstoneStreamHero(heroType: String, heroClass: String, name: String)

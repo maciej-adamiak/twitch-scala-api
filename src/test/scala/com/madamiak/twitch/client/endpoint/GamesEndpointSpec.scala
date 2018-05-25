@@ -1,12 +1,14 @@
 package com.madamiak.twitch.client.endpoint
 
+import java.net.URL
+
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.api.game.TwitchGame
-import com.madamiak.twitch.model.api.{Pagination, TwitchPayload}
-import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
+import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
+import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -15,7 +17,7 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
   val rateLimit  = RateLimit(1, 2, 2)
   val pagination = Pagination("313")
-  val game       = TwitchGame("493057", "gameA", "https://cdn.net/boxart/game-{width}x{height}.jpg")
+  val game       = TwitchGame("493057", "gameA", new URL("https://cdn.net/boxart/game-{width}x{height}.jpg"))
 
   "games endpoint" which {
 

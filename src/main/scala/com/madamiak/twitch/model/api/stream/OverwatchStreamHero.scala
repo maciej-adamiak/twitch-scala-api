@@ -7,4 +7,4 @@ package com.madamiak.twitch.model.api.stream
   * @param role Role of the Overwatch hero
   * @param name Name of the Overwatch hero
   */
-case class OverwatchHero(ability: String, role: String, name: String)
+case class OverwatchStreamHero(ability: String, role: String, name: String)

@@ -1,10 +1,13 @@
 package com.madamiak.twitch.client.endpoint
 
+import java.net.URL
+import java.util.UUID
+
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.client.TwitchClient
-import com.madamiak.twitch.model.api.stream.{TwitchStream, TwitchStreamMetadata}
+import com.madamiak.twitch.model.api.stream.{StreamType, TwitchStream, TwitchStreamMetadata}
 import com.madamiak.twitch.model.api.{Pagination, TwitchPayload}
 import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
 
@@ -16,14 +19,17 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
   val rateLimit  = RateLimit(1, 2, 2)
   val pagination = Pagination("313")
   val stream = TwitchStream(
-    Seq("848d95be-90b3-44a5-b143-6e373754c382", "fd0eab99-832a-4d7e-8cc0-04d73deb2e54"),
+    Seq(
+      UUID.fromString("848d95be-90b3-44a5-b143-6e373754c382"),
+      UUID.fromString("fd0eab99-832a-4d7e-8cc0-04d73deb2e54")
+    ),
     "29307",
     "26007351216",
     "en",
-    "2017-08-14T15:45:17Z",
-    "https://static-cdn.jtvnw.net/previews-ttv/live_user_dansgaming-{width}x{height}.jpg",
+    dateFormatter.parse("2017-08-14T15:45:17Z"),
+    new URL("https://static-cdn.jtvnw.net/previews-ttv/live_user_dansgaming-{width}x{height}.jpg"),
     "[Punday Monday] Necromancer - Dan's First Character - Maps - !build",
-    "live",
+    StreamType.Live,
     "7236692",
     5723
   )
