@@ -2,14 +2,15 @@ package com.madamiak.twitch.model.api
 
 import java.net.URL
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.{Date, UUID}
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
+import com.madamiak.twitch.model.api.stream.StreamType.StreamType
 import com.madamiak.twitch.model.api.stream._
-import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, ViewableType }
-import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat }
+import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoType, ViewableType}
+import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
@@ -35,6 +36,15 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     }
 
     override def write(obj: Date): JsValue = JsString(formatter.format(obj))
+  }
+  
+  implicit val uuidFormat: RootJsonFormat[UUID] = new RootJsonFormat[UUID] {
+    override def write(obj: UUID): JsValue = JsString(obj.toString)
+
+    override def read(json: JsValue): UUID = json match {
+      case JsString(s) => UUID.fromString(s)
+      case _           => throw DeserializationException("Invalid uuid format: " + json)
+    }
   }
 
   implicit val gameFormat: RootJsonFormat[TwitchGame] = jsonFormat(
@@ -62,6 +72,8 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit val paginationFormat: RootJsonFormat[Pagination] = jsonFormat1(Pagination)
 
+  implicit val streamTypeFormat: RootJsonFormat[StreamType] = enumFormat(StreamType)
+  
   implicit val streamFormat: RootJsonFormat[TwitchStream] = jsonFormat(
     TwitchStream,
     "community_ids",

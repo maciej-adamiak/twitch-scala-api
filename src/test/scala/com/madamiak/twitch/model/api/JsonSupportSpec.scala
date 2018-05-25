@@ -2,10 +2,12 @@ package com.madamiak.twitch.model.api
 
 import java.net.URL
 import java.text.SimpleDateFormat
+import java.util.UUID
 
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
-import org.scalatest.{ Matchers, WordSpec }
+import com.madamiak.twitch.model.api.stream.{StreamType, TwitchStream}
+import org.scalatest.{Matchers, WordSpec}
 import spray.json._
 
 class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
@@ -81,7 +83,48 @@ class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
       }
 
       "extract stream data" when {
-        "processing valid values" in {}
+
+        "processing valid values" in {
+          val json =
+            """
+              |{
+              |  "id":"26007494656",
+              |  "user_id":"23161357",
+              |  "game_id":"417752",
+              |  "community_ids":[
+              |    "5181e78f-2280-42a6-873d-758e25a7c313",
+              |    "848d95be-90b3-44a5-b143-6e373754c382",
+              |    "fd0eab99-832a-4d7e-8cc0-04d73deb2e54"
+              |  ],
+              |  "type":"live",
+              |  "title":"Hey Guys, It's Monday - Twitter: @Lirik",
+              |  "viewer_count":32575,
+              |  "started_at":"2017-08-14T16:08:32Z",
+              |  "language":"en",
+              |  "thumbnail_url":"https://static-cdn.jtvnw.net/previews-ttv/live_user_lirik-{width}x{height}.jpg"
+              |}
+            """.stripMargin
+
+          val stream = json.parseJson.convertTo[TwitchStream]
+
+          stream shouldEqual TwitchStream(
+            Seq(
+              UUID.fromString("5181e78f-2280-42a6-873d-758e25a7c313"),
+              UUID.fromString("848d95be-90b3-44a5-b143-6e373754c382"),
+              UUID.fromString("fd0eab99-832a-4d7e-8cc0-04d73deb2e54")
+            ),
+            "417752",
+            "26007494656",
+            "en",
+            dateFormatter.parse("2017-08-14T16:08:32Z"),
+            new URL("https://static-cdn.jtvnw.net/previews-ttv/live_user_lirik-{width}x{height}.jpg"),
+            "Hey Guys, It's Monday - Twitter: @Lirik",
+            StreamType.Live,
+            "23161357",
+            32575
+          )
+        }
+
       }
 
       "extract video data" when {
