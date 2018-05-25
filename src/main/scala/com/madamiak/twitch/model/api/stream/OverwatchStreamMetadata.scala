@@ -5,4 +5,4 @@ package com.madamiak.twitch.model.api.stream
   *
   * @param broadcaster Overwatch metadata about the broadcaster
   */
-case class OverwatchMetadata(broadcaster: OverwatchPlayer)
+case class OverwatchStreamMetadata(broadcaster: OverwatchStreamPlayer)

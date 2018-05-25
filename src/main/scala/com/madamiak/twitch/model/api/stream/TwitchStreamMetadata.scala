@@ -11,6 +11,6 @@ package com.madamiak.twitch.model.api.stream
 case class TwitchStreamMetadata(
     gameId: String,
     userId: String,
-    hearthstoneData: Option[HearthstoneMetadata] = None,
-    overwatchData: Option[OverwatchMetadata] = None,
+    hearthstoneData: Option[HearthstoneStreamMetadata] = None,
+    overwatchData: Option[OverwatchStreamMetadata] = None,
 )

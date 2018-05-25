@@ -6,4 +6,4 @@ package com.madamiak.twitch.model.api.stream
   * @param broadcaster Hearthstone metadata about the broadcaster
   * @param opponent Hearthstone metadata about the broadcaster's opponent
   */
-case class HearthstoneMetadata(broadcaster: HearthstonePlayer, opponent: HearthstonePlayer)
+case class HearthstoneStreamMetadata(broadcaster: HearthstoneStreamPlayer, opponent: HearthstoneStreamPlayer)

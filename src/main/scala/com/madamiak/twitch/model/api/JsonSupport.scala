@@ -88,19 +88,19 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     "viewer_count"
   )
 
-  implicit val overwatchHeroFormat: RootJsonFormat[OverwatchHero]         = jsonFormat3(OverwatchHero)
-  implicit val overwatchPlayerFormat: RootJsonFormat[OverwatchPlayer]     = jsonFormat1(OverwatchPlayer)
-  implicit val overwatchMetadataFormat: RootJsonFormat[OverwatchMetadata] = jsonFormat1(OverwatchMetadata)
+  implicit val overwatchHeroFormat: RootJsonFormat[OverwatchStreamHero]         = jsonFormat3(OverwatchStreamHero)
+  implicit val overwatchPlayerFormat: RootJsonFormat[OverwatchStreamPlayer]     = jsonFormat1(OverwatchStreamPlayer)
+  implicit val overwatchMetadataFormat: RootJsonFormat[OverwatchStreamMetadata] = jsonFormat1(OverwatchStreamMetadata)
 
-  implicit val hearthstoneHeroFormat: RootJsonFormat[HearthstoneHero] =
+  implicit val hearthstoneHeroFormat: RootJsonFormat[HearthstoneStreamHero] =
     jsonFormat(
-      HearthstoneHero,
+      HearthstoneStreamHero,
       "type",
       "class",
       "type"
     )
-  implicit val hearthstonePlayerFormat: RootJsonFormat[HearthstonePlayer]     = jsonFormat1(HearthstonePlayer)
-  implicit val hearthstoneMetadataFormat: RootJsonFormat[HearthstoneMetadata] = jsonFormat2(HearthstoneMetadata)
+  implicit val hearthstonePlayerFormat: RootJsonFormat[HearthstoneStreamPlayer]     = jsonFormat1(HearthstoneStreamPlayer)
+  implicit val hearthstoneMetadataFormat: RootJsonFormat[HearthstoneStreamMetadata] = jsonFormat2(HearthstoneStreamMetadata)
 
   implicit val twitchStreamMetadataFormat: RootJsonFormat[TwitchStreamMetadata] =
     jsonFormat(
