@@ -32,7 +32,7 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
     10
   )
 
-  "clip endpoint" which {
+  "clips endpoint" which {
 
     "performs a request to acquire clip data by id" should {
 

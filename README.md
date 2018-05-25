@@ -12,9 +12,8 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import com.madamiak.twitch.Twitch
 
 val twitch = Twitch()
-import twitch.implicits._
 
-twitch.games.getByName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
+twitch.games.getByName(Seq("PLAYERUNKNOWN'S BATTLEGROUNDS")).onComplete {
   case Success(response) => for (game <- response.twitchPayload.data) println(game)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
@@ -41,6 +40,8 @@ TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn
 | games    | /helix/games/top        | GET    |
 | streams  | /helix/streams          | GET    |
 | streams  | /helix/streams/metadata | GET    |
+| users    | /helix/users            | GET    |
+| users    | /helix/users/follows    | GET    |
 | videos   | /helix/streams/videos   | GET    |
 
 ## Plans

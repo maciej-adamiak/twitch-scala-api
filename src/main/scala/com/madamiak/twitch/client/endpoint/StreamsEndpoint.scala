@@ -29,14 +29,16 @@ class StreamsEndpoint(
     * @param first Maximum number of objects to return
     * @return Twitch stream data
     */
-  def get(communityIds: Seq[String] = Seq(),
-          gameIds: Seq[String] = Seq(),
-          languages: Seq[String] = Seq(),
-          userIds: Seq[String] = Seq(),
-          userLogins: Seq[String] = Seq(),
-          before: Option[String] = None,
-          after: Option[String] = None,
-          first: Option[Int] = None): Future[TwitchResponse[TwitchStream]] = ~> {
+  def get(
+      communityIds: Seq[String] = Seq(),
+      gameIds: Seq[String] = Seq(),
+      languages: Seq[String] = Seq(),
+      userIds: Seq[String] = Seq(),
+      userLogins: Seq[String] = Seq(),
+      before: Option[String] = None,
+      after: Option[String] = None,
+      first: Option[Int] = None
+  ): Future[TwitchResponse[TwitchStream]] = ~> {
 
     require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
     require(languages.length <= 100, "Cannot query using more than 100 languages")
@@ -73,14 +75,16 @@ class StreamsEndpoint(
     * @param first Maximum number of objects to return
     * @return Twitch stream metadata
     */
-  def metadata(communityIds: Seq[String] = Seq(),
-               gameIds: Seq[String] = Seq(),
-               languages: Seq[String] = Seq(),
-               userIds: Seq[String] = Seq(),
-               userLogins: Seq[String] = Seq(),
-               before: Option[String] = None,
-               after: Option[String] = None,
-               first: Option[Int] = None): Future[TwitchResponse[TwitchStreamMetadata]] = ~> {
+  def metadata(
+      communityIds: Seq[String] = Seq(),
+      gameIds: Seq[String] = Seq(),
+      languages: Seq[String] = Seq(),
+      userIds: Seq[String] = Seq(),
+      userLogins: Seq[String] = Seq(),
+      before: Option[String] = None,
+      after: Option[String] = None,
+      first: Option[Int] = None
+  ): Future[TwitchResponse[TwitchStreamMetadata]] = ~> {
 
     require(communityIds.length <= 100, "Cannot query using more than 100 community ids")
     require(languages.length <= 100, "Cannot query using more than 100 languages")

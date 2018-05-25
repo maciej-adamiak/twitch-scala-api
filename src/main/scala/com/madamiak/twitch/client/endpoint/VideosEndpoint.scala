@@ -6,9 +6,9 @@ import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.video.VideoPeriod.Period
 import com.madamiak.twitch.model.api.video.VideoSort.Sort
 import com.madamiak.twitch.model.api.video.VideoType.VideoType
-import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoPeriod, VideoSort, VideoType}
+import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoPeriod, VideoSort, VideoType }
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{ ExecutionContext, Future }
 
 class VideosEndpoint(
     implicit private[client] val context: ExecutionContext,
@@ -29,14 +29,16 @@ class VideosEndpoint(
     * @param after Cursor for forward pagination
     * @return Twitch video
     */
-  def getByIds(ids: Seq[String],
-               period: Period = VideoPeriod.All,
-               sort: Sort = VideoSort.Time,
-               language: Option[String] = None,
-               videoType: VideoType = VideoType.All,
-               before: Option[String] = None,
-               after: Option[String] = None,
-               first: Option[Int] = None): Future[TwitchResponse[TwitchVideo]] = ~> {
+  def getByIds(
+      ids: Seq[String],
+      period: Period = VideoPeriod.All,
+      sort: Sort = VideoSort.Time,
+      language: Option[String] = None,
+      videoType: VideoType = VideoType.All,
+      before: Option[String] = None,
+      after: Option[String] = None,
+      first: Option[Int] = None
+  ): Future[TwitchResponse[TwitchVideo]] = ~> {
 
     require(ids.nonEmpty, "Cannot query using empty ids list")
     require(ids.length <= 100, "Cannot query using more than 100 names")
