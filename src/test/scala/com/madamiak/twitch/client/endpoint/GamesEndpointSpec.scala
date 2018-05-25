@@ -2,22 +2,19 @@ package com.madamiak.twitch.client.endpoint
 
 import java.net.URL
 
-import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
-import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.api.game.TwitchGame
-import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
-import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
-import scala.concurrent.Future
 import scala.util.Random
 
 class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
-  val rateLimit  = RateLimit(1, 2, 2)
-  val pagination = Pagination("313")
-  val game       = TwitchGame("493057", "gameA", new URL("https://cdn.net/boxart/game-{width}x{height}.jpg"))
+  val game = TwitchGame(
+    "493057",
+    "gameA",
+    new URL("https://cdn.net/boxart/game-{width}x{height}.jpg")
+  )
 
   "games endpoint" which {
 
@@ -26,22 +23,13 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
+          val query = Query("id=123&id=312")
 
-          val query      = Query("id=123&id=312")
-          val twitchData = TwitchPayload(Seq(game))
-
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchGame](
-                rateLimit,
-                twitchData
-              )
-            )
-          new GamesEndpoint().getById(Seq("123", "312")).map(_.twitchPayload shouldEqual twitchData)
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
+          new GamesEndpoint()
+            .getById(Seq("123", "312"))
+            .map(_.twitchPayload.data should contain only game)
         }
-
       }
 
       "fail" when {
@@ -56,7 +44,6 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
           )
         }
       }
-
     }
 
     "performs a request to acquire games by name" should {
@@ -64,19 +51,12 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query      = Query("name=gameA&name=gameB")
-          val twitchData = TwitchPayload(Seq(game))
+          val query = Query("name=gameA&name=gameB")
 
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchGame](
-                rateLimit,
-                twitchData
-              )
-            )
-          new GamesEndpoint().getByName(Seq("gameA", "gameB")).map(_.twitchPayload shouldEqual twitchData)
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
+          new GamesEndpoint()
+            .getByName(Seq("gameA", "gameB"))
+            .map(_.twitchPayload.data should contain only game)
         }
       }
 
@@ -91,7 +71,6 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
           )
         }
       }
-
     }
 
     "performs a request to acquire top games" should {
@@ -99,55 +78,31 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "not using any parameters" in {
-          val query      = Query()
-          val twitchData = TwitchPayload(Seq(game), Some(pagination))
+          val query = Query()
 
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchGame](
-                rateLimit,
-                twitchData
-              )
-            )
-          new GamesEndpoint().popular().map(_.twitchPayload shouldEqual twitchData)
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games/top", query, game)
+          new GamesEndpoint()
+            .popular()
+            .map(_.twitchPayload.data should contain only game)
         }
 
         "using single parameter" in {
-          val query      = Query("before=313")
-          val twitchData = TwitchPayload(Seq(game), Some(pagination))
+          val query = Query("before=313")
 
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchGame](
-                rateLimit,
-                twitchData
-              )
-            )
-          new GamesEndpoint().popular(before = Some("313")).map(_.twitchPayload shouldEqual twitchData)
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games/top", query, game)
+          new GamesEndpoint()
+            .popular(before = Some("313"))
+            .map(_.twitchPayload.data should contain only game)
         }
 
         "using multiple parameters" in {
-          val query      = Query("before=313&first=23")
-          val twitchData = TwitchPayload(Seq(game), Some(pagination))
+          val query = Query("before=313&first=23")
 
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchGame](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchGame]])) expects ("/helix/games/top", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchGame](
-                rateLimit,
-                twitchData
-              )
-            )
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games/top", query, game)
           new GamesEndpoint()
             .popular(before = Some("313"), first = Some(23))
-            .map(_.twitchPayload shouldEqual twitchData)
+            .map(_.twitchPayload.data should contain only game)
         }
-
       }
 
       "fail" when {
@@ -163,11 +118,7 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
             new GamesEndpoint().popular(first = Some(-1))
           )
         }
-
       }
-
     }
-
   }
-
 }
