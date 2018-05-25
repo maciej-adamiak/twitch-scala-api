@@ -3,19 +3,20 @@ package com.madamiak.twitch.model.api
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.time.Duration
-import java.util.{Date, UUID}
+import java.util.{ Date, UUID }
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
 import com.madamiak.twitch.model.api.stream.StreamType.StreamType
 import com.madamiak.twitch.model.api.stream._
-import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoType, VideoViewableType}
-import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat}
+import com.madamiak.twitch.model.api.user.{ BroadcasterType, TwitchFollow, TwitchUser, UserType }
+import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, VideoViewableType }
+import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat }
 
 trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
-  implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat2(TwitchPayload[T])
+  implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat3(TwitchPayload[T])
 
   implicit val urlFormat: RootJsonFormat[URL] = new RootJsonFormat[URL] {
 
@@ -142,6 +143,30 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     "created_at",
     "description",
     "duration"
+  )
+
+  implicit val broadcasterFormat: RootJsonFormat[BroadcasterType.Value] = enumFormat(BroadcasterType)
+  implicit val userTypeFormat: RootJsonFormat[UserType.Value]           = enumFormat(UserType)
+
+  implicit val twitchUserFormat: RootJsonFormat[TwitchUser] = jsonFormat(
+    TwitchUser,
+    "broadcaster_type",
+    "description",
+    "display_name",
+    "email",
+    "id",
+    "login",
+    "offline_image_url",
+    "profile_image_url",
+    "type",
+    "view_count"
+  )
+
+  implicit val twitchFollowFormat: RootJsonFormat[TwitchFollow] = jsonFormat(
+    TwitchFollow,
+    "from_id",
+    "to_id",
+    "followed_at"
   )
 
   /**

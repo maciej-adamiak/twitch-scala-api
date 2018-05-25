@@ -3,21 +3,14 @@ package com.madamiak.twitch.client.endpoint
 import java.net.URL
 import java.util.UUID
 
-import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
-import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.client.TwitchClient
-import com.madamiak.twitch.model.api.stream.{StreamType, TwitchStream, TwitchStreamMetadata}
-import com.madamiak.twitch.model.api.{Pagination, TwitchPayload}
-import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
+import com.madamiak.twitch.model.api.stream.{ StreamType, TwitchStream, TwitchStreamMetadata }
 
-import scala.concurrent.Future
 import scala.util.Random
 
 class StreamsEndpointSpec extends EndpointAsyncWordSpec {
 
-  val rateLimit  = RateLimit(1, 2, 2)
-  val pagination = Pagination("313")
   val stream = TwitchStream(
     Seq(
       UUID.fromString("848d95be-90b3-44a5-b143-6e373754c382"),
@@ -45,16 +38,8 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
           val query = Query(
             "community_id=848d95be-90b3-44a5-b143-6e373754c382&community_id=fd0eab99-832a-4d7e-8cc0-04d73deb2e54&game_id=29307&language=en&language=pl&first=98"
           )
-          val twitchData                          = TwitchPayload(Seq(stream))
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchStream](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchStream]])) expects ("/helix/streams", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchStream](
-                rateLimit,
-                twitchData
-              )
-            )
+
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchStream]("/helix/streams", query, stream)
           new StreamsEndpoint()
             .get(
               communityIds = Seq("848d95be-90b3-44a5-b143-6e373754c382", "fd0eab99-832a-4d7e-8cc0-04d73deb2e54"),
@@ -62,9 +47,8 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
               languages = Seq("en", "pl"),
               first = Some(98)
             )
-            .map(_.twitchPayload shouldEqual twitchData)
+            .map(_.twitchPayload.data should contain only stream)
         }
-
       }
 
       "fail" when {
@@ -85,27 +69,16 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
           val query = Query(
             "game_id=488552&user_id=23161357&first=98"
           )
-          val twitchData                          = TwitchPayload(Seq(streamMetadata))
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchStreamMetadata](_: String)(_: Query)(
-              _: Unmarshaller[ResponseEntity, TwitchPayload[TwitchStreamMetadata]]
-            )) expects ("/helix/streams/metadata", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchStreamMetadata](
-                rateLimit,
-                twitchData
-              )
-            )
+          implicit val twitchClient: TwitchClient =
+            twitchClientMock[TwitchStream]("/helix/streams/metadata", query, stream)
           new StreamsEndpoint()
             .metadata(
               gameIds = Seq("488552"),
               userIds = Seq("23161357"),
               first = Some(98)
             )
-            .map(_.twitchPayload shouldEqual twitchData)
+            .map(_.twitchPayload.data should contain only stream)
         }
-
       }
 
       "fail" when {

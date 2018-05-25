@@ -7,9 +7,10 @@ import java.util.UUID
 
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
-import com.madamiak.twitch.model.api.stream.{StreamType, TwitchStream}
-import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoType, VideoViewableType}
-import org.scalatest.{Matchers, WordSpec}
+import com.madamiak.twitch.model.api.stream.{ StreamType, TwitchStream }
+import com.madamiak.twitch.model.api.user.{ BroadcasterType, TwitchFollow, TwitchUser, UserType }
+import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, VideoViewableType }
+import org.scalatest.{ Matchers, WordSpec }
 import spray.json._
 
 class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
@@ -169,6 +170,66 @@ class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
             dateFormatter.parse("2018-03-02T20:53:41Z"),
             "",
             Duration.parse("PT3H8M33S")
+          )
+        }
+
+      }
+
+      "extract user data" when {
+
+        "processing valid values" in {
+          val json =
+            """
+              |{
+              |   "id":"44322889",
+              |   "login":"dallas",
+              |   "display_name":"dallas",
+              |   "type":"staff",
+              |   "broadcaster_type":"",
+              |   "description":"Just a gamer playing games and chatting. :)",
+              |   "profile_image_url":"https://static-cdn.jtvnw.net/jtv_user_picturesA",
+              |   "offline_image_url":"https://static-cdn.jtvnw.net/jtv_user_picturesB",
+              |   "view_count":191836881,
+              |   "email":"login@provider.com"
+              |}
+            """.stripMargin
+
+          val user = json.parseJson.convertTo[TwitchUser]
+
+          user shouldEqual TwitchUser(
+            BroadcasterType.Undefined,
+            "Just a gamer playing games and chatting. :)",
+            "dallas",
+            "login@provider.com",
+            "44322889",
+            "dallas",
+            new URL("https://static-cdn.jtvnw.net/jtv_user_picturesB"),
+            new URL("https://static-cdn.jtvnw.net/jtv_user_picturesA"),
+            UserType.Staff,
+            191836881
+          )
+        }
+
+      }
+
+      "extract user follow data" when {
+
+        "processing valid values" in {
+          val json =
+            """
+              |{
+              |   "from_id":"171003792",
+              |   "to_id":"23161357",
+              |   "followed_at":"2017-08-22T22:55:24Z"
+              |}
+            """.stripMargin
+
+          val follow = json.parseJson.convertTo[TwitchFollow]
+
+          follow shouldEqual TwitchFollow(
+            "171003792",
+            "23161357",
+            dateFormatter.parse("2017-08-22T22:55:24Z")
           )
         }
 

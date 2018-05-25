@@ -2,21 +2,14 @@ package com.madamiak.twitch.client.endpoint
 
 import java.net.URL
 
-import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
-import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.api.clip.TwitchClip
-import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
-import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 
-import scala.concurrent.Future
 import scala.util.Random
 
 class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
-  val rateLimit  = RateLimit(1, 2, 2)
-  val pagination = Pagination("313")
   val clip = TwitchClip(
     "67955580",
     dateFormatter.parse("2017-11-30T22:34:18Z"),
@@ -32,30 +25,20 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
     10
   )
 
-  "clip endpoint" which {
+  "clips endpoint" which {
 
     "performs a request to acquire clip data by id" should {
 
       "succeed" when {
 
         "using a valid query" in {
-          val query      = Query("id=AwkwardHelplessSalamanderSwiftRage")
-          val twitchData = TwitchPayload(Seq(clip), Some(pagination))
+          val query = Query("id=AwkwardHelplessSalamanderSwiftRage")
 
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchClip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchClip]])) expects ("/helix/clips", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchClip](
-                rateLimit,
-                twitchData
-              )
-            )
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchClip]("/helix/clips", query, clip)
           new ClipsEndpoint()
             .getById(Seq("AwkwardHelplessSalamanderSwiftRage"))
-            .map(_.twitchPayload shouldEqual twitchData)
+            .map(_.twitchPayload.data should contain only clip)
         }
-
       }
 
       "fail" when {
@@ -83,9 +66,7 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
             new ClipsEndpoint().getById(Seq())
           )
         }
-
       }
-
     }
 
     "performs a request to acquire clip data by broadcaster id" should {
@@ -93,23 +74,13 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query      = Query("game_id=123421")
-          val twitchData = TwitchPayload(Seq(clip), Some(pagination))
+          val query = Query("game_id=123421")
 
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchClip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchClip]])) expects ("/helix/clips", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchClip](
-                rateLimit,
-                twitchData
-              )
-            )
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchClip]("/helix/clips", query, clip)
           new ClipsEndpoint()
             .getByGameId("123421")
-            .map(_.twitchPayload shouldEqual twitchData)
+            .map(_.twitchPayload.data should contain only clip)
         }
-
       }
 
       "fail" when {
@@ -131,9 +102,7 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
             new ClipsEndpoint().getByGameId("1234", first = Some(101))
           )
         }
-
       }
-
     }
 
     "performs a request to acquire clip data by game id" should {
@@ -141,23 +110,13 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query      = Query("broadcaster_id=123421")
-          val twitchData = TwitchPayload(Seq(clip), Some(pagination))
+          val query = Query("broadcaster_id=123421")
 
-          implicit val twitchClient: TwitchClient = mock[TwitchClient]
-          (twitchClient
-            .http[TwitchClip](_: String)(_: Query)(_: Unmarshaller[ResponseEntity, TwitchPayload[TwitchClip]])) expects ("/helix/clips", query, *) returns Future
-            .successful(
-              new TwitchResponse[TwitchClip](
-                rateLimit,
-                twitchData
-              )
-            )
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchClip]("/helix/clips", query, clip)
           new ClipsEndpoint()
             .getByBroadcasterId("123421")
-            .map(_.twitchPayload shouldEqual twitchData)
+            .map(_.twitchPayload.data should contain only clip)
         }
-
       }
 
       "fail" when {
@@ -179,11 +138,7 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
             new ClipsEndpoint().getByBroadcasterId("1234", first = Some(101))
           )
         }
-
       }
-
     }
-
   }
-
 }
