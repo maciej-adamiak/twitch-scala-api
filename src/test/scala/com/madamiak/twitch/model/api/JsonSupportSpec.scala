@@ -2,11 +2,13 @@ package com.madamiak.twitch.model.api
 
 import java.net.URL
 import java.text.SimpleDateFormat
+import java.time.Duration
 import java.util.UUID
 
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
 import com.madamiak.twitch.model.api.stream.{StreamType, TwitchStream}
+import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoType, VideoViewableType}
 import org.scalatest.{Matchers, WordSpec}
 import spray.json._
 
@@ -128,7 +130,48 @@ class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
       }
 
       "extract video data" when {
-        "processing valid values" in {}
+
+        "processing valid values" in {
+          val json =
+            """
+              |{
+              |  "id":"234482848",
+              |  "user_id":"67955580",
+              |  "title":"-",
+              |  "description":"",
+              |  "created_at":"2018-03-02T20:53:41Z",
+              |  "published_at":"2018-03-02T20:53:41Z",
+              |  "url":"https://www.twitch.tv/videos/234482848",
+              |  "thumbnail_url":"https://static-cdn.jtvnw.net/s3_vods",
+              |  "viewable":"public",
+              |  "view_count":142,
+              |  "language":"en",
+              |  "type":"archive",
+              |  "duration":"3h8m33s"
+              |}
+            """.stripMargin
+
+          val video = json.parseJson.convertTo[TwitchVideo]
+
+          video shouldEqual TwitchVideo(
+            "234482848",
+            "en",
+            dateFormatter.parse("2018-03-02T20:53:41Z"),
+            new URL(
+              "https://static-cdn.jtvnw.net/s3_vods"
+            ),
+            "-",
+            new URL("https://www.twitch.tv/videos/234482848"),
+            "67955580",
+            142,
+            VideoViewableType.Public,
+            VideoType.Archive,
+            dateFormatter.parse("2018-03-02T20:53:41Z"),
+            "",
+            Duration.parse("PT3H8M33S")
+          )
+        }
+
       }
 
     }

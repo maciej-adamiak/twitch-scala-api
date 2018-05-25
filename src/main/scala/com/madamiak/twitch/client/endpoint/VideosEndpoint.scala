@@ -3,12 +3,12 @@ package com.madamiak.twitch.client.endpoint
 import com.madamiak.twitch.client.QueryUtils.query
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
-import com.madamiak.twitch.model.api.video.Period.Period
-import com.madamiak.twitch.model.api.video.Sort.Sort
+import com.madamiak.twitch.model.api.video.VideoPeriod.Period
+import com.madamiak.twitch.model.api.video.VideoSort.Sort
 import com.madamiak.twitch.model.api.video.VideoType.VideoType
-import com.madamiak.twitch.model.api.video.{ Period, Sort, TwitchVideo, VideoType }
+import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoPeriod, VideoSort, VideoType}
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 class VideosEndpoint(
     implicit private[client] val context: ExecutionContext,
@@ -30,8 +30,8 @@ class VideosEndpoint(
     * @return Twitch video
     */
   def getByIds(ids: Seq[String],
-               period: Period = Period.All,
-               sort: Sort = Sort.Time,
+               period: Period = VideoPeriod.All,
+               sort: Sort = VideoSort.Time,
                language: Option[String] = None,
                videoType: VideoType = VideoType.All,
                before: Option[String] = None,
@@ -70,8 +70,8 @@ class VideosEndpoint(
     */
   def getByUserId(userId: String,
                   language: Option[String] = None,
-                  period: Period = Period.All,
-                  sort: Sort = Sort.Time,
+                  period: Period = VideoPeriod.All,
+                  sort: Sort = VideoSort.Time,
                   videoType: VideoType = VideoType.All,
                   before: Option[String] = None,
                   after: Option[String] = None,
@@ -110,8 +110,8 @@ class VideosEndpoint(
     */
   def getByGameId(gameId: String,
                   language: Option[String] = None,
-                  period: Period = Period.All,
-                  sort: Sort = Sort.Time,
+                  period: Period = VideoPeriod.All,
+                  sort: Sort = VideoSort.Time,
                   videoType: VideoType = VideoType.All,
                   before: Option[String] = None,
                   after: Option[String] = None,

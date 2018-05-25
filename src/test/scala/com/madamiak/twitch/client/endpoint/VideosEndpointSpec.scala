@@ -1,12 +1,15 @@
 package com.madamiak.twitch.client.endpoint
 
+import java.net.URL
+import java.time.Duration
+
 import akka.http.scaladsl.model.ResponseEntity
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import com.madamiak.twitch.client.TwitchClient
-import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, ViewableType }
-import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
-import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
+import com.madamiak.twitch.model.api.video.{TwitchVideo, VideoType, VideoViewableType}
+import com.madamiak.twitch.model.api.{Pagination, TwitchPayload}
+import com.madamiak.twitch.model.{RateLimit, TwitchResponse}
 
 import scala.concurrent.Future
 import scala.util.Random
@@ -18,17 +21,17 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
   val video = TwitchVideo(
     "234482848",
     "en",
-    "2018-03-02T20:53:41Z",
-    "https://www.twitch.tv/videos",
+    dateFormatter.parse("2018-03-02T20:53:41Z"),
+    new URL("https://www.twitch.tv/videos"),
     "-",
-    "https://www.twitch.tv/videos",
+    new URL("https://www.twitch.tv/videos"),
     "32323",
     312,
-    ViewableType.Private,
+    VideoViewableType.Private,
     VideoType.Archive,
-    "2018-03-02T20:53:41Z",
+    dateFormatter.parse("2018-03-02T20:53:41Z"),
     "desc",
-    "3h8m33s"
+    Duration.parse("PT3H8M33S")
   )
 
   "videos endpoint" which {
