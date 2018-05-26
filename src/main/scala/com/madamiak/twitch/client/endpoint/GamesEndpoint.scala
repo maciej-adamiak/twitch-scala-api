@@ -16,7 +16,7 @@ class GamesEndpoint(
   private val topGamesPath = "/helix/games/top"
 
   /**
-    * Acquires game information using a single game name
+    * Acquire game information using a single game name
     *
     * @param name Game name
     * @return Twitch game data
@@ -24,7 +24,7 @@ class GamesEndpoint(
   def byName(name: String): Future[TwitchResponse[TwitchGame]] = byName(Seq(name))
 
   /**
-    * Acquires game information using multiple game names
+    * Acquire game information using multiple game names
     *
     * @param names Game names
     * @return Twitch game data
@@ -47,7 +47,7 @@ class GamesEndpoint(
   def byId(id: String): Future[TwitchResponse[TwitchGame]] = byId(Seq(id))
 
   /**
-    * Acquires game information using multiple game ids
+    * Acquire game information using multiple game ids
     *
     * @param ids Game ids
     * @return Twitch game data
@@ -62,7 +62,7 @@ class GamesEndpoint(
   }
 
   /**
-    * Gets games sorted by number of current viewers on Twitch, most popular first
+    * Acquire games sorted by number of current viewers on Twitch, most popular first
     *
     * @param before Cursor for backward pagination
     * @param after Cursor for forward pagination

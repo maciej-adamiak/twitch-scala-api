@@ -15,7 +15,7 @@ class ClipsEndpoint(
   private val clipsPath = "/helix/clips"
 
   /**
-    * Acquires information regarding top clips for a specified game id
+    * Acquire information regarding top clips for a specified game id
     *
     * The response has a JSON payload with a data field containing an array of clip information elements and
     * a pagination field containing information required to query for more streams.
