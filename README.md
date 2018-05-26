@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/maciej-adamiak/twitch-scala-sdk.svg?branch=master)](https://travis-ci.org/maciej-adamiak/twitch-scala-sdk)
+
 # Twitch Scala SDK
 
 Twitch SDK for building application upon the [newest API](https://dev.twitch.tv/docs/api/#introduction)
