@@ -23,7 +23,7 @@ twitch.streams.by(gameIds = Seq("123"), size = Some(10)).onComplete {
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
 
-twitch.streams.metadata.byCommunityId("848d95be-90b3-44a5-b143-6e373754c382",).onComplete {
+twitch.streams.metadata.byCommunityId("848d95be-90b3-44a5-b143-6e373754c382").onComplete {
   case Success(response) => for (metadata <- response.twitchPayload.data) println(metadata)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
