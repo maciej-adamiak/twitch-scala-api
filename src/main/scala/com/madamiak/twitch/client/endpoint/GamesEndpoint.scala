@@ -3,6 +3,7 @@ package com.madamiak.twitch.client.endpoint
 import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
+import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.game.TwitchGame
 
 import scala.concurrent.{ ExecutionContext, Future }

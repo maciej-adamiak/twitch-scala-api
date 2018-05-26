@@ -3,6 +3,7 @@ package com.madamiak.twitch.client.endpoint
 import com.madamiak.twitch.client.QueryUtils.query
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
+import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.video.VideoPeriod.Period
 import com.madamiak.twitch.model.api.video.VideoSort.Sort
 import com.madamiak.twitch.model.api.video.VideoType.VideoType
@@ -15,7 +16,7 @@ class VideosEndpoint(
     implicit private[client] val client: TwitchClient
 ) extends Endpoint {
 
-  val videosPath = "/helix/videos"
+  private val videosPath = "/helix/videos"
 
   /**
     * Acquire video information by video id

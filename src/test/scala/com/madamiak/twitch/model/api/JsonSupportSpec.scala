@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat
 import java.time.Duration
 import java.util.UUID
 
+import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
 import com.madamiak.twitch.model.api.stream._
@@ -13,7 +14,7 @@ import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, VideoViewab
 import org.scalatest.{ Matchers, WordSpec }
 import spray.json._
 
-class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
+class JsonSupportSpec extends WordSpec with Matchers {
 
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 

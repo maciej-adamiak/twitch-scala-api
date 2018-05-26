@@ -3,6 +3,7 @@ package com.madamiak.twitch.client.endpoint
 import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
+import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.user.{ TwitchFollow, TwitchUser }
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -63,7 +64,7 @@ class UsersEndpoint(
 
   val follows: FollowsSegment.type = FollowsSegment
 
-  object FollowsSegment {
+  private[UsersEndpoint] object FollowsSegment {
 
     /**
       * Acquire information regarding follow relationships between two Twitch users.

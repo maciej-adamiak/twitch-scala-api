@@ -14,7 +14,7 @@ import com.madamiak.twitch.model.api.user.{ BroadcasterType, TwitchFollow, Twitc
 import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, VideoViewableType }
 import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsValue, JsonFormat, RootJsonFormat }
 
-trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
+object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
   implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat3(TwitchPayload[T])
 

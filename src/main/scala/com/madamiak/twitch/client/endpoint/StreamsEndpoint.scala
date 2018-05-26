@@ -3,6 +3,7 @@ package com.madamiak.twitch.client.endpoint
 import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
+import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.stream.{ TwitchStream, TwitchStreamMetadata }
 
 import scala.concurrent.{ ExecutionContext, Future }
@@ -12,8 +13,8 @@ class StreamsEndpoint(
     implicit private[client] val client: TwitchClient
 ) extends Endpoint {
 
-  val streamsPath         = "/helix/streams"
-  val streamsMetadataPath = "/helix/streams/metadata"
+  private val streamsPath         = "/helix/streams"
+  private val streamsMetadataPath = "/helix/streams/metadata"
 
   /**
     * Acquire information regarding active streams in a specified community
@@ -145,7 +146,7 @@ class StreamsEndpoint(
 
   val metadata: MetadataSegment.type = MetadataSegment
 
-  object MetadataSegment {
+  private[StreamsEndpoint] object MetadataSegment {
 
     /**
       * Gets metadata information about active streams playing Overwatch or Hearthstone in a specified community
