@@ -18,7 +18,15 @@ class VideosEndpoint(
   val videosPath = "/helix/videos"
 
   /**
-    * Gets video information by video id
+    * Acquire video information by video id
+    *
+    * @param id ID of the video being queried
+    * @return Twitch video
+    */
+  def byId(id: String): Future[TwitchResponse[TwitchVideo]] = by(Seq(id), size = Some(1))
+
+  /**
+    * Gets video information by video ids
     *
     * @param ids ID of the video being queried
     * @param period Period during which the video was created
@@ -29,7 +37,7 @@ class VideosEndpoint(
     * @param after Cursor for forward pagination
     * @return Twitch video
     */
-  def getByIds(
+  def byId(
       ids: Seq[String],
       period: Period = VideoPeriod.All,
       sort: Sort = VideoSort.Time,
@@ -37,24 +45,12 @@ class VideosEndpoint(
       videoType: VideoType = VideoType.All,
       before: Option[String] = None,
       after: Option[String] = None,
-      first: Option[Int] = None
+      size: Option[Int] = None
   ): Future[TwitchResponse[TwitchVideo]] = ~> {
-
     require(ids.nonEmpty, "Cannot query using empty ids list")
-    require(ids.length <= 100, "Cannot query using more than 100 names")
+    require(ids.length <= 100, "Cannot query using more than 100 ids")
 
-    client.http(videosPath) {
-      query(
-        "id"       -> ids,
-        "period"   -> period,
-        "sort"     -> sort,
-        "type"     -> videoType,
-        "language" -> language,
-        "before"   -> before,
-        "after"    -> after,
-        "first"    -> first
-      )
-    }
+    by(ids, None, None, language, period, sort, videoType, before, after, size)
   }
 
   /**
@@ -67,34 +63,22 @@ class VideosEndpoint(
     * @param videoType Type of video
     * @param before Cursor for backward pagination
     * @param after Cursor for forward pagination
-    * @param first Number of values to be returned when getting videos by user or game ID
+    * @param size Number of values to be returned when getting videos by user or game ID
     * @return Twitch video
     */
-  def getByUserId(userId: String,
-                  language: Option[String] = None,
-                  period: Period = VideoPeriod.All,
-                  sort: Sort = VideoSort.Time,
-                  videoType: VideoType = VideoType.All,
-                  before: Option[String] = None,
-                  after: Option[String] = None,
-                  first: Option[Int] = None): Future[TwitchResponse[TwitchVideo]] = ~> {
+  def byUserId(
+      userId: String,
+      language: Option[String] = None,
+      period: Period = VideoPeriod.All,
+      sort: Sort = VideoSort.Time,
+      videoType: VideoType = VideoType.All,
+      before: Option[String] = None,
+      after: Option[String] = None,
+      size: Option[Int] = None
+  ): Future[TwitchResponse[TwitchVideo]] = ~> {
+    require(userId.nonEmpty, "Cannot query without defining a user id")
 
-    require(userId != null && userId.nonEmpty, "Cannot query without defining a user id")
-    require(first.forall(_ > 0), "Cannot return less than a single video in a one request")
-    require(first.forall(_ <= 100), "Cannot return more than 100 videos in a one request")
-
-    client.http(videosPath) {
-      query(
-        "user_id"  -> userId,
-        "period"   -> period,
-        "sort"     -> sort,
-        "type"     -> videoType,
-        "language" -> language,
-        "before"   -> before,
-        "after"    -> after,
-        "first"    -> first
-      )
-    }
+    by(Seq(), Option(userId), None, language, period, sort, videoType, before, after, size)
   }
 
   /**
@@ -107,24 +91,45 @@ class VideosEndpoint(
     * @param videoType Type of video
     * @param before Cursor for backward pagination
     * @param after Cursor for forward pagination
-    * @param first Number of values to be returned when getting videos by user or game ID
+    * @param size Number of values to be returned when getting videos by user or game ID
     * @return Twitch video
     */
-  def getByGameId(gameId: String,
-                  language: Option[String] = None,
-                  period: Period = VideoPeriod.All,
-                  sort: Sort = VideoSort.Time,
-                  videoType: VideoType = VideoType.All,
-                  before: Option[String] = None,
-                  after: Option[String] = None,
-                  first: Option[Int] = None): Future[TwitchResponse[TwitchVideo]] = ~> {
+  def byGameId(
+      gameId: String,
+      language: Option[String] = None,
+      period: Period = VideoPeriod.All,
+      sort: Sort = VideoSort.Time,
+      videoType: VideoType = VideoType.All,
+      before: Option[String] = None,
+      after: Option[String] = None,
+      size: Option[Int] = None
+  ): Future[TwitchResponse[TwitchVideo]] = ~> {
+    require(gameId.nonEmpty, "Cannot query without defining a game id")
 
-    require(gameId != null && gameId.nonEmpty, "Cannot query without defining a game id")
-    require(first.forall(_ > 0), "Cannot return less than a single video in a one request")
-    require(first.forall(_ <= 100), "Cannot return more than 100 videos in a one request")
+    by(Seq(), None, Option(gameId), language, period, sort, videoType, before, after, size)
+  }
+
+  private def by(
+      ids: Seq[String] = Seq(),
+      userId: Option[String] = None,
+      gameId: Option[String] = None,
+      language: Option[String] = None,
+      period: Period = VideoPeriod.All,
+      sort: Sort = VideoSort.Time,
+      videoType: VideoType = VideoType.All,
+      before: Option[String] = None,
+      after: Option[String] = None,
+      size: Option[Int] = None
+  ): Future[TwitchResponse[TwitchVideo]] = ~> {
+    require(ids.nonEmpty || userId.isDefined || gameId.isDefined,
+            "One of parameters: ids, userId, gameId should be defined")
+    require(size.forall(_ > 0), "Cannot return less than a single video in a one request")
+    require(size.forall(_ <= 100), "Cannot return more than 100 videos in a one request")
 
     client.http(videosPath) {
       query(
+        "id"       -> ids,
+        "user_id"  -> userId,
         "game_id"  -> gameId,
         "period"   -> period,
         "sort"     -> sort,
@@ -132,9 +137,8 @@ class VideosEndpoint(
         "language" -> language,
         "before"   -> before,
         "after"    -> after,
-        "first"    -> first
+        "first"    -> size
       )
     }
   }
-
 }

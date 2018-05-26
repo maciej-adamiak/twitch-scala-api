@@ -41,7 +41,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchVideo]("/helix/videos", query, video)
           new VideosEndpoint()
-            .getByIds(Seq("123", "312"))
+            .byId(Seq("123", "312"))
             .map(_.twitchPayload.data should contain only video)
         }
       }
@@ -49,12 +49,12 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
       "fail" when {
 
         "calling API without ids defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new VideosEndpoint().getByIds(Seq()))
+          recoverToSucceededIf[IllegalArgumentException](new VideosEndpoint().byId(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new VideosEndpoint().getByIds(Seq.fill(101)(Random.nextString(4)))
+            new VideosEndpoint().byId(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -70,7 +70,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchVideo]("/helix/videos", query, video)
           new VideosEndpoint()
-            .getByUserId("123")
+            .byUserId("123")
             .map(_.twitchPayload.data should contain only video)
         }
       }
@@ -78,7 +78,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
       "fail" when {
 
         "calling API without user id defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new VideosEndpoint().getByUserId(null))
+          recoverToSucceededIf[IllegalArgumentException](new VideosEndpoint().byUserId(""))
         }
       }
     }
@@ -94,7 +94,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchVideo]("/helix/videos", query, video)
           new VideosEndpoint()
-            .getByGameId("123")
+            .byGameId("123")
             .map(_.twitchPayload.data should contain only video)
         }
       }
@@ -102,7 +102,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
       "fail" when {
 
         "calling API without game id defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new VideosEndpoint().getByGameId(null))
+          recoverToSucceededIf[IllegalArgumentException](new VideosEndpoint().byGameId(""))
         }
       }
     }
