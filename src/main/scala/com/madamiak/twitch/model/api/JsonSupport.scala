@@ -109,7 +109,7 @@ trait JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
       HearthstoneStreamHero,
       "type",
       "class",
-      "type"
+      "name"
     )
   implicit val hearthstonePlayerFormat: RootJsonFormat[HearthstoneStreamPlayer] = jsonFormat1(HearthstoneStreamPlayer)
   implicit val hearthstoneMetadataFormat: RootJsonFormat[HearthstoneStreamMetadata] = jsonFormat2(

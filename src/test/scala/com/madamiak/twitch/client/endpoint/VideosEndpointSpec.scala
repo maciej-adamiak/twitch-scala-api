@@ -5,7 +5,6 @@ import java.time.Duration
 
 import akka.http.scaladsl.model.Uri.Query
 import com.madamiak.twitch.client.TwitchClient
-import com.madamiak.twitch.model.api.TwitchPayload
 import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, VideoViewableType }
 
 import scala.util.Random
@@ -35,8 +34,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query      = Query("id=123&id=312")
-          val twitchData = TwitchPayload(Seq(video))
+          val query = Query("id=123&id=312")
 
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchVideo]("/helix/videos", query, video)
@@ -64,8 +62,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query      = Query("user_id=123")
-          val twitchData = TwitchPayload(Seq(video))
+          val query = Query("user_id=123")
 
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchVideo]("/helix/videos", query, video)
@@ -88,8 +85,7 @@ class VideosEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query      = Query("game_id=123")
-          val twitchData = TwitchPayload(Seq(video))
+          val query = Query("game_id=123")
 
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchVideo]("/helix/videos", query, video)

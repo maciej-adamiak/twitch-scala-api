@@ -7,7 +7,7 @@ import java.util.UUID
 
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
-import com.madamiak.twitch.model.api.stream.{ StreamType, TwitchStream }
+import com.madamiak.twitch.model.api.stream._
 import com.madamiak.twitch.model.api.user.{ BroadcasterType, TwitchFollow, TwitchUser, UserType }
 import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, VideoViewableType }
 import org.scalatest.{ Matchers, WordSpec }
@@ -127,7 +127,87 @@ class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
             32575
           )
         }
+      }
 
+      "extract stream metadata" when {
+
+        "processing valid hearthstone values" in {
+          val json =
+            """
+              |{
+              |   "user_id":"1564968",
+              |   "game_id":"138585",
+              |   "overwatch":null,
+              |   "hearthstone":{
+              |      "broadcaster":{
+              |         "hero":{
+              |            "type":"Classic hero",
+              |            "class":"Shaman",
+              |            "name":"Thrall"
+              |         }
+              |      },
+              |      "opponent":{
+              |         "hero":{
+              |            "type":"Classic hero",
+              |            "class":"Warrior",
+              |            "name":"Garrosh Hellscream"
+              |         }
+              |      }
+              |   }
+              |}
+            """.stripMargin
+
+          val metadata = json.parseJson.convertTo[TwitchStreamMetadata]
+
+          metadata shouldEqual TwitchStreamMetadata(
+            "138585",
+            "1564968",
+            hearthstoneData = Some(
+              HearthstoneStreamMetadata(
+                HearthstoneStreamPlayer(
+                  Some(HearthstoneStreamHero("Classic hero", "Shaman", "Thrall"))
+                ),
+                HearthstoneStreamPlayer(
+                  Some(HearthstoneStreamHero("Classic hero", "Warrior", "Garrosh Hellscream"))
+                )
+              )
+            )
+          )
+        }
+
+        "processing valid overwatch values" in {
+          val json =
+            """
+              |{
+              |   "user_id":"23161357",
+              |   "game_id":"488552",
+              |   "overwatch":{
+              |      "broadcaster":{
+              |         "hero":{
+              |            "role":"Offense",
+              |            "name":"Soldier 76",
+              |            "ability":"Heavy Pulse Rifle"
+              |         }
+              |      }
+              |   },
+              |   "hearthstone":null
+              |}
+            """.stripMargin
+
+          val metadata = json.parseJson.convertTo[TwitchStreamMetadata]
+
+          metadata shouldEqual TwitchStreamMetadata(
+            "488552",
+            "23161357",
+            overwatchData = Some(
+              OverwatchStreamMetadata(
+                OverwatchStreamPlayer(
+                  Some(OverwatchStreamHero("Heavy Pulse Rifle", "Offense", "Soldier 76"))
+                )
+              )
+            )
+          )
+        }
       }
 
       "extract video data" when {
@@ -172,7 +252,6 @@ class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
             Duration.parse("PT3H8M33S")
           )
         }
-
       }
 
       "extract user data" when {
@@ -209,7 +288,6 @@ class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
             191836881
           )
         }
-
       }
 
       "extract user follow data" when {
@@ -232,11 +310,7 @@ class JsonSupportSpec extends WordSpec with Matchers with JsonSupport {
             dateFormatter.parse("2017-08-22T22:55:24Z")
           )
         }
-
       }
-
     }
-
   }
-
 }
