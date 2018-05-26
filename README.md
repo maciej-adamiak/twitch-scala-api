@@ -4,7 +4,7 @@ Twitch SDK for building application upon the [newest API](https://dev.twitch.tv/
 
 ## Usage
 
-```scala
+```
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.{ Failure, Success }
@@ -13,12 +13,12 @@ import com.madamiak.twitch.Twitch
 
 val twitch = Twitch()
 
-twitch.games.getByName(Seq("PLAYERUNKNOWN'S BATTLEGROUNDS")).onComplete {
+twitch.games.getByName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
   case Success(response) => for (game <- response.twitchPayload.data) println(game)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
 
-twitch.streams.get(first = Some(10)).onComplete {
+twitch.streams.get(size = Some(10)).onComplete {
   case Success(response) => for (stream <- response.twitchPayload.data) println(stream)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
@@ -42,7 +42,7 @@ TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn
 | streams  | /helix/streams/metadata | GET    |
 | users    | /helix/users            | GET    |
 | users    | /helix/users/follows    | GET    |
-| videos   | /helix/streams/videos   | GET    |
+| videos   | /helix/videos   | GET    |
 
 ## Plans
 - Prepare mixins of endpoints to create commonly used queries e.g. find the streams of most popular games

@@ -16,13 +16,12 @@ class GamesEndpoint(
   private val topGamesPath = "/helix/games/top"
 
   /**
-    * Gets game information by game name
+    * Acquires game information using a single or multiple game names
     *
-    * @param names Game names sequence
+    * @param names Game names
     * @return Twitch game data
     */
-  def getByName(names: Seq[String]): Future[TwitchResponse[TwitchGame]] = ~> {
-
+  def byName(names: String*): Future[TwitchResponse[TwitchGame]] = ~> {
     require(names.nonEmpty, "Cannot query using empty names list")
     require(names.length <= 100, "Cannot query using more than 100 names")
 
@@ -32,12 +31,12 @@ class GamesEndpoint(
   }
 
   /**
-    * Gets game information by game ids
+    * Acquires game information using a single or multiple game ids
     *
     * @param ids Game ids
     * @return Twitch game data
     */
-  def getById(ids: Seq[String]): Future[TwitchResponse[TwitchGame]] = ~> {
+  def byId(ids: String*): Future[TwitchResponse[TwitchGame]] = ~> {
     require(ids.nonEmpty, "Cannot query using empty ids list")
     require(ids.length <= 100, "Cannot query using more than 100 ids")
 
@@ -51,20 +50,22 @@ class GamesEndpoint(
     *
     * @param before Cursor for backward pagination
     * @param after Cursor for forward pagination
-    * @param first Maximum number of objects to return
+    * @param size Maximum number of objects to return, if none defaults to 20
     * @return Twitch game data
     */
-  def popular(before: Option[String] = None,
-              after: Option[String] = None,
-              first: Option[Int] = None): Future[TwitchResponse[TwitchGame]] = ~> {
-    require(first.forall(_ > 0), "Cannot return less than a single clip in a one request")
-    require(first.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
+  def popular(
+      before: Option[String] = None,
+      after: Option[String] = None,
+      size: Option[Int] = None
+  ): Future[TwitchResponse[TwitchGame]] = ~> {
+    require(size.forall(_ > 0), "Cannot return less than a single clip in a one request")
+    require(size.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
     client.http(topGamesPath) {
       query(
         "before" -> before,
         "after"  -> after,
-        "first"  -> first
+        "first"  -> size
       )
     }
   }
