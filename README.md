@@ -4,7 +4,7 @@ Twitch SDK for building application upon the [newest API](https://dev.twitch.tv/
 
 ## Usage
 
-```
+```scala
 import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 import scala.util.{ Failure, Success }
@@ -13,13 +13,18 @@ import com.madamiak.twitch.Twitch
 
 val twitch = Twitch()
 
-twitch.games.getByName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
+twitch.games.byName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
   case Success(response) => for (game <- response.twitchPayload.data) println(game)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
 
-twitch.streams.get(size = Some(10)).onComplete {
+twitch.streams.by(gameIds = Seq("123"), size = Some(10)).onComplete {
   case Success(response) => for (stream <- response.twitchPayload.data) println(stream)
+  case Failure(t)        => println("An error has occurred: " + t.getMessage)
+}
+
+twitch.streams.metadata.byCommunityId("848d95be-90b3-44a5-b143-6e373754c382",).onComplete {
+  case Success(response) => for (metadata <- response.twitchPayload.data) println(metadata)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
 ```
