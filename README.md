@@ -13,13 +13,18 @@ import com.madamiak.twitch.Twitch
 
 val twitch = Twitch()
 
-twitch.games.getByName(Seq("PLAYERUNKNOWN'S BATTLEGROUNDS")).onComplete {
+twitch.games.byName("PLAYERUNKNOWN'S BATTLEGROUNDS").onComplete {
   case Success(response) => for (game <- response.twitchPayload.data) println(game)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
 
-twitch.streams.get(first = Some(10)).onComplete {
+twitch.streams.by(gameIds = Seq("123"), size = Some(10)).onComplete {
   case Success(response) => for (stream <- response.twitchPayload.data) println(stream)
+  case Failure(t)        => println("An error has occurred: " + t.getMessage)
+}
+
+twitch.streams.metadata.byCommunityId("848d95be-90b3-44a5-b143-6e373754c382").onComplete {
+  case Success(response) => for (metadata <- response.twitchPayload.data) println(metadata)
   case Failure(t)        => println("An error has occurred: " + t.getMessage)
 }
 ```
@@ -31,7 +36,7 @@ TwitchStream(List(),497416,28645088240,en,2018-05-10T16:41:47Z,https://static-cd
 TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn.jtvnw.net/previews-ttv/live_user_gotaga-{width}x{height}.jpg,[FR] GOTAGA ► #FortniteGrind #Chill,live,24147592,20416)
 ```
 
-## Supported API endoints 
+## Supported API endpoints 
 
 | Resource | Endpoint                | Method |
 | ---      | ---                     | ---    |
@@ -42,7 +47,7 @@ TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn
 | streams  | /helix/streams/metadata | GET    |
 | users    | /helix/users            | GET    |
 | users    | /helix/users/follows    | GET    |
-| videos   | /helix/streams/videos   | GET    |
+| videos   | /helix/videos   | GET    |
 
 ## Plans
 - Prepare mixins of endpoints to create commonly used queries e.g. find the streams of most popular games

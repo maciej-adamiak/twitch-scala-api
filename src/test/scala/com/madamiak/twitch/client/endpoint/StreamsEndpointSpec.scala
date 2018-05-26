@@ -41,11 +41,11 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchStream]("/helix/streams", query, stream)
           new StreamsEndpoint()
-            .get(
+            .by(
               communityIds = Seq("848d95be-90b3-44a5-b143-6e373754c382", "fd0eab99-832a-4d7e-8cc0-04d73deb2e54"),
               gameIds = Seq("29307"),
               languages = Seq("en", "pl"),
-              first = Some(98)
+              size = Some(98)
             )
             .map(_.twitchPayload.data should contain only stream)
         }
@@ -55,7 +55,7 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new StreamsEndpoint().get(Seq.fill(101)(Random.nextString(4)))
+            new StreamsEndpoint().by(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -71,11 +71,11 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
           )
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchStream]("/helix/streams/metadata", query, stream)
-          new StreamsEndpoint()
-            .metadata(
+          new StreamsEndpoint().metadata
+            .by(
               gameIds = Seq("488552"),
               userIds = Seq("23161357"),
-              first = Some(98)
+              size = Some(98)
             )
             .map(_.twitchPayload.data should contain only stream)
         }
@@ -85,7 +85,7 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new StreamsEndpoint().metadata(Seq.fill(101)(Random.nextString(4)))
+            new StreamsEndpoint().metadata.by(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }

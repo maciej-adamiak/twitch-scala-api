@@ -41,7 +41,7 @@ class UserEndpointSpec extends EndpointAsyncWordSpec {
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchUser]("/helix/users", query, user)
           new UsersEndpoint()
-            .getById(Seq("44322889"))
+            .byId(Seq("44322889"))
             .map(_.twitchPayload.data should contain only user)
         }
       }
@@ -49,12 +49,12 @@ class UserEndpointSpec extends EndpointAsyncWordSpec {
       "fail" when {
 
         "calling API without ids defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new UsersEndpoint().getById(Seq()))
+          recoverToSucceededIf[IllegalArgumentException](new UsersEndpoint().byId(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new UsersEndpoint().getById(Seq.fill(101)(Random.nextString(4)))
+            new UsersEndpoint().byId(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -70,7 +70,7 @@ class UserEndpointSpec extends EndpointAsyncWordSpec {
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchUser]("/helix/users", query, user)
           new UsersEndpoint()
-            .getById(Seq("dallas"))
+            .byId(Seq("dallas"))
             .map(_.twitchPayload.data should contain only user)
         }
       }
@@ -78,12 +78,12 @@ class UserEndpointSpec extends EndpointAsyncWordSpec {
       "fail" when {
 
         "calling API without ids defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new UsersEndpoint().getById(Seq()))
+          recoverToSucceededIf[IllegalArgumentException](new UsersEndpoint().byId(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new UsersEndpoint().getById(Seq.fill(101)(Random.nextString(4)))
+            new UsersEndpoint().byId(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -98,8 +98,8 @@ class UserEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchFollow]("/helix/users/follows", query, follow)
-          new UsersEndpoint()
-            .follows("171003792")
+          new UsersEndpoint().follows
+            .from("171003792")
             .map(_.twitchPayload.data should contain only follow)
         }
       }
@@ -114,8 +114,8 @@ class UserEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchFollow]("/helix/users/follows", query, follow)
-          new UsersEndpoint()
-            .followed("23161357")
+          new UsersEndpoint().follows
+            .to("23161357")
             .map(_.twitchPayload.data should contain only follow)
         }
       }

@@ -1,6 +1,6 @@
 package com.madamiak.twitch.client
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.{ Matchers, WordSpec }
 
 class QueryUtilsSpec extends WordSpec with Matchers {
 
@@ -72,8 +72,6 @@ class QueryUtilsSpec extends WordSpec with Matchers {
         )
         query.toString shouldEqual "a1=1&b2=1&b2=2&b2=3&c2=a&d1=1"
       }
-
     }
   }
-
 }

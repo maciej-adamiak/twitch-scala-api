@@ -27,7 +27,7 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
           new GamesEndpoint()
-            .getById(Seq("123", "312"))
+            .byId(Seq("123", "312"))
             .map(_.twitchPayload.data should contain only game)
         }
       }
@@ -35,12 +35,12 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
       "fail" when {
 
         "calling API without ids defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getById(Seq()))
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().byId(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().getById(Seq.fill(101)(Random.nextString(4)))
+            new GamesEndpoint().byId(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -55,19 +55,19 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
           new GamesEndpoint()
-            .getByName(Seq("gameA", "gameB"))
+            .byName(Seq("gameA", "gameB"))
             .map(_.twitchPayload.data should contain only game)
         }
       }
 
       "fail" when {
         "calling API without names defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().getByName(Seq()))
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().byName(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().getByName(Seq.fill(101)(Random.nextString(4)))
+            new GamesEndpoint().byName(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -100,7 +100,7 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games/top", query, game)
           new GamesEndpoint()
-            .popular(before = Some("313"), first = Some(23))
+            .popular(before = Some("313"), size = Some(23))
             .map(_.twitchPayload.data should contain only game)
         }
       }
@@ -109,13 +109,13 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().popular(first = Some(101))
+            new GamesEndpoint().popular(size = Some(101))
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().popular(first = Some(-1))
+            new GamesEndpoint().popular(size = Some(-1))
           )
         }
       }

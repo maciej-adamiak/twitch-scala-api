@@ -8,14 +8,14 @@ import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import akka.stream.ActorMaterializer
 import com.madamiak.twitch.client.TwitchClient
-import com.madamiak.twitch.model.api.{ JsonSupport, TwitchPayload }
+import com.madamiak.twitch.model.api.TwitchPayload
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.{ AsyncWordSpec, Matchers }
 
 import scala.concurrent.{ ExecutionContext, Future }
 
-trait EndpointAsyncWordSpec extends AsyncWordSpec with Matchers with AsyncMockFactory with JsonSupport {
+trait EndpointAsyncWordSpec extends AsyncWordSpec with Matchers with AsyncMockFactory {
 
   implicit val system: ActorSystem             = ActorSystem("test-actor-system")
   implicit val executor: ExecutionContext      = system.dispatcher

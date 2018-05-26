@@ -1,7 +1,7 @@
 package com.madamiak.twitch.model.api.stream
 
 import java.net.URL
-import java.util.{Date, UUID}
+import java.util.{ Date, UUID }
 
 import com.madamiak.twitch.model.api.stream.StreamType.StreamType
 
@@ -17,7 +17,7 @@ import com.madamiak.twitch.model.api.stream.StreamType.StreamType
   * @param title Stream title
   * @param streamType Stream type: "live", "vodcast", or ""
   * @param userId ID of the user who is streaming
-  * @param viewerCount Number of viewers watching the stream at the time of the quer
+  * @param viewerCount Number of viewers watching the stream at the time of the query
   */
 case class TwitchStream(
     communityIds: Seq[UUID],

@@ -42,9 +42,6 @@ class RateLimitSpec extends WordSpec with Matchers {
 
         intercept[IllegalArgumentException](RateLimit(httpResponse))
       }
-
     }
-
   }
-
 }

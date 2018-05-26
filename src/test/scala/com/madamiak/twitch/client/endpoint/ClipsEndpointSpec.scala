@@ -36,7 +36,7 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchClip]("/helix/clips", query, clip)
           new ClipsEndpoint()
-            .getById(Seq("AwkwardHelplessSalamanderSwiftRage"))
+            .byId(Seq("AwkwardHelplessSalamanderSwiftRage"))
             .map(_.twitchPayload.data should contain only clip)
         }
       }
@@ -45,25 +45,25 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getById(Seq.fill(101)(Random.nextString(4)))
+            new ClipsEndpoint().byId(Seq.fill(101)(Random.nextString(4)))
           )
         }
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getById(Seq("AwkwardHelplessSalamanderSwiftRage"), first = Some(101))
+            new ClipsEndpoint().byId(Seq("AwkwardHelplessSalamanderSwiftRage"), size = Some(101))
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getById(Seq("AwkwardHelplessSalamanderSwiftRage"), first = Some(-1))
+            new ClipsEndpoint().byId(Seq("AwkwardHelplessSalamanderSwiftRage"), size = Some(-1))
           )
         }
 
         "calling API without ids defined" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getById(Seq())
+            new ClipsEndpoint().byId(Seq())
           )
         }
       }
@@ -78,7 +78,7 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchClip]("/helix/clips", query, clip)
           new ClipsEndpoint()
-            .getByGameId("123421")
+            .byGameId("123421")
             .map(_.twitchPayload.data should contain only clip)
         }
       }
@@ -87,19 +87,19 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
         "calling API using empty game id" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getByGameId("")
+            new ClipsEndpoint().byGameId("")
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getByGameId("1234", first = Some(-1))
+            new ClipsEndpoint().byGameId("1234", size = Some(-1))
           )
         }
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getByGameId("1234", first = Some(101))
+            new ClipsEndpoint().byGameId("1234", size = Some(101))
           )
         }
       }
@@ -114,7 +114,7 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchClip]("/helix/clips", query, clip)
           new ClipsEndpoint()
-            .getByBroadcasterId("123421")
+            .byBroadcasterId("123421")
             .map(_.twitchPayload.data should contain only clip)
         }
       }
@@ -123,19 +123,19 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
         "calling API using empty broadcaster id" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getByBroadcasterId("")
+            new ClipsEndpoint().byBroadcasterId("")
           )
         }
 
         "trying to fetch a negative number of records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getByBroadcasterId("1234", first = Some(-1))
+            new ClipsEndpoint().byBroadcasterId("1234", size = Some(-1))
           )
         }
 
         "trying to fetch more than 100 records" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new ClipsEndpoint().getByBroadcasterId("1234", first = Some(101))
+            new ClipsEndpoint().byBroadcasterId("1234", size = Some(101))
           )
         }
       }
