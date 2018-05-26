@@ -27,7 +27,7 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
           new GamesEndpoint()
-            .byId("123", "312")
+            .byId(Seq("123", "312"))
             .map(_.twitchPayload.data should contain only game)
         }
       }
@@ -35,12 +35,12 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
       "fail" when {
 
         "calling API without ids defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().byId())
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().byId(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().byId(Seq.fill(101)(Random.nextString(4)): _*)
+            new GamesEndpoint().byId(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }
@@ -55,19 +55,19 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
           new GamesEndpoint()
-            .byName("gameA", "gameB")
+            .byName(Seq("gameA", "gameB"))
             .map(_.twitchPayload.data should contain only game)
         }
       }
 
       "fail" when {
         "calling API without names defined" in {
-          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().byName())
+          recoverToSucceededIf[IllegalArgumentException](new GamesEndpoint().byName(Seq()))
         }
 
         "calling API with more ids than the limit" in {
           recoverToSucceededIf[IllegalArgumentException](
-            new GamesEndpoint().byName(Seq.fill(101)(Random.nextString(4)): _*)
+            new GamesEndpoint().byName(Seq.fill(101)(Random.nextString(4)))
           )
         }
       }

@@ -16,12 +16,20 @@ class GamesEndpoint(
   private val topGamesPath = "/helix/games/top"
 
   /**
-    * Acquires game information using a single or multiple game names
+    * Acquires game information using a single game name
+    *
+    * @param name Game name
+    * @return Twitch game data
+    */
+  def byName(name: String): Future[TwitchResponse[TwitchGame]] = byName(Seq(name))
+
+  /**
+    * Acquires game information using multiple game names
     *
     * @param names Game names
     * @return Twitch game data
     */
-  def byName(names: String*): Future[TwitchResponse[TwitchGame]] = ~> {
+  def byName(names: Seq[String]): Future[TwitchResponse[TwitchGame]] = ~> {
     require(names.nonEmpty, "Cannot query using empty names list")
     require(names.length <= 100, "Cannot query using more than 100 names")
 
@@ -31,12 +39,20 @@ class GamesEndpoint(
   }
 
   /**
-    * Acquires game information using a single or multiple game ids
+    * Acquires game information using a single game id
+    *
+    * @param id Game ids
+    * @return Twitch game data
+    */
+  def byId(id: String): Future[TwitchResponse[TwitchGame]] = byId(Seq(id))
+
+  /**
+    * Acquires game information using multiple game ids
     *
     * @param ids Game ids
     * @return Twitch game data
     */
-  def byId(ids: String*): Future[TwitchResponse[TwitchGame]] = ~> {
+  def byId(ids: Seq[String]): Future[TwitchResponse[TwitchGame]] = ~> {
     require(ids.nonEmpty, "Cannot query using empty ids list")
     require(ids.length <= 100, "Cannot query using more than 100 ids")
 
