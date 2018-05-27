@@ -8,7 +8,7 @@ import com.madamiak.twitch.client.endpoint._
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future }
 import scala.language.implicitConversions
 
-class Twitch(implicit val system: ActorSystem = ActorSystem("twitch-scala-client-system")) {
+class Twitch(implicit val system: ActorSystem = ActorSystem("twitch-scala-sdk-system")) {
 
   implicit val executionContext: ExecutionContext = system.dispatcher
   implicit val materializer: ActorMaterializer    = ActorMaterializer()
