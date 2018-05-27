@@ -8,7 +8,7 @@ import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.unmarshalling.Unmarshaller
 import akka.stream.ActorMaterializer
 import com.madamiak.twitch.client.TwitchClient
-import com.madamiak.twitch.model.api.TwitchPayload
+import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 import org.scalamock.scalatest.AsyncMockFactory
 import org.scalatest.{ AsyncWordSpec, Matchers }
@@ -25,9 +25,10 @@ trait EndpointAsyncWordSpec extends AsyncWordSpec with Matchers with AsyncMockFa
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
   def twitchClientMock[T](path: String, query: Query, entity: T): TwitchClient = {
-    val rateLimit = RateLimit(1, 2, 2)
-    val payload   = TwitchPayload(Seq(entity), None)
-    val result    = Future.successful(new TwitchResponse[T](rateLimit, payload))
+    val rateLimit  = RateLimit(1, 2, 2)
+    val pagination = Pagination("refer")
+    val payload    = TwitchPayload(Seq(entity), Some(pagination))
+    val result     = Future.successful(new TwitchResponse[T](rateLimit, payload))
 
     val twitchClient: TwitchClient = mock[TwitchClient]
 

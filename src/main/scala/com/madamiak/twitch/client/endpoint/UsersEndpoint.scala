@@ -84,13 +84,7 @@ class UsersEndpoint(
       require(size.forall(_ > 0), "Cannot return less than a single clip in a one request")
       require(size.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
-      client.http(followsPath) {
-        query(
-          "from_id" -> followerId,
-          "after"   -> after,
-          "first"   -> size
-        )
-      }
+      by(None, Option(followerId), after, size)
     }
 
     /**
@@ -111,13 +105,7 @@ class UsersEndpoint(
       require(size.forall(_ > 0), "Cannot return less than a single clip in a one request")
       require(size.forall(_ <= 100), "Cannot return more than 100 clips in a one request")
 
-      client.http(followsPath) {
-        query(
-          "to_id" -> followedId,
-          "after" -> after,
-          "first" -> size
-        )
-      }
+      by(Option(followedId), None, after, size)
     }
 
     /**
@@ -130,10 +118,10 @@ class UsersEndpoint(
       * @param size Maximum number of objects to return
       * @return Twitch user follow data
       */
-    def by(followedId: String,
-           followerId: String,
+    def by(followedId: Option[String],
+           followerId: Option[String],
            after: Option[String] = None,
-           size: Option[Int] = None): Future[TwitchResponse[Boolean]] = ~> {
+           size: Option[Int] = None): Future[TwitchResponse[TwitchFollow]] = ~> {
       client.http(followsPath) {
         query(
           "to_id"   -> followedId,

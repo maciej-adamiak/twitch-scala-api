@@ -33,18 +33,19 @@ class TwitchClient(
       path: String
   )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] =
     Http()
-      .singleRequest(
-        HttpRequest()
-          .withUri(
-            twitchUri
-              .withPath(Path(path))
-              .withQuery(query)
-          )
-          .withHeaders(ClientIdHeader(config.getString("twitch.client.id")))
-      )
+      .singleRequest(request(path, query))
       .flatMap(extractData[T])
 
-  private def extractData[T](
+  private[client] def request[T](path: String, query: Query) =
+    HttpRequest()
+      .withUri(
+        twitchUri
+          .withPath(Path(path))
+          .withQuery(query)
+      )
+      .withHeaders(ClientIdHeader(config.getString("twitch.client.id")))
+
+  private[client] def extractData[T](
       response: HttpResponse
   )(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] = response.status match {
     case StatusCodes.OK =>

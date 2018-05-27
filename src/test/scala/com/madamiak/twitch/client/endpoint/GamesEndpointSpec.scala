@@ -23,11 +23,11 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query = Query("id=123&id=312")
+          val query = Query("id=123")
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
           new GamesEndpoint()
-            .byId(Seq("123", "312"))
+            .byId("123")
             .map(_.twitchPayload.data should contain only game)
         }
       }
@@ -51,11 +51,11 @@ class GamesEndpointSpec extends EndpointAsyncWordSpec {
       "succeed" when {
 
         "using a valid query" in {
-          val query = Query("name=gameA&name=gameB")
+          val query = Query("name=gameA")
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchGame]("/helix/games", query, game)
           new GamesEndpoint()
-            .byName(Seq("gameA", "gameB"))
+            .byName("gameA")
             .map(_.twitchPayload.data should contain only game)
         }
       }

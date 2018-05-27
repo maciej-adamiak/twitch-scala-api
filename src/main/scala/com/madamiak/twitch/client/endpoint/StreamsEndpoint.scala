@@ -79,7 +79,7 @@ class StreamsEndpoint(
       before: Option[String] = None,
       after: Option[String] = None,
       size: Option[Int] = None
-  ): Future[TwitchResponse[TwitchStream]] = by(userIds = Seq(userLogin), before = before, after = after, size = size)
+  ): Future[TwitchResponse[TwitchStream]] = by(userLogins = Seq(userLogin), before = before, after = after, size = size)
 
   /**
     * Acquire information regarding active streams in a specified language
