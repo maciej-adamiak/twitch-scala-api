@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/maciej-adamiak/twitch-scala-sdk.svg?branch=master)](https://travis-ci.org/maciej-adamiak/twitch-scala-sdk)
+[![codecov](https://codecov.io/gh/maciej-adamiak/twitch-scala-sdk/branch/master/graph/badge.svg)](https://codecov.io/gh/maciej-adamiak/twitch-scala-sdk)
 
 # Twitch Scala SDK
 
