@@ -31,12 +31,12 @@ class ClipsEndpointSpec extends EndpointAsyncWordSpec {
 
       "succeed" when {
 
-        "using a valid query" in {
-          val query = Query("id=AwkwardHelplessSalamanderSwiftRage")
+        "using a valid id query" in {
+          val query = Query("id=AwkwardHelplessSalamanderSwiftRage&first=1")
 
           implicit val twitchClient: TwitchClient = twitchClientMock[TwitchClip]("/helix/clips", query, clip)
           new ClipsEndpoint()
-            .byId(Seq("AwkwardHelplessSalamanderSwiftRage"))
+            .byId("AwkwardHelplessSalamanderSwiftRage")
             .map(_.twitchPayload.data should contain only clip)
         }
       }

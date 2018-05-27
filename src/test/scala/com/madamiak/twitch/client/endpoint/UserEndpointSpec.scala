@@ -64,13 +64,23 @@ class UserEndpointSpec extends EndpointAsyncWordSpec {
 
       "succeed" when {
 
-        "using a valid query" in {
+        "using a valid id query" in {
           val query = Query("id=dallas")
 
           implicit val twitchClient: TwitchClient =
             twitchClientMock[TwitchUser]("/helix/users", query, user)
           new UsersEndpoint()
-            .byId(Seq("dallas"))
+            .byId("dallas")
+            .map(_.twitchPayload.data should contain only user)
+        }
+
+        "using valid login query" in {
+          val query = Query("login=dallas")
+
+          implicit val twitchClient: TwitchClient =
+            twitchClientMock[TwitchUser]("/helix/users", query, user)
+          new UsersEndpoint()
+            .byLogin("dallas")
             .map(_.twitchPayload.data should contain only user)
         }
       }

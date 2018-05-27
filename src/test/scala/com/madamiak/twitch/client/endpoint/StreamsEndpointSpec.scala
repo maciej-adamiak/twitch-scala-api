@@ -49,6 +49,51 @@ class StreamsEndpointSpec extends EndpointAsyncWordSpec {
             )
             .map(_.twitchPayload.data should contain only stream)
         }
+
+        "using a valid language query" in {
+          val query = Query("language=en")
+
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchStream]("/helix/streams", query, stream)
+          new StreamsEndpoint()
+            .byLanguage("en")
+            .map(_.twitchPayload.data should contain only stream)
+        }
+
+        "using a valid user id query" in {
+          val query = Query("user_id=123")
+
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchStream]("/helix/streams", query, stream)
+          new StreamsEndpoint()
+            .byUserId("123")
+            .map(_.twitchPayload.data should contain only stream)
+        }
+
+        "using a valid community id query" in {
+          val query = Query("community_id=848d95be-90b3-44a5-b143-6e373754c382")
+
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchStream]("/helix/streams", query, stream)
+          new StreamsEndpoint()
+            .byCommunityId("848d95be-90b3-44a5-b143-6e373754c382")
+            .map(_.twitchPayload.data should contain only stream)
+        }
+
+        "using a valid game id query" in {
+          val query = Query("game_id=123")
+
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchStream]("/helix/streams", query, stream)
+          new StreamsEndpoint()
+            .byGameId("123")
+            .map(_.twitchPayload.data should contain only stream)
+        }
+
+        "using a valid user login query" in {
+          val query = Query("user_login=login")
+
+          implicit val twitchClient: TwitchClient = twitchClientMock[TwitchStream]("/helix/streams", query, stream)
+          new StreamsEndpoint()
+            .byUserLogin("login")
+            .map(_.twitchPayload.data should contain only stream)
+        }
       }
 
       "fail" when {
