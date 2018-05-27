@@ -4,5 +4,4 @@ import org.scalamock.matchers.Matchers
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.WordSpec
 
-//TODO
-class TwitchClientSpec extends WordSpec with Matchers with MockFactory {}
+class TwitchClientSpec extends WordSpec with Matchers with MockFactory

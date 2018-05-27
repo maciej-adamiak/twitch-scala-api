@@ -64,7 +64,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
               |   "view_count":10,
               |   "created_at":"2017-11-30T22:34:18Z",
               |   "thumbnail_url":"https://clips-media.tv"
-              |} 
+              |}
             """.stripMargin
 
           val clip = json.parseJson.convertTo[TwitchClip]
@@ -267,10 +267,10 @@ class JsonSupportSpec extends WordSpec with Matchers {
               |   "type":"staff",
               |   "broadcaster_type":"",
               |   "description":"Just a gamer playing games and chatting. :)",
-              |   "profile_image_url":"https://static-cdn.jtvnw.net/jtv_user_picturesA",
-              |   "offline_image_url":"https://static-cdn.jtvnw.net/jtv_user_picturesB",
+              |   "profile_image_url":"https://static-cdn.jtvnw.net/imgA.jpg",
+              |   "offline_image_url":"https://static-cdn.jtvnw.net/imgB.jpg",
               |   "view_count":191836881,
-              |   "email":"login@provider.com"
+              |   "email":"test@provider.com"
               |}
             """.stripMargin
 
@@ -280,7 +280,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
             BroadcasterType.Undefined,
             "Just a gamer playing games and chatting. :)",
             "dallas",
-            "login@provider.com",
+            "test@provider.com",
             "44322889",
             "dallas",
             new URL("https://static-cdn.jtvnw.net/jtv_user_picturesB"),
