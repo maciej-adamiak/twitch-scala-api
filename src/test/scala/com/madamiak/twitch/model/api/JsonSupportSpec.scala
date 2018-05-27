@@ -283,8 +283,8 @@ class JsonSupportSpec extends WordSpec with Matchers {
             "test@provider.com",
             "44322889",
             "dallas",
-            new URL("https://static-cdn.jtvnw.net/jtv_user_picturesB"),
-            new URL("https://static-cdn.jtvnw.net/jtv_user_picturesA"),
+            new URL("https://static-cdn.jtvnw.net/imgB.jpg"),
+            new URL("https://static-cdn.jtvnw.net/imgA.jpg"),
             UserType.Staff,
             191836881
           )
