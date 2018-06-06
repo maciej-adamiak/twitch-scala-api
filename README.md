@@ -4,7 +4,7 @@
 
 # Twitch Scala SDK
 
-Twitch SDK for building application upon the [newest API](https://dev.twitch.tv/docs/api/#introduction)
+Twitch SDK for building application upon the [helix API](https://dev.twitch.tv/docs/api/#introduction)
 
 ## Usage
 
