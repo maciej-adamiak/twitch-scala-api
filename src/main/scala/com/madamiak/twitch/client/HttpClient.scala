@@ -33,23 +33,29 @@ trait HttpClient {
           .withPath(Path(path))
           .withQuery(query)
       )
-      .withHeaders(authenticationHeader)
+      .withHeaders(authenticationHeader())
 
   def http[T](
       path: String
   )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] =
     Http()
       .singleRequest(request(path, query))
-      .flatMap(extractData[T])
+      .flatMap(response[T])
 
-  private[client] def extractData[T](
+  private[client] def response[T](
       response: HttpResponse
   )(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] = response.status match {
     case StatusCodes.OK =>
       Unmarshal(response.entity)
         .to[TwitchPayload[T]]
         .map(data => TwitchResponse(RateLimit(response), data))
-    case code => Future.failed(new TwitchAPIException(s"Twitch server response was $code"))
+    case StatusCodes.Unauthorized =>
+      Future.failed(
+        new TwitchAPIException(
+          s"Twitch client with id '$clientId' has not been authenticated"
+        )
+      )
+    case code => Future.failed(new TwitchAPIException(s"Twitch server respond with code $code"))
   }
 
 }

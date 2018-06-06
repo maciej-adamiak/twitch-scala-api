@@ -2,17 +2,18 @@ package com.madamiak.twitch
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import com.madamiak.twitch.client.TwitchClient
+import com.madamiak.twitch.client.TwitchOAuthClient
 import com.madamiak.twitch.client.endpoint._
 
 import scala.concurrent.{ ExecutionContext, ExecutionContextExecutor, Future }
 import scala.language.implicitConversions
 
+//TODO give the possibility to choose the flavour basic / oauth
 class Twitch(implicit val system: ActorSystem = ActorSystem("twitch-scala-sdk-system")) {
 
   implicit val executionContext: ExecutionContext = system.dispatcher
   implicit val materializer: ActorMaterializer    = ActorMaterializer()
-  implicit val client: TwitchClient               = new TwitchClient()
+  implicit val client: TwitchOAuthClient          = new TwitchOAuthClient()
 
   val clips: ClipsEndpoint     = new ClipsEndpoint()
   val games: GamesEndpoint     = new GamesEndpoint()

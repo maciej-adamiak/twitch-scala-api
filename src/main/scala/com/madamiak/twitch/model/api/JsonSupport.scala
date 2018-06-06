@@ -6,6 +6,7 @@ import java.time.Duration
 import java.util.{ Date, UUID }
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
+import com.madamiak.twitch.model.api.authentication.AuthenticationData
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
 import com.madamiak.twitch.model.api.stream.StreamType.StreamType
@@ -16,7 +17,7 @@ import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsV
 
 object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
 
-  implicit def twitchDataFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat3(TwitchPayload[T])
+  implicit def twitchPayloadFormat[T: JsonFormat]: RootJsonFormat[TwitchPayload[T]] = jsonFormat3(TwitchPayload[T])
 
   implicit val urlFormat: RootJsonFormat[URL] = new RootJsonFormat[URL] {
 
@@ -167,6 +168,12 @@ object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     "from_id",
     "to_id",
     "followed_at"
+  )
+
+  implicit val authenticationTokenFormat: RootJsonFormat[AuthenticationData] = jsonFormat(
+    AuthenticationData,
+    "access_token",
+    "expires_in"
   )
 
   /**

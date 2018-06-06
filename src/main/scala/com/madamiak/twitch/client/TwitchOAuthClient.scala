@@ -7,8 +7,8 @@ import com.madamiak.twitch.client.authentication.AccessTokenAuthentication
 import scala.concurrent.ExecutionContext
 
 class TwitchOAuthClient(
-    override implicit val system: ActorSystem,
-    override implicit val context: ExecutionContext,
-    override implicit val materializer: ActorMaterializer,
+    implicit val system: ActorSystem,
+    implicit val context: ExecutionContext,
+    implicit val materializer: ActorMaterializer,
 ) extends HttpClient
     with AccessTokenAuthentication
