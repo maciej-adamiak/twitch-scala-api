@@ -30,8 +30,8 @@ class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
 
           val httpRequest = sut.request(path, query)
 
-          httpRequest.getUri().toString shouldBe "https://api.twitch.tv/resource/segment?id=123"
-          httpRequest.getHeader("Client-ID").get().value() shouldBe "1234abcd"
+          httpRequest.map(_.getUri().toString shouldBe "https://api.twitch.tv/resource/segment?id=123")
+          httpRequest.map(_.getHeader("Client-ID").get().value() shouldBe "1234abcd")
         }
       }
 

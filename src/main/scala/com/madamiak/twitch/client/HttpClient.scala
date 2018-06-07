@@ -26,22 +26,30 @@ trait HttpClient {
     .withScheme(config.getString("twitch.api.scheme"))
     .withHost(config.getString("twitch.api.host"))
 
+  //TODO better name
   private[client] def request[T](path: String, query: Query) =
-    HttpRequest()
-      .withUri(
-        twitchUri
-          .withPath(Path(path))
-          .withQuery(query)
-      )
-      .withHeaders(authenticationHeader())
+    authenticate().map(
+      header =>
+        HttpRequest()
+          .withUri(
+            twitchUri
+              .withPath(Path(path))
+              .withQuery(query)
+          )
+          .withHeaders(header)
+    )
 
   def http[T](
       path: String
   )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] =
-    Http()
-      .singleRequest(request(path, query))
-      .flatMap(response[T])
+    request(path, query).flatMap(
+      request =>
+        Http()
+          .singleRequest(request)
+          .flatMap(response[T])
+    )
 
+  //TODO better name
   private[client] def response[T](
       response: HttpResponse
   )(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] = response.status match {

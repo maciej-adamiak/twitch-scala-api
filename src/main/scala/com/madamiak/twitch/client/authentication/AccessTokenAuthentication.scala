@@ -9,13 +9,17 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
+import com.github.benmanes.caffeine.cache.{ Caffeine, Cache => CCache }
 import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchAPIException
 import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.authentication.AuthenticationData
+import scalacache._
+import scalacache.caffeine._
+import scalacache.memoization._
+import scalacache.modes.scalaFuture._
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{ Await, ExecutionContext, Future }
+import scala.concurrent.{ ExecutionContext, Future }
 
 trait AccessTokenAuthentication extends Authentication {
 
@@ -32,10 +36,18 @@ trait AccessTokenAuthentication extends Authentication {
 
   private val clientSecret = config.getString("twitch.client.secret")
 
+  private val underlyingCache: CCache[String, Entry[RawHeader]] = Caffeine
+    .newBuilder()
+    //TODO max token expiration
+    .expireAfterWrite(5, TimeUnit.SECONDS)
+    .build[String, Entry[RawHeader]]
+
+  private implicit val oauthDataCache: CaffeineCache[RawHeader] = CaffeineCache(underlyingCache)
+
   // TODO scopes
   // TODO reuse token
-  override def authenticationHeader(): HttpHeader =
-    Await.result(
+  override def authenticate(): Future[HttpHeader] =
+    memoizeF(None) {
       Http()
         .singleRequest(
           HttpRequest()
@@ -53,11 +65,7 @@ trait AccessTokenAuthentication extends Authentication {
         .flatMap(
           response =>
             response.status match {
-              case StatusCodes.OK =>
-                Unmarshal(response.entity)
-                  .to[AuthenticationData]
-                  .map(_.accessToken)
-                  .map(token => RawHeader("Authorization", s"Bearer $token"))
+              case StatusCodes.OK => Unmarshal(response.entity).to[AuthenticationData]
               case _ =>
                 Future.failed(
                   new TwitchAPIException(
@@ -65,9 +73,9 @@ trait AccessTokenAuthentication extends Authentication {
                   )
                 )
           }
-        ),
-//      TODO do not use fixed duration
-      Duration.apply(5, TimeUnit.SECONDS)
-    )
+        )
+        .map(_.accessToken)
+        .map(token => RawHeader("Authorization", s"Bearer $token"))
+    }
 
 }
