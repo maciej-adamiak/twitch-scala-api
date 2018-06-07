@@ -15,6 +15,8 @@ import scala.concurrent.{ ExecutionContext, Future }
 trait HttpClient {
   this: Authentication =>
 
+  type TwitchPayloadUnmarshaller[T] = Unmarshaller[ResponseEntity, TwitchPayload[T]]
+
   private[client] implicit val system: ActorSystem
   private[client] implicit val context: ExecutionContext
   private[client] implicit val materializer: ActorMaterializer
@@ -39,18 +41,15 @@ trait HttpClient {
           .withHeaders(header)
     )
 
-  def http[T](
-      path: String
-  )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] =
+  def http[T](path: String)(query: Query)(implicit m: TwitchPayloadUnmarshaller[T]): Future[TwitchResponse[T]] =
     recovery {
       request(path, query)
         .flatMap(Http().singleRequest(_))
-    }.flatMap(response[T])
+    }.flatMap(extract[T])
 
-  //TODO better name
-  private[client] def response[T](
+  private[client] def extract[T](
       response: HttpResponse
-  )(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] = response.status match {
+  )(implicit m: TwitchPayloadUnmarshaller[T]): Future[TwitchResponse[T]] = response.status match {
     case StatusCodes.OK =>
       Unmarshal(response.entity)
         .to[TwitchPayload[T]]

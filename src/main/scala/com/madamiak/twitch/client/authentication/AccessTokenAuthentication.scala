@@ -28,6 +28,8 @@ trait AccessTokenAuthentication extends Authentication {
   implicit val context: ExecutionContext
   implicit val materializer: ActorMaterializer
 
+  require(config.hasPath("twitch.id.scheme"), "Twitch id api scheme not defined")
+  require(config.hasPath("twitch.id.host"), "Twitch id api host not defined")
   require(config.hasPath("twitch.client.secret"), "Twitch api client secret not defined")
 
   private val twitchIdUri: Uri = Uri()
@@ -39,8 +41,7 @@ trait AccessTokenAuthentication extends Authentication {
 
   private val underlyingCache: CCache[String, Entry[RawHeader]] = Caffeine
     .newBuilder()
-    //TODO max token expiration
-    .expireAfterWrite(5, TimeUnit.SECONDS)
+    .expireAfterWrite(100, TimeUnit.MINUTES)
     .build[String, Entry[RawHeader]]
 
   private implicit val oauthDataCache: CaffeineCache[RawHeader] = CaffeineCache(underlyingCache)
@@ -48,15 +49,13 @@ trait AccessTokenAuthentication extends Authentication {
   override def recovery(in: Future[HttpResponse]): Future[HttpResponse] = {
     implicit val success: Success[HttpResponse] = Success(_.status == StatusCodes.OK)
     retry.When {
-      case HttpResponse(StatusCodes.Unauthorized, _, _, _) => {
+      case HttpResponse(StatusCodes.Unauthorized, _, _, _) =>
         underlyingCache.invalidateAll()
         retry.Directly(max = 0)
-      }
     }(in)
   }
 
-  // TODO scopes
-  // TODO reuse token
+  //TODO scopes
   override def authenticate(): Future[HttpHeader] =
     memoizeF(None) {
       Http()

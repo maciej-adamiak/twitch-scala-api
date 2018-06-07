@@ -10,7 +10,7 @@ trait Authentication {
 
   private[client] val clientId = config.getString("twitch.client.id")
 
-  //TODO maybe another trait
+  //TODO maybe another trait or bettern name
   def recovery(in: Future[HttpResponse]): Future[HttpResponse]
 
   def authenticate(): Future[HttpHeader]

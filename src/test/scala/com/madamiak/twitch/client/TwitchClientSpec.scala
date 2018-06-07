@@ -57,7 +57,7 @@ class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
                          RawHeader("ratelimit-remaining", "3"),
                          RawHeader("ratelimit-reset", "4"))
 
-          val result = sut.response[Int](httpResponse)
+          val result = sut.extract[Int](httpResponse)
 
           whenReady(result) {
             _ shouldBe TwitchResponse(RateLimit(1, 3, 4),
@@ -73,7 +73,7 @@ class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
           val httpResponse = HttpResponse(status = StatusCodes.BadRequest)
 
           recoverToSucceededIf[TwitchAPIException](
-            sut.response[Int](httpResponse)
+            sut.extract[Int](httpResponse)
           )
         }
       }
