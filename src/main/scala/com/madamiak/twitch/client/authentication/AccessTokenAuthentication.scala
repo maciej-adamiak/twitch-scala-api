@@ -41,16 +41,17 @@ trait AccessTokenAuthentication extends Authentication {
 
   private val underlyingCache: CCache[String, Entry[RawHeader]] = Caffeine
     .newBuilder()
+    .recordStats()
     .expireAfterWrite(100, TimeUnit.MINUTES)
     .build[String, Entry[RawHeader]]
 
   private implicit val oauthDataCache: CaffeineCache[RawHeader] = CaffeineCache(underlyingCache)
 
-  override def recovery(in: Future[HttpResponse]): Future[HttpResponse] = {
+  override def recovery(in: => Future[HttpResponse]): Future[HttpResponse] = {
     implicit val success: Success[HttpResponse] = Success(_.status == StatusCodes.OK)
     retry.When {
       case HttpResponse(StatusCodes.Unauthorized, _, _, _) =>
-        underlyingCache.invalidateAll()
+        oauthDataCache.removeAll()
         retry.Directly(max = 0)
     }(in)
   }
