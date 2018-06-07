@@ -45,13 +45,14 @@ trait AccessTokenAuthentication extends Authentication {
 
   private implicit val oauthDataCache: CaffeineCache[RawHeader] = CaffeineCache(underlyingCache)
 
-  //TODO simplify - avoid tuple
-  override def recovery(in: Future[(StatusCode, HttpResponse)]): Future[(StatusCode, HttpResponse)] = {
-    implicit val success: Success[(StatusCode, HttpResponse)] = Success(x => x._1 == StatusCodes.OK)
-    val policy = retry.When {
-      case (StatusCodes.Unauthorized, _) => retry.Directly(max = 0)
-    }
-    policy(in)
+  override def recovery(in: Future[HttpResponse]): Future[HttpResponse] = {
+    implicit val success: Success[HttpResponse] = Success(_.status == StatusCodes.OK)
+    retry.When {
+      case HttpResponse(StatusCodes.Unauthorized, _, _, _) => {
+        underlyingCache.invalidateAll()
+        retry.Directly(max = 0)
+      }
+    }(in)
   }
 
   // TODO scopes

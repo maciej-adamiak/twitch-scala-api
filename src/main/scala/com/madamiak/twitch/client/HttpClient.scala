@@ -42,15 +42,10 @@ trait HttpClient {
   def http[T](
       path: String
   )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] =
-    recovery(
+    recovery {
       request(path, query)
-        .flatMap(
-          request =>
-            Http()
-              .singleRequest(request)
-              .map(response => (response.status, response))
-        )
-    ).flatMap(tuple => response[T](tuple._2))
+        .flatMap(Http().singleRequest(_))
+    }.flatMap(response[T])
 
   //TODO better name
   private[client] def response[T](

@@ -1,6 +1,6 @@
 package com.madamiak.twitch.client.authentication
 
-import akka.http.scaladsl.model.{ HttpHeader, HttpResponse, StatusCode }
+import akka.http.scaladsl.model.{ HttpHeader, HttpResponse }
 
 import scala.concurrent.Future
 
@@ -10,7 +10,8 @@ trait Authentication {
 
   private[client] val clientId = config.getString("twitch.client.id")
 
-  def recovery(in: Future[(StatusCode, HttpResponse)]): Future[(StatusCode, HttpResponse)]
+  //TODO maybe another trait
+  def recovery(in: Future[HttpResponse]): Future[HttpResponse]
 
   def authenticate(): Future[HttpHeader]
 
