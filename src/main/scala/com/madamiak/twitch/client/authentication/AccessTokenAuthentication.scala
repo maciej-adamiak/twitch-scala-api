@@ -14,6 +14,7 @@ import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchAPIException
 import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.authentication.AuthenticationData
+import retry.Success
 import scalacache._
 import scalacache.caffeine._
 import scalacache.memoization._
@@ -43,6 +44,15 @@ trait AccessTokenAuthentication extends Authentication {
     .build[String, Entry[RawHeader]]
 
   private implicit val oauthDataCache: CaffeineCache[RawHeader] = CaffeineCache(underlyingCache)
+
+  //TODO simplify - avoid tuple
+  override def recovery(in: Future[(StatusCode, HttpResponse)]): Future[(StatusCode, HttpResponse)] = {
+    implicit val success: Success[(StatusCode, HttpResponse)] = Success(x => x._1 == StatusCodes.OK)
+    val policy = retry.When {
+      case (StatusCodes.Unauthorized, _) => retry.Directly(max = 0)
+    }
+    policy(in)
+  }
 
   // TODO scopes
   // TODO reuse token

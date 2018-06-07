@@ -9,7 +9,6 @@ import akka.stream.ActorMaterializer
 import com.madamiak.twitch.client.authentication.Authentication
 import com.madamiak.twitch.model.api.TwitchPayload
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
-import retry.Success
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -42,14 +41,8 @@ trait HttpClient {
 
   def http[T](
       path: String
-  )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] = {
-    implicit val recoverable: Success[(StatusCode, HttpResponse)] = Success(x => x._1 == StatusCodes.OK)
-
-    val policy = retry.When {
-      case (StatusCodes.Unauthorized, _) => retry.Directly(max = 0)
-    }
-
-    policy(
+  )(query: Query)(implicit m: Unmarshaller[ResponseEntity, TwitchPayload[T]]): Future[TwitchResponse[T]] =
+    recovery(
       request(path, query)
         .flatMap(
           request =>
@@ -58,7 +51,6 @@ trait HttpClient {
               .map(response => (response.status, response))
         )
     ).flatMap(tuple => response[T](tuple._2))
-  }
 
   //TODO better name
   private[client] def response[T](
