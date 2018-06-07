@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
   "com.github.cb372" %% "scalacache-core" % "0.23.0",
   "com.github.cb372" %% "scalacache-caffeine" % "0.23.0",
   "com.github.ben-manes.caffeine" % "caffeine" % "2.6.2",
+  "com.softwaremill.retry" %% "retry" % "0.3.0",
   "com.typesafe.akka" %% "akka-actor" % "2.5.11",
   "com.typesafe.akka" %% "akka-http" % "10.1.1",
   "com.typesafe.akka" %% "akka-http-core" % "10.1.1",
