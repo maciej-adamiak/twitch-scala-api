@@ -5,10 +5,13 @@ import akka.http.scaladsl.model.{ HttpHeader, HttpResponse }
 
 import scala.concurrent.Future
 
+/**
+  * Provides basic Twitch authentication capabilities i.e using a client id
+  */
 trait ClientIdAuthentication extends Authentication {
 
-  override def recovery(in: => Future[HttpResponse]): Future[HttpResponse] = identity(in)
+  override def recoverWhenUnauthorized(in: => Future[HttpResponse]): Future[HttpResponse] = identity(in)
 
-  override val authenticate: Future[HttpHeader] = Future.successful(RawHeader("Client-ID", clientId))
+  override val authenticationHeader: Future[HttpHeader] = Future.successful(RawHeader("Client-ID", clientId))
 
 }

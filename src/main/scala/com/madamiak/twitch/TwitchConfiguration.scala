@@ -2,8 +2,8 @@ package com.madamiak.twitch
 
 import com.typesafe.config.{ Config, ConfigFactory }
 
-package object client {
+object TwitchConfiguration {
 
-  private[client] val config: Config = ConfigFactory.load()
+  val config: Config = ConfigFactory.load()
 
 }

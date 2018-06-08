@@ -6,6 +6,7 @@ import akka.http.scaladsl.model.Uri.{ Path, Query }
 import akka.http.scaladsl.model._
 import akka.http.scaladsl.unmarshalling.{ Unmarshal, Unmarshaller }
 import akka.stream.ActorMaterializer
+import com.madamiak.twitch.TwitchConfiguration.config
 import com.madamiak.twitch.client.authentication.Authentication
 import com.madamiak.twitch.model.api.TwitchPayload
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
@@ -28,21 +29,19 @@ trait HttpClient {
     .withScheme(config.getString("twitch.api.scheme"))
     .withHost(config.getString("twitch.api.host"))
 
-  //TODO better name
-  private[client] def request[T](path: String, query: Query) =
-    authenticate().map(
-      header =>
-        HttpRequest()
-          .withUri(
-            twitchUri
-              .withPath(Path(path))
-              .withQuery(query)
-          )
-          .withHeaders(header)
+  private[client] def request[T](path: String, query: Query): Future[HttpRequest] =
+    authenticationHeader().map(
+      HttpRequest()
+        .withUri(
+          twitchUri
+            .withPath(Path(path))
+            .withQuery(query)
+        )
+        .withHeaders(_)
     )
 
   def http[T](path: String)(query: Query)(implicit m: TwitchPayloadUnmarshaller[T]): Future[TwitchResponse[T]] =
-    recovery {
+    recoverWhenUnauthorized {
       request(path, query)
         .flatMap(Http().singleRequest(_))
     }.flatMap(extract[T])
@@ -54,13 +53,8 @@ trait HttpClient {
       Unmarshal(response.entity)
         .to[TwitchPayload[T]]
         .map(data => TwitchResponse(RateLimit(response), data))
-    case StatusCodes.Unauthorized =>
-      Future.failed(
-        new TwitchAPIException(
-          s"Twitch client with id '$clientId' has not been authenticated"
-        )
-      )
-    case code => Future.failed(new TwitchAPIException(s"Twitch server respond with code $code"))
+    case StatusCodes.Unauthorized => Future.failed(new TwitchAPIException(s"Twitch client '$clientId' unauthorized"))
+    case code                     => Future.failed(new TwitchAPIException(s"Twitch server respond with code $code"))
   }
 
 }
