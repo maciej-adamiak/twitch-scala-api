@@ -29,7 +29,7 @@ trait HttpClient {
     .withScheme(config.getString("twitch.api.scheme"))
     .withHost(config.getString("twitch.api.host"))
 
-  private[client] def request[T](path: String, query: Query): Future[HttpRequest] =
+  private[client] def payloadRequest[T](path: String, query: Query): Future[HttpRequest] =
     authenticationHeader().map(
       HttpRequest()
         .withUri(
@@ -42,11 +42,11 @@ trait HttpClient {
 
   def http[T](path: String)(query: Query)(implicit m: TwitchPayloadUnmarshaller[T]): Future[TwitchResponse[T]] =
     recoverWhenUnauthorized {
-      request(path, query)
+      payloadRequest(path, query)
         .flatMap(Http().singleRequest(_))
-    }.flatMap(extract[T])
+    }.flatMap(extractPayload[T])
 
-  private[client] def extract[T](
+  private[client] def extractPayload[T](
       response: HttpResponse
   )(implicit m: TwitchPayloadUnmarshaller[T]): Future[TwitchResponse[T]] = response.status match {
     case StatusCodes.OK =>

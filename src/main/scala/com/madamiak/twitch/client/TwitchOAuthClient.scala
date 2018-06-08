@@ -9,6 +9,6 @@ import scala.concurrent.ExecutionContext
 class TwitchOAuthClient(
     implicit val system: ActorSystem,
     implicit val context: ExecutionContext,
-    implicit val materializer: ActorMaterializer,
+    implicit val materializer: ActorMaterializer
 ) extends HttpClient
     with ApplicationAccessTokenAuthentication

@@ -61,37 +61,36 @@ trait ApplicationAccessTokenAuthentication extends Authentication {
     tokenStorage
       .store {
         Http()
-          .singleRequest(
-            HttpRequest()
-              .withMethod(HttpMethods.POST)
-              .withUri(
-                twitchIdUri.withQuery(
-                  query(
-                    "client_id"     -> clientId,
-                    "client_secret" -> clientSecret,
-                    "grant_type"    -> "client_credentials",
-                    "scope"         -> clientScopes
-                  )
-                )
-              )
-          )
-          .flatMap(
-            response =>
-              response.status match {
-                case StatusCodes.OK =>
-                  Unmarshal(response.entity)
-                    .to[AuthenticationData]
-                    .map(_.accessToken)
-                case _ =>
-                  Future.failed(
-                    new TwitchAPIException(
-                      s"Twitch client with id '$clientId' is not able to acquire OAuth token"
-                    )
-                  )
-            }
-          )
+          .singleRequest(tokenRequest)
+          .flatMap(extractToken)
 
       }
       .map(token => RawHeader("Authorization", s"Bearer $token"))
 
+  private def extractToken(response: HttpResponse) = response.status match {
+    case StatusCodes.OK =>
+      Unmarshal(response.entity)
+        .to[AuthenticationData]
+        .map(_.accessToken)
+    case _ =>
+      Future.failed(
+        new TwitchAPIException(
+          s"Twitch client with id '$clientId' is not able to acquire OAuth token"
+        )
+      )
+  }
+
+  private def tokenRequest =
+    HttpRequest()
+      .withMethod(HttpMethods.POST)
+      .withUri(
+        twitchIdUri.withQuery(
+          query(
+            "client_id"     -> clientId,
+            "client_secret" -> clientSecret,
+            "grant_type"    -> "client_credentials",
+            "scope"         -> clientScopes
+          )
+        )
+      )
 }
