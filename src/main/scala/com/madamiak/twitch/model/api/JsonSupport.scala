@@ -1,8 +1,9 @@
 package com.madamiak.twitch.model.api
 
-import java.net.URL
-import java.text.SimpleDateFormat
+import java.net.{ MalformedURLException, URL }
+import java.text.{ ParseException, SimpleDateFormat }
 import java.time.Duration
+import java.time.format.DateTimeParseException
 import java.util.{ Date, UUID }
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
@@ -22,20 +23,29 @@ object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val urlFormat: RootJsonFormat[URL] = new RootJsonFormat[URL] {
 
     override def read(json: JsValue): URL = json match {
-      case JsString(s) => new URL(s)
-      case _           => throw DeserializationException("Invalid URL format: " + json)
+      case JsString(s) =>
+        try {
+          new URL(s)
+        } catch {
+          case mue: MalformedURLException => throw DeserializationException(s"Invalid URL format $json", mue)
+        }
+      case _ => throw DeserializationException(s"Cannot read URL from a non-string type $json")
     }
 
     override def write(obj: URL): JsValue = JsString(obj.toString)
   }
 
   implicit val dateFormat: RootJsonFormat[Date] = new RootJsonFormat[Date] {
-
     val formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
     override def read(json: JsValue): Date = json match {
-      case JsString(s) => formatter.parse(s)
-      case _           => throw DeserializationException("Invalid date format: " + json)
+      case JsString(s) =>
+        try {
+          formatter.parse(s)
+        } catch {
+          case pe: ParseException => throw DeserializationException(s"Invalid date format $json", pe)
+        }
+      case _ => throw DeserializationException(s"Cannot read date from a non-string type $json")
     }
 
     override def write(obj: Date): JsValue = JsString(formatter.format(obj))
@@ -45,9 +55,13 @@ object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     override def write(obj: Duration): JsValue = JsString(obj.toString.tail)
 
     override def read(json: JsValue): Duration = json match {
-      //TODO assumed that Twitch does not support days in the duration attribute
-      case JsString(s) => Duration.parse(s"PT$s")
-      case _           => throw DeserializationException("Invalid duration format: " + json)
+      case JsString(s) =>
+        try {
+          Duration.parse(s"PT$s")
+        } catch {
+          case dtpe: DateTimeParseException => throw DeserializationException(s"Invalid duration format $json", dtpe)
+        }
+      case _ => throw DeserializationException(s"Cannot read duration from a non-string type $json")
     }
   }
 
@@ -55,8 +69,13 @@ object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
     override def write(obj: UUID): JsValue = JsString(obj.toString)
 
     override def read(json: JsValue): UUID = json match {
-      case JsString(s) => UUID.fromString(s)
-      case _           => throw DeserializationException("Invalid uuid format: " + json)
+      case JsString(s) =>
+        try {
+          UUID.fromString(s)
+        } catch {
+          case iae: IllegalArgumentException => throw DeserializationException(s"Invalid UUID format $json", iae)
+        }
+      case _ => throw DeserializationException(s"Cannot read UUID from a non-string type $json")
     }
   }
 

@@ -25,7 +25,6 @@ class JsonSupportSpec extends WordSpec with Matchers {
       "extract game data" when {
 
         "processing valid values" in {
-
           val json =
             """
               |{
@@ -43,12 +42,41 @@ class JsonSupportSpec extends WordSpec with Matchers {
             new URL("https://static-cdn.jtvnw.net")
           )
         }
+
+        "processing malformed values" in {
+          val json =
+            """
+            |{
+            |   "id":"493057",
+            |   "name":"PLAYERUNKNOWN'S BATTLEGROUNDS",
+            |   "box_art_url":"notanurl"
+            |}
+          """.stripMargin
+
+          intercept[DeserializationException](
+            json.parseJson.convertTo[TwitchGame]
+          )
+        }
+
+        "processing invalid values" in {
+          val json =
+            """
+              |{
+              |   "id":"493057",
+              |   "name":"PLAYERUNKNOWN'S BATTLEGROUNDS",
+              |   "box_art_url": true
+              |}
+            """.stripMargin
+
+          intercept[DeserializationException](
+            json.parseJson.convertTo[TwitchGame]
+          )
+        }
       }
 
       "extract clip data" when {
 
         "processing valid values" in {
-
           val json =
             """
               |{
@@ -128,6 +156,54 @@ class JsonSupportSpec extends WordSpec with Matchers {
             32575
           )
         }
+      }
+
+      "processing malformed values" in {
+        val json =
+          """
+            |{
+            |  "id":"26007494656",
+            |  "user_id":"23161357",
+            |  "game_id":"417752",
+            |  "community_ids":[
+            |    "5181e78f",
+            |    "848d95be",
+            |    "fd0eab99"
+            |  ],
+            |  "type":"live",
+            |  "title":"Hey Guys, It's Monday - Twitter: @Lirik",
+            |  "viewer_count":32575,
+            |  "started_at":"2017-08-14T16:08:32Z",
+            |  "language":"en",
+            |  "thumbnail_url":"https://static-cdn.jtvnw.net/previews-ttv/live_user_lirik-{width}x{height}.jpg"
+            |}
+          """.stripMargin
+
+        intercept[DeserializationException](
+          json.parseJson.convertTo[TwitchStream]
+        )
+      }
+
+      "processing invalid values" in {
+        val json =
+          """
+            |{
+            |  "id":"26007494656",
+            |  "user_id":"23161357",
+            |  "game_id":"417752",
+            |  "community_ids": [1, 2],
+            |  "type":"live",
+            |  "title":"Hey Guys, It's Monday - Twitter: @Lirik",
+            |  "viewer_count":32575,
+            |  "started_at":"2017-08-14T16:08:32Z",
+            |  "language":"en",
+            |  "thumbnail_url":"https://static-cdn.jtvnw.net/previews-ttv/live_user_lirik-{width}x{height}.jpg"
+            |}
+          """.stripMargin
+
+        intercept[DeserializationException](
+          json.parseJson.convertTo[TwitchStream]
+        )
       }
 
       "extract stream metadata" when {
@@ -253,6 +329,56 @@ class JsonSupportSpec extends WordSpec with Matchers {
             Duration.parse("PT3H8M33S")
           )
         }
+
+        "processing malformed values" in {
+          val json =
+            """
+              |{
+              |  "id":"234482848",
+              |  "user_id":"67955580",
+              |  "title":"-",
+              |  "description":"",
+              |  "created_at":"2018-03-02T20:53:41Z",
+              |  "published_at":"2018-03-02T20:53:41Z",
+              |  "url":"https://www.twitch.tv/videos/234482848",
+              |  "thumbnail_url":"https://static-cdn.jtvnw.net/s3_vods",
+              |  "viewable":"public",
+              |  "view_count":142,
+              |  "language":"en",
+              |  "type":"archive",
+              |  "duration":"1234"
+              |}
+            """.stripMargin
+
+          intercept[DeserializationException](
+            json.parseJson.convertTo[TwitchVideo]
+          )
+        }
+
+        "processing invalid values" in {
+          val json =
+            """
+              |{
+              |  "id":"234482848",
+              |  "user_id":"67955580",
+              |  "title":"-",
+              |  "description":"",
+              |  "created_at":"2018-03-02T20:53:41Z",
+              |  "published_at":"2018-03-02T20:53:41Z",
+              |  "url":"https://www.twitch.tv/videos/234482848",
+              |  "thumbnail_url":"https://static-cdn.jtvnw.net/s3_vods",
+              |  "viewable":"public",
+              |  "view_count":142,
+              |  "language":"en",
+              |  "type":"archive",
+              |  "duration": 1234
+              |}
+            """.stripMargin
+
+          intercept[DeserializationException](
+            json.parseJson.convertTo[TwitchVideo]
+          )
+        }
       }
 
       "extract user data" when {
@@ -309,6 +435,34 @@ class JsonSupportSpec extends WordSpec with Matchers {
             "171003792",
             "23161357",
             dateFormatter.parse("2017-08-22T22:55:24Z")
+          )
+        }
+
+        "processing malformed values" in {
+          val json =
+            """
+              |{
+              |   "from_id":"171003792",
+              |   "to_id":"23161357",
+              |   "followed_at":"2017-08-22"
+              |}
+            """.stripMargin
+          intercept[DeserializationException](
+            json.parseJson.convertTo[TwitchFollow]
+          )
+        }
+
+        "processing invalid values" in {
+          val json =
+            """
+              |{
+              |   "from_id":"171003792",
+              |   "to_id":"23161357",
+              |   "followed_at": 100
+              |}
+            """.stripMargin
+          intercept[DeserializationException](
+            json.parseJson.convertTo[TwitchFollow]
           )
         }
       }
