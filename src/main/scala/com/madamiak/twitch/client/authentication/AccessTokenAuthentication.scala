@@ -9,7 +9,7 @@ import akka.http.scaladsl.model._
 import akka.http.scaladsl.model.headers.RawHeader
 import akka.http.scaladsl.unmarshalling.Unmarshal
 import akka.stream.ActorMaterializer
-import com.github.benmanes.caffeine.cache.{ Caffeine, Cache => CCache }
+import com.github.benmanes.caffeine.cache.{Caffeine, Cache => CCache}
 import com.madamiak.twitch.client.QueryUtils._
 import com.madamiak.twitch.client.TwitchAPIException
 import com.madamiak.twitch.model.api.JsonSupport._
@@ -20,7 +20,7 @@ import scalacache.caffeine._
 import scalacache.memoization._
 import scalacache.modes.scalaFuture._
 
-import scala.concurrent.{ ExecutionContext, Future }
+import scala.concurrent.{ExecutionContext, Future}
 
 trait AccessTokenAuthentication extends Authentication {
 
@@ -39,6 +39,7 @@ trait AccessTokenAuthentication extends Authentication {
 
   private val clientSecret = config.getString("twitch.client.secret")
 
+  //TODO move to singleton
   private val underlyingCache: CCache[String, Entry[RawHeader]] = Caffeine
     .newBuilder()
     .recordStats()
