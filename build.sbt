@@ -16,6 +16,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-core" % "10.1.1",
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.1",
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.20",
+  "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
   "com.typesafe.akka" %% "akka-http-testkit" % "10.1.1" % Test,
   "org.scalatest" %% "scalatest" % "3.0.4" % Test,
   "org.scalamock" %% "scalamock" % "4.1.0" % Test
