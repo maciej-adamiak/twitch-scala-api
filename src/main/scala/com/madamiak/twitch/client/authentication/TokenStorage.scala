@@ -2,6 +2,7 @@ package com.madamiak.twitch.client.authentication
 
 import java.util.concurrent.TimeUnit
 
+import com.github.benmanes.caffeine.cache.stats.CacheStats
 import com.github.benmanes.caffeine.cache.{ Caffeine, Cache => CCache }
 import scalacache.Entry
 import scalacache.caffeine.CaffeineCache
@@ -31,4 +32,6 @@ class TokenStorage(implicit context: ExecutionContext) {
   def store(f: => Future[String]): Future[String] = memoizeF(None)(f)
 
   def evict(): Future[Any] = oauthDataCache.removeAll()
+
+  def stats(): CacheStats = underlyingCache.stats()
 }
