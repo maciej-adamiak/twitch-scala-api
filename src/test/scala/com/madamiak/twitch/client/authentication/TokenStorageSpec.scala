@@ -1,5 +1,6 @@
 package com.madamiak.twitch.client.authentication
 
+import akka.actor.ActorSystem
 import org.scalatest.{ Matchers, WordSpec }
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -8,6 +9,8 @@ import scala.concurrent.{ Await, Future }
 
 class TokenStorageSpec extends WordSpec with Matchers {
 
+  implicit val system: ActorSystem = ActorSystem("test-actor-system")
+
   def success: Future[String] = Future.successful("token")
   def fail: Future[String]    = Future.failed(new IllegalArgumentException)
 
@@ -15,46 +18,40 @@ class TokenStorageSpec extends WordSpec with Matchers {
 
     "store token" in {
       val sut = new TokenStorage()
-      Await.result(sut.store(success), Duration.Inf)
-      sut.hitCount() shouldBe 0
-      sut.missCount() shouldBe 1
+      sut.size() shouldBe 0
 
       Await.result(sut.store(success), Duration.Inf)
-      sut.hitCount() shouldBe 1
-      sut.missCount() shouldBe 1
+      sut.size() shouldBe 1
+
+      Await.result(sut.store(success), Duration.Inf)
+      sut.size() shouldBe 1
     }
 
-    "store only successful" in {
-
+    "store failed" in {
       val sut = new TokenStorage()
-      try {
+      sut.size() shouldBe 0
+      intercept[IllegalArgumentException](
         Await.result(sut.store(fail), Duration.Inf)
-      } catch {
-        case e: IllegalArgumentException => println("")
-      }
-      sut.hitCount() shouldBe 0
-      sut.missCount() shouldBe 1
+      )
+      sut.size() shouldBe 1
 
-      Await.result(sut.store(success), Duration.Inf)
-      sut.hitCount() shouldBe 0
-      sut.missCount() shouldBe 2
-
-      Await.result(sut.store(success), Duration.Inf)
-      sut.hitCount() shouldBe 1
-      sut.missCount() shouldBe 2
+      intercept[IllegalArgumentException](
+        Await.result(sut.store(success), Duration.Inf)
+      )
+      sut.size() shouldBe 1
     }
 
     "evict token" in {
       val sut = new TokenStorage()
+      sut.size() shouldBe 0
       Await.result(sut.store(success), Duration.Inf)
-      sut.hitCount() shouldBe 0
-      sut.missCount() shouldBe 1
+      sut.size() shouldBe 1
 
-      Await.result(sut.evict(), Duration.Inf)
+      sut.evict()
 
+      sut.size() shouldBe 0
       Await.result(sut.store(success), Duration.Inf)
-      sut.hitCount() shouldBe 0
-      sut.missCount() shouldBe 2
+      sut.size() shouldBe 1
     }
   }
 }

@@ -1,13 +1,10 @@
 package com.madamiak.twitch.client.authentication
 
-import java.util.concurrent.TimeUnit
+import akka.actor.ActorSystem
+import akka.http.caching.LfuCache
+import akka.http.caching.scaladsl.{ Cache, CachingSettings }
 
-import com.github.benmanes.caffeine.cache.{ Caffeine, Cache => CCache }
-import scalacache.Entry
-import scalacache.caffeine.CaffeineCache
-import scalacache.memoization.memoizeF
-import scalacache.modes.scalaFuture._
-
+import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
 /**
@@ -18,21 +15,22 @@ import scala.concurrent.{ ExecutionContext, Future }
   * @param context application execution context
   * @see https://dev.twitch.tv/docs/authentication/#types-of-tokens
   */
-class TokenStorage(implicit context: ExecutionContext) {
+class TokenStorage(
+    implicit val system: ActorSystem,
+    implicit val context: ExecutionContext
+) {
 
-  private val underlyingCache: CCache[String, Entry[String]] = Caffeine
-    .newBuilder()
-    .recordStats()
-    .expireAfterWrite(60, TimeUnit.DAYS)
-    .build[String, Entry[String]]
+  private val defaultCachingSettings = CachingSettings(system)
+  private val lfuCacheSettings = defaultCachingSettings.lfuCacheSettings
+    .withTimeToLive(100.days)
+    .withMaxCapacity(1)
+    .withInitialCapacity(1)
+  private val cachingSettings                 = defaultCachingSettings.withLfuCacheSettings(lfuCacheSettings)
+  private val lfuCache: Cache[String, String] = LfuCache(cachingSettings)
 
-  private implicit val oauthDataCache: CaffeineCache[String] = CaffeineCache(underlyingCache)
+  def store(f: => Future[String]): Future[String] = lfuCache.getOrLoad("access_token", _ => f)
 
-  def store(f: => Future[String]): Future[String] = memoizeF(None)(f)
+  def evict(): Unit = lfuCache.remove("access_token")
 
-  def evict(): Future[Any] = oauthDataCache.removeAll()
-
-  def hitCount(): Long = underlyingCache.stats().hitCount()
-
-  def missCount(): Long = underlyingCache.stats().missCount()
+  def size(): Long = lfuCache.size()
 }

@@ -63,7 +63,6 @@ trait ApplicationAccessTokenAuthentication extends Authentication {
         Http()
           .singleRequest(tokenRequest)
           .flatMap(extractToken)
-
       }
       .map(token => RawHeader("Authorization", s"Bearer $token"))
 
