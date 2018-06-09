@@ -67,7 +67,7 @@ trait ApplicationAccessTokenAuthentication extends Authentication {
       }
       .map(token => RawHeader("Authorization", s"Bearer $token"))
 
-  private def extractToken(response: HttpResponse) = response.status match {
+  private[authentication] def extractToken(response: HttpResponse) = response.status match {
     case StatusCodes.OK =>
       Unmarshal(response.entity)
         .to[AuthenticationData]
@@ -80,7 +80,7 @@ trait ApplicationAccessTokenAuthentication extends Authentication {
       )
   }
 
-  private def tokenRequest =
+  private[authentication] def tokenRequest =
     HttpRequest()
       .withMethod(HttpMethods.POST)
       .withUri(

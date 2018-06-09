@@ -192,7 +192,8 @@ object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   implicit val authenticationTokenFormat: RootJsonFormat[AuthenticationData] = jsonFormat(
     AuthenticationData,
     "access_token",
-    "expires_in"
+    "expires_in",
+    "scope"
   )
 
   /**

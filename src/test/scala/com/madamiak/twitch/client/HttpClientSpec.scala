@@ -39,7 +39,7 @@ class HttpClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
 
         "processing successful request" in {
 
-          val entity = HttpEntity.apply(
+          val entity = HttpEntity(
             ContentTypes.`application/json`,
             """
               | {
