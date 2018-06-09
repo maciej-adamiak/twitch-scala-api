@@ -52,7 +52,7 @@ object JsonSupport extends SprayJsonSupport with DefaultJsonProtocol {
   }
 
   implicit val durationFormat: RootJsonFormat[Duration] = new RootJsonFormat[Duration] {
-    override def write(obj: Duration): JsValue = JsString(obj.toString.tail)
+    override def write(obj: Duration): JsValue = JsString(obj.toString.replace("PT", "").toLowerCase)
 
     override def read(json: JsValue): Duration = json match {
       case JsString(s) =>

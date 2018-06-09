@@ -3,13 +3,14 @@ package com.madamiak.twitch.model.api
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.time.Duration
-import java.util.UUID
+import java.util.{ Date, UUID }
 
 import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.clip.TwitchClip
 import com.madamiak.twitch.model.api.game.TwitchGame
 import com.madamiak.twitch.model.api.stream._
 import com.madamiak.twitch.model.api.user.{ BroadcasterType, TwitchFollow, TwitchUser, UserType }
+import com.madamiak.twitch.model.api.video.VideoType.VideoType
 import com.madamiak.twitch.model.api.video.{ TwitchVideo, VideoType, VideoViewableType }
 import org.scalatest.{ Matchers, WordSpec }
 import spray.json._
@@ -19,6 +20,35 @@ class JsonSupportSpec extends WordSpec with Matchers {
   val dateFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
 
   "json support" which {
+
+    "supports marshaling" should {
+
+      "produce json" in {
+
+        case class TestData(videoType: VideoType, uRL: URL, duration: Duration, date: Date, uuid: UUID)
+
+        implicit val testDataFormat: RootJsonFormat[TestData] = jsonFormat5(TestData)
+
+        val data = TestData(
+          VideoType.Archive,
+          new URL("http://a.com"),
+          Duration.ofHours(4).minusMinutes(10),
+          new Date(61489231200000L),
+          UUID.fromString("5181e78f-2280-42a6-873d-758e25a7c313")
+        )
+
+        data.toJson shouldEqual
+        """
+            |{
+            |   "duration":"3h50m",
+            |   "uuid":"5181e78f-2280-42a6-873d-758e25a7c313",
+            |   "uRL":"http://a.com",
+            |   "date":"3918-07-09T00:00:00",
+            |   "videoType":"archive"
+            |}
+          """.stripMargin.parseJson
+      }
+    }
 
     "supports unmarshalling" should {
 
