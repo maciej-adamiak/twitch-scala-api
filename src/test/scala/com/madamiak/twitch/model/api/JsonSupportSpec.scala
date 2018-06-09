@@ -224,7 +224,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
             |  "title":"Hey Guys, It's Monday - Twitter: @Lirik",
             |  "viewer_count":32575,
             |  "started_at":"2017-08-14T16:08:32Z",
-            |  "language":"en",
+            |  "language":"fr",
             |  "thumbnail_url":"https://static-cdn.jtvnw.net/previews-ttv/live_user_lirik-{width}x{height}.jpg"
             |}
           """.stripMargin

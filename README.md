@@ -56,8 +56,8 @@ twitch.streams.metadata.byCommunityId("848d95be-90b3-44a5-b143-6e373754c382").on
 
 ```
 TwitchGame(493057,PLAYERUNKNOWN'S BATTLEGROUNDS,https://static-cdn.jtvnw.net/ttv-boxart/PLAYERUNKNOWN%27S%20BATTLEGROUNDS-{width}x{height}.jpg)
-| TwitchStream(List() | 33214  | 28643839600 | en | 2018-05-10T14:20:43Z | https://static-cdn.jtvnw.net/previews-ttv/live_user_ninja-{width}x{height}.jpg  | Prime/Fortnite Loot is LIVE | Sub with !prime to get yours in-game! | live | 19571641 | 124218) |
-| TwitchStream(List() | 497416 | 28645088240 | en | 2018-05-10T16:41:47Z | https://static-cdn.jtvnw.net/previews-ttv/live_user_shroud-{width}x{height}.jpg | rdy to get owned | Follow https://twitter.com/shroud                | live | 37402112 | 41743)  |
+TwitchStream(List(),33214,28643839600,en,2018-05-10T14:20:43Z,https://static-cdn.jtvnw.net/previews-ttv/live_user_ninja-{width}x{height}.jpg,Prime/Fortnite Loot is LIVE | Sub with !prime to get yours in-game!,live,19571641,124218)
+TwitchStream(List(),497416,28645088240,en,2018-05-10T16:41:47Z,https://static-cdn.jtvnw.net/previews-ttv/live_user_shroud-{width}x{height}.jpg,rdy to get owned | Follow https://twitter.com/shroud,live,37402112,41743)
 TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn.jtvnw.net/previews-ttv/live_user_gotaga-{width}x{height}.jpg,[FR] GOTAGA ► #FortniteGrind #Chill,live,24147592,20416)
 ```
 
