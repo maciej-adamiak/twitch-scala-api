@@ -7,4 +7,4 @@ package com.madamiak.twitch.model.api.authentication
   * @param expiresIn access token expiration time in seconds
   * @param scopes scopes relates to the access token
   */
-case class AuthenticationData(accessToken: String, expiresIn: Long, scopes: Seq[String])
+case class AuthenticationData(accessToken: String, expiresIn: Long, scopes: Option[Seq[String]])

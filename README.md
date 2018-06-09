@@ -22,7 +22,7 @@ For more information refer to: [Twitch apps and authentication guide](https://de
 | twitch.api.host      | Twitch helix host                                                                              | api.twitch.tv  |
 | twitch.client.id     | Twitch application client id. Resolved also from `TWITCH_CLIENT_ID` environmental variable     | -              |
 | twitch.client.secret | Twitch application client id. Resolved also from `TWITCH_CLIENT_SECRET` environmental variable | -              |
-| twitch.client.scopes | Twitch application scopes. Resolved also from `TWITCH_CLIENT_SCOPES` environmental variable    | empty list, [] |
+| twitch.client.scopes | Twitch application scopes                                                                      | empty list, [] |
 | twitch.id.scheme     | Twitch identity server scheme                                                                  | https          |
 | twitch.id.host       | Host of the Twitch identity server                                                             | id.twitch.tv   |
 | twitch.id.path       | Path of the endpoint used to acquire an access token                                           | /oauth2/token  |
