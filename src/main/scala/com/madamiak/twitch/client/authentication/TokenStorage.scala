@@ -22,7 +22,7 @@ class TokenStorage(
 
   private val defaultCachingSettings = CachingSettings(system)
   private val lfuCacheSettings = defaultCachingSettings.lfuCacheSettings
-    .withTimeToLive(100.days)
+    .withTimeToLive(60.days)
     .withMaxCapacity(1)
     .withInitialCapacity(1)
   private val cachingSettings                 = defaultCachingSettings.withLfuCacheSettings(lfuCacheSettings)
