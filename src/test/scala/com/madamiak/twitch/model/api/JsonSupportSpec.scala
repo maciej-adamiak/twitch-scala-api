@@ -25,7 +25,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
 
       "produce json" in {
 
-        case class TestData(videoType: VideoType, uRL: URL, duration: Duration, date: Date, uuid: UUID)
+        case class TestData(videoType: VideoType, url: URL, duration: Duration, date: Date, uuid: UUID)
 
         implicit val testDataFormat: RootJsonFormat[TestData] = jsonFormat5(TestData)
 
@@ -42,7 +42,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
             |{
             |   "duration":"3h50m",
             |   "uuid":"5181e78f-2280-42a6-873d-758e25a7c313",
-            |   "uRL":"http://a.com",
+            |   "url":"http://a.com",
             |   "date":"3918-07-09T00:00:00",
             |   "videoType":"archive"
             |}
@@ -196,9 +196,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
             |  "user_id":"23161357",
             |  "game_id":"417752",
             |  "community_ids":[
-            |    "5181e78f",
-            |    "848d95be",
-            |    "fd0eab99"
+            |    "5181e78f"
             |  ],
             |  "type":"live",
             |  "title":"Hey Guys, It's Monday - Twitter: @Lirik",
@@ -366,7 +364,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
               |{
               |  "id":"234482848",
               |  "user_id":"67955580",
-              |  "title":"-",
+              |  "title":"malformed",
               |  "description":"",
               |  "created_at":"2018-03-02T20:53:41Z",
               |  "published_at":"2018-03-02T20:53:41Z",
@@ -391,7 +389,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
               |{
               |  "id":"234482848",
               |  "user_id":"67955580",
-              |  "title":"-",
+              |  "title":"invalid",
               |  "description":"",
               |  "created_at":"2018-03-02T20:53:41Z",
               |  "published_at":"2018-03-02T20:53:41Z",
