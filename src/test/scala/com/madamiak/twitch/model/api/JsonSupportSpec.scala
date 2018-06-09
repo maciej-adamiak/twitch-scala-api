@@ -33,7 +33,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
           VideoType.Archive,
           new URL("http://a.com"),
           Duration.ofHours(4).minusMinutes(10),
-          new Date(61489231200000L),
+          dateFormatter.parse("3918-07-08T22:00:00Z"),
           UUID.fromString("5181e78f-2280-42a6-873d-758e25a7c313")
         )
 
@@ -43,7 +43,7 @@ class JsonSupportSpec extends WordSpec with Matchers {
             |   "duration":"3h50m",
             |   "uuid":"5181e78f-2280-42a6-873d-758e25a7c313",
             |   "url":"http://a.com",
-            |   "date":"3918-07-09T00:00:00",
+            |   "date":"3918-07-08T22:00:00",
             |   "videoType":"archive"
             |}
           """.stripMargin.parseJson
