@@ -11,12 +11,12 @@ import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ AsyncWordSpec, Matchers }
 
-class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
+class HttpClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
 
   implicit val system: ActorSystem             = ActorSystem("test-actor-system")
   implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-  val sut = new TwitchClient
+  private val sut = new TwitchClient
 
   "twitch client" which {
 
@@ -28,10 +28,10 @@ class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
           val path  = "/resource/segment"
           val query = Query.apply(("id", "123"))
 
-          val httpRequest = sut.request(path, query)
+          val httpRequest = sut.payloadRequest(path, query)
 
-          httpRequest.getUri().toString shouldBe "https://api.twitch.tv/resource/segment?id=123"
-          httpRequest.getHeader("Client-ID").get().value() shouldBe "1234abcd"
+          httpRequest.map(_.getUri().toString shouldBe "https://api.twitch.tv/resource/segment?id=123")
+          httpRequest.map(_.getHeader("Client-ID").get().value() shouldBe "1234abcd")
         }
       }
 
@@ -39,7 +39,7 @@ class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
 
         "processing successful request" in {
 
-          val entity = HttpEntity.apply(
+          val entity = HttpEntity(
             ContentTypes.`application/json`,
             """
               | {
@@ -57,7 +57,7 @@ class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
                          RawHeader("ratelimit-remaining", "3"),
                          RawHeader("ratelimit-reset", "4"))
 
-          val result = sut.extractData[Int](httpResponse)
+          val result = sut.extractPayload[Int](httpResponse)
 
           whenReady(result) {
             _ shouldBe TwitchResponse(RateLimit(1, 3, 4),
@@ -73,7 +73,7 @@ class TwitchClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
           val httpResponse = HttpResponse(status = StatusCodes.BadRequest)
 
           recoverToSucceededIf[TwitchAPIException](
-            sut.extractData[Int](httpResponse)
+            sut.extractPayload[Int](httpResponse)
           )
         }
       }

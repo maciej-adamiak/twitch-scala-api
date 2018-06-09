@@ -4,7 +4,28 @@
 
 # Twitch Scala SDK
 
-Twitch SDK for building application upon the [newest API](https://dev.twitch.tv/docs/api/#introduction)
+Twitch SDK for building application upon the [helix API](https://dev.twitch.tv/docs/api/#introduction).
+
+## Authentication
+
+Scala SDK supports two different authentication mechanism available in the Twitch helix API:
+- Client id - use the application client id to integrate with the API. This is the default in case no secret has been passed to the SDK,
+- Application access token - fetches and stores an authentication token. This is automatically used when there is a secret available in the SDK. 
+
+For more information refer to: [Twitch apps and authentication guide](https://dev.twitch.tv/docs/authentication/#introduction).
+
+## Properties
+
+| Name                 | Description                                                                                    | Default        |
+| ---                  | ---                                                                                            | ---            |
+| twitch.api.scheme    | Twitch helix API scheme                                                                        | https          |
+| twitch.api.host      | Twitch helix host                                                                              | api.twitch.tv  |
+| twitch.client.id     | Twitch application client id. Resolved also from `TWITCH_CLIENT_ID` environmental variable     | -              |
+| twitch.client.secret | Twitch application client id. Resolved also from `TWITCH_CLIENT_SECRET` environmental variable | -              |
+| twitch.client.scopes | Twitch application scopes                                                                      | empty list, [] |
+| twitch.id.scheme     | Twitch identity server scheme                                                                  | https          |
+| twitch.id.host       | Host of the Twitch identity server                                                             | id.twitch.tv   |
+| twitch.id.path       | Path of the endpoint used to acquire an access token                                           | /oauth2/token  |
 
 ## Usage
 
@@ -51,11 +72,7 @@ TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn
 | streams  | /helix/streams/metadata | GET    |
 | users    | /helix/users            | GET    |
 | users    | /helix/users/follows    | GET    |
-| videos   | /helix/videos   | GET    |
+| videos   | /helix/videos           | GET    |
 
-## Plans
-- Prepare mixins of endpoints to create commonly used queries e.g. find the streams of most popular games
-- Use pagination like an iterable
 
-Any ideas and improvements are welcomed:
-)
+Any ideas and improvements are welcomed :)

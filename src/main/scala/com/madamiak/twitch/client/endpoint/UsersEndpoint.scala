@@ -1,7 +1,7 @@
 package com.madamiak.twitch.client.endpoint
 
+import com.madamiak.twitch.client.HttpClient
 import com.madamiak.twitch.client.QueryUtils._
-import com.madamiak.twitch.client.TwitchClient
 import com.madamiak.twitch.model.TwitchResponse
 import com.madamiak.twitch.model.api.JsonSupport._
 import com.madamiak.twitch.model.api.user.{ TwitchFollow, TwitchUser }
@@ -10,7 +10,7 @@ import scala.concurrent.{ ExecutionContext, Future }
 
 class UsersEndpoint(
     implicit private[client] val context: ExecutionContext,
-    implicit private[client] val client: TwitchClient
+    implicit private[client] val client: HttpClient
 ) extends Endpoint {
 
   private val usersPath   = "/helix/users"
