@@ -1,7 +1,7 @@
 name := "twitch-scala-sdk"
 organization := "com.madamiak"
 
-version := "1.1.1"
+version := "1.2.0"
 
 scalaVersion := "2.12.6"
 
