@@ -1,5 +1,9 @@
 package com.madamiak.twitch.client
 
+import java.lang.Math.max
+import java.time.Instant
+import java.time.temporal.ChronoUnit
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.model.Uri.{ Path, Query }
@@ -10,13 +14,18 @@ import com.madamiak.twitch.TwitchConfiguration.config
 import com.madamiak.twitch.client.authentication.Authentication
 import com.madamiak.twitch.model.api.TwitchPayload
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
+import com.typesafe.scalalogging.Logger
+import retry.Success
 
+import scala.concurrent.duration._
 import scala.concurrent.{ ExecutionContext, Future }
 
 trait HttpClient {
   this: Authentication =>
 
   type TwitchPayloadUnmarshaller[T] = Unmarshaller[ResponseEntity, TwitchPayload[T]]
+
+  private val logger = Logger[HttpClient]
 
   private[client] implicit val system: ActorSystem
   private[client] implicit val context: ExecutionContext
@@ -41,9 +50,11 @@ trait HttpClient {
     )
 
   def http[T](path: String)(query: Query)(implicit m: TwitchPayloadUnmarshaller[T]): Future[TwitchResponse[T]] =
-    recoverWhenUnauthorized {
-      payloadRequest(path, query)
-        .flatMap(Http().singleRequest(_))
+    recoverWhenRateLimitExceeded {
+      recoverWhenUnauthorized {
+        payloadRequest(path, query)
+          .flatMap(Http().singleRequest(_))
+      }
     }.flatMap(extractPayload[T])
 
   private[client] def extractPayload[T](
@@ -55,6 +66,17 @@ trait HttpClient {
         .map(data => TwitchResponse(RateLimit(response), data))
     case StatusCodes.Unauthorized => Future.failed(new TwitchAPIException(s"Twitch client '$clientId' unauthorized"))
     case code                     => Future.failed(new TwitchAPIException(s"Twitch server respond with code $code"))
+  }
+
+  private[client] def recoverWhenRateLimitExceeded(in: => Future[HttpResponse]): Future[HttpResponse] = {
+    implicit val success: Success[HttpResponse] = Success(_.status == StatusCodes.OK)
+    retry.When {
+      case response @ HttpResponse(StatusCodes.TooManyRequests, _, _, _) =>
+        val rateLimit = RateLimit(response)
+        val pause     = Instant.now.until(Instant.ofEpochMilli(rateLimit.reset), ChronoUnit.MILLIS)
+        logger.info(s"Request rate limit exceeded. Waiting $pause milliseconds to retry")
+        retry.Pause(max = 0, delay = max(0, pause).millis)
+    }(in)
   }
 
 }
