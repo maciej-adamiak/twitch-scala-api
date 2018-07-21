@@ -1,5 +1,8 @@
 package com.madamiak.twitch.client
 
+import java.time.Instant
+import java.util.concurrent.atomic.AtomicInteger
+
 import akka.actor.ActorSystem
 import akka.http.scaladsl.model.Uri.Query
 import akka.http.scaladsl.model._
@@ -10,6 +13,8 @@ import com.madamiak.twitch.model.api.{ Pagination, TwitchPayload }
 import com.madamiak.twitch.model.{ RateLimit, TwitchResponse }
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{ AsyncWordSpec, Matchers }
+
+import scala.concurrent.Future
 
 class HttpClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
 
@@ -75,6 +80,49 @@ class HttpClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
           recoverToSucceededIf[TwitchAPIException](
             sut.extractPayload[Int](httpResponse)
           )
+        }
+      }
+
+      "handle rate limits" when {
+
+        "exceeded with large delay" in {
+          val counter = new AtomicInteger()
+          sut
+            .recoverWhenRateLimitExceeded {
+              if (counter.getAndIncrement() == 0) {
+                Future.successful(
+                  HttpResponse(status = StatusCodes.TooManyRequests)
+                    .withHeaders(
+                      RawHeader("ratelimit-limit", "120"),
+                      RawHeader("ratelimit-remaining", "0"),
+                      RawHeader("ratelimit-reset", Instant.now().plusSeconds(2).getEpochSecond.toString)
+                    )
+                )
+              } else {
+                Future.successful(HttpResponse().withStatus(StatusCodes.OK))
+              }
+            }
+            .map(_.status shouldEqual StatusCodes.OK)
+        }
+
+        "exceeded with no delay" in {
+          val counter = new AtomicInteger()
+          sut
+            .recoverWhenRateLimitExceeded {
+              if (counter.getAndIncrement() == 0) {
+                Future.successful(
+                  HttpResponse(status = StatusCodes.TooManyRequests)
+                    .withHeaders(
+                      RawHeader("ratelimit-limit", "120"),
+                      RawHeader("ratelimit-remaining", "0"),
+                      RawHeader("ratelimit-reset", Instant.now().minusMillis(1).getEpochSecond.toString)
+                    )
+                )
+              } else {
+                Future.successful(HttpResponse().withStatus(StatusCodes.OK))
+              }
+            }
+            .map(_.status shouldEqual StatusCodes.OK)
         }
       }
     }
