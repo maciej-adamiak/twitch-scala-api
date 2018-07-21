@@ -95,7 +95,7 @@ class HttpClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
                     .withHeaders(
                       RawHeader("ratelimit-limit", "120"),
                       RawHeader("ratelimit-remaining", "0"),
-                      RawHeader("ratelimit-reset", Instant.now().plusMillis(1000).toEpochMilli.toString)
+                      RawHeader("ratelimit-reset", Instant.now().plusSeconds(2).getEpochSecond.toString)
                     )
                 )
               } else {
@@ -115,7 +115,7 @@ class HttpClientSpec extends AsyncWordSpec with Matchers with ScalaFutures {
                     .withHeaders(
                       RawHeader("ratelimit-limit", "120"),
                       RawHeader("ratelimit-remaining", "0"),
-                      RawHeader("ratelimit-reset", Instant.now().minusMillis(1000).toEpochMilli.toString)
+                      RawHeader("ratelimit-reset", Instant.now().minusMillis(1).getEpochSecond.toString)
                     )
                 )
               } else {

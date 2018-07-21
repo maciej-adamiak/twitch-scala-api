@@ -73,9 +73,10 @@ trait HttpClient {
     retry.When {
       case response @ HttpResponse(StatusCodes.TooManyRequests, _, _, _) =>
         val rateLimit = RateLimit(response)
-        val pause     = Instant.now.until(Instant.ofEpochMilli(rateLimit.reset), ChronoUnit.MILLIS)
-        logger.info(s"Request rate limit exceeded. Waiting $pause milliseconds to retry")
-        retry.Pause(delay = max(0, pause).millis)
+        val until     = Instant.now.until(Instant.ofEpochSecond(rateLimit.reset), ChronoUnit.SECONDS)
+        val pause     = max(0, until).seconds
+        logger.info(s"Request rate limit exceeded. Waiting $until seconds to retry")
+        retry.Pause(delay = pause)
     }(in)
   }
 
