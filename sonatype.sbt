@@ -1,7 +1,9 @@
-credentials ++= (for {
-  username <- Option(System.getenv().get("SONATYPE_USERNAME"))
-  password <- Option(System.getenv().get("SONATYPE_PASSWORD"))
-} yield Credentials("Sonatype Nexus Repository Manager", "oss.sonatype.org", username, password)).toSeq
+credentials += Credentials(
+  "Sonatype Nexus Repository Manager",
+  "oss.sonatype.org",
+  sys.env.getOrElse("SONATYPE_USER", ""),
+  sys.env.getOrElse("SONATYPE_PASS", "")
+)
 
 publishMavenStyle := true
 
@@ -15,9 +17,9 @@ publishTo := {
     Some("releases"  at nexus + "service/local/staging/deploy/maven2")
 }
 
-licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php"))
+licenses := Seq("MIT" -> url("https://opensource.org/licenses/MIT"))
 
-homepage := Some(url("http://example.com"))
+homepage := Some(url("https://maciej-adamiak.github.io/twitch-scala-sdk/"))
 
 scmInfo := Some(
   ScmInfo(

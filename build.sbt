@@ -5,8 +5,6 @@ version := "1.2.0"
 
 scalaVersion := "2.12.6"
 
-useGpg := true
-
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.github.ben-manes.caffeine" % "caffeine" % "2.6.2",
