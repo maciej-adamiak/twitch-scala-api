@@ -61,6 +61,9 @@ TwitchStream(List(),497416,28645088240,en,2018-05-10T16:41:47Z,https://static-cd
 TwitchStream(List(),33214,28643227776,fr,2018-05-10T13:01:48Z,https://static-cdn.jtvnw.net/previews-ttv/live_user_gotaga-{width}x{height}.jpg,[FR] GOTAGA ► #FortniteGrind #Chill,live,24147592,20416)
 ```
 
+## Rate limits
+Utilized http client is capable of handling [rate limits](https://dev.twitch.tv/docs/api/guide/#rate-limits) introduced by Twitch. There will be a retry in case of exceeding granted limits. It will be performed at the time indicated by the `Ratelimit-Reset` 
+
 ## Supported API endpoints 
 
 | Resource | Endpoint                | Method |
