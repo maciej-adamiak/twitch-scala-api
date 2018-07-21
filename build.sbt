@@ -5,6 +5,8 @@ version := "1.2.0"
 
 scalaVersion := "2.12.6"
 
+useGpg := true
+
 libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.2.3",
   "com.github.ben-manes.caffeine" % "caffeine" % "2.6.2",
@@ -16,7 +18,7 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % "10.1.3",
   "com.typesafe.akka" %% "akka-stream-kafka" % "0.22",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.0",
-  "com.typesafe.akka" %% "akka-http-testkit" % "10.1.1" % Test,
+  "com.typesafe.akka" %% "akka-http-testkit" % "10.1.3" % Test,
   "org.scalatest" %% "scalatest" % "3.0.5" % Test,
   "org.scalamock" %% "scalamock" % "4.1.0" % Test
 )
